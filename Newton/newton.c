@@ -9,7 +9,7 @@
 #define NEWTON
 #endif
 //#define DEBUG
-#define PRINTSOL
+//#define PRINTSOL
 
 /*
  * allConverged :
