@@ -7,7 +7,6 @@
 void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t size_of_pb, double *func, double *dfunc)
 {
     VnrVariables_t *vars = (VnrVariables_t*) variables;
-    printf("InternalEnergyEvolutionVNR\n");
     for (int i=0; i<size_of_pb; ++i) {
         double pression_i = 0.;
         double dpsurde_i = 0.;

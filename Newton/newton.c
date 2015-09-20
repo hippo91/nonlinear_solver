@@ -9,6 +9,7 @@
 #define NEWTON
 #endif
 //#define DEBUG
+#define PRINTSOL
 
 /*
  * allConverged :
@@ -109,7 +110,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 	}
 #endif
 	/*
-	 * Libération de la mêmoire
+	 * Libération de la mémoire
 	 */
 	free(x_k);
 	free(x_k_pun);
