@@ -15,4 +15,4 @@ struct NewtonParameters {
     CheckCriterion *check_convergence;
 };
 
-void solveNewton(NewtonParameters_t *, void *, double *, size_t, double *);
+void solveNewton(NewtonParameters_t *, void *, double *, size_t, double **);

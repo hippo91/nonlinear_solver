@@ -30,10 +30,10 @@ static bool allConverged(bool *has_converged, size_t pb_size) {
  * solveNewton :
  * 	resolution de fonction non linéaires
  */
-void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini, size_t pb_size, double *x_sol) {
+void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini, size_t pb_size, double **x_sol) {
 	// Contrôle des itérations
 	int iter = 0;
-	int NB_ITER_MAX = 20;
+	int NB_ITER_MAX = 40;
 	// Tableau des inconnues à l'itération k
 	double *x_k;
 	// Tableau des inconnues à l'itération k+1
@@ -52,7 +52,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 	x_k = (double*)malloc(pb_size * sizeof(double));
 	for (int i=0 ; i<pb_size ; ++i)
 	{
-		x_k[i] = x_ini[0];
+		x_k[i] = x_ini[i];
 	}
 	allocVecForOMP(pb_size, 0., &F_k);
 	allocVecForOMP(pb_size, 0., &dF_k);
@@ -99,16 +99,20 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 	/*
 	 * FIN DU NEWTON
 	 */
-#ifdef PRINTSOL
 	if (iter < NB_ITER_MAX) {
+		for (int i=0 ; i<pb_size ; ++i) {
+            (*x_sol)[i] = x_k_pun[i];
+		}
+#ifdef PRINTSOL
 		printf("Convergence obtenue après %d itérations!\n", iter);
 		for (int i=0 ; i<pb_size ; ++i) {
 			printf("x[%d] = %15.9g\n", i, x_k[i]);
 		}
 	} else {
 		printf("Non convergence du Newton!\n");
-	}
+        exit(1);
 #endif
+	}
 	/*
 	 * Libération de la mémoire
 	 */

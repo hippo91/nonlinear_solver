@@ -4,8 +4,8 @@
 #include <omp.h>
 
 void relative_gap(double *x_k, double *delta_x_k, double *func, size_t size_of_pb, double *x_k_pun, bool *has_converged) {
-	double epsilon = 1.0e-11;
-	double precision = 1.0e-12;
+	double epsilon = 1.0e-08;
+	double precision = 1.0e-09;
 #pragma omp parallel for
 	for (int i=0; i<size_of_pb; ++i) {
 		if (! has_converged[i]) {
