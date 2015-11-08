@@ -1,10 +1,10 @@
 cc=gcc
 DEBUG=false
-LIBRARY=true
+LIBRARY=false
 ifeq ($(DEBUG), true)
-CFLAGS=-O0 -g3 -Wall -std=c99 -fopenmp
+CFLAGS=-O0 -g3 -Wall -std=gnu99 -fopenmp
 else
-CFLAGS=-O3 -march=native -mtune=native -std=c99 -fopenmp
+CFLAGS=-O3 -march=native -mtune=native -std=gnu99 -fopenmp
 endif
 ifeq ($(LIBRARY), true)
 CFLAGS+=-fPIC -shared
