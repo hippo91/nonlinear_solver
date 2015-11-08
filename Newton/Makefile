@@ -1,6 +1,6 @@
 cc=gcc
-DEBUG=false
-LIBRARY=false
+DEBUG=$(DBG)
+LIBRARY=$(LIB)
 ifeq ($(DEBUG), true)
 CFLAGS=-O0 -g3 -Wall -std=gnu99 -fopenmp
 else
