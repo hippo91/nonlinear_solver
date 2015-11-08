@@ -48,3 +48,6 @@ main.o : main.c
 
 clean :
 	rm *.o *.h.gch
+
+cleanall :
+	rm *.o *.h.gch newton.bin vnr_internal_energy_evolution.so
