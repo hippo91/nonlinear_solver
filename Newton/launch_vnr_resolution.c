@@ -38,6 +38,7 @@ void launch_vnr_resolution(double *old_density, double *new_density, double *pre
 	solveNewton(&TheNewton, &VnrVars, internal_energy, pb_size, &solution);
     // Appel de l'eos avec la solution du newton pour calculer la nouvelle
     // pression et vitesse du son
+	#pragma omp parallel for
     for (int i=0; i<pb_size; ++i) {
         double specific_volume = 1. / new_density[i];
         double dummy = 0.;
