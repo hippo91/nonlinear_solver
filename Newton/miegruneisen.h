@@ -11,9 +11,12 @@ struct MieGruneisenParameters {
         double gamma_zero;
         double coeff_b;
         double e_zero;
-        void (*solve)(MieGruneisenParameters_t*, const double, const double, double *, double *, double *);
+        void (*solve)(MieGruneisenParameters_t*, const int, const double*, const double*, double *, double *, double *);
 };
 
-void solveVolumeEnergy(MieGruneisenParameters_t*, const double specific_volume, const double internal_energy, double *pressure, double *gamma_per_vol, double *c_son);
+void solveVolumeEnergy(MieGruneisenParameters_t*, const double specific_volume, const double internal_energy,
+                       double *pressure, double *gamma_per_vol, double *c_son);
 
  
+void solveVolumeEnergyVec(MieGruneisenParameters_t*, const int nb_cells, const double* specific_volume,
+                          const double* internal_energy, double *pressure, double *gamma_per_vol, double *c_son);

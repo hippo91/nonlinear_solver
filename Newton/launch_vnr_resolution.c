@@ -9,7 +9,7 @@
 #include "miegruneisen.h"
 #define MIEGRUNEISEN
 #endif
-//#define MEASURE_TIME
+#define MEASURE_TIME
 
 void launch_vnr_resolution(double *old_density, double *new_density, double *pressure, double *internal_energy, int pb_size, double *solution, double *new_p, double *new_vson) {
 #ifdef MEASURE_TIME
@@ -24,7 +24,7 @@ void launch_vnr_resolution(double *old_density, double *new_density, double *pre
      * DEFINITION DE L EOS
      * */
 	double czero = 3980.0, S1 = 1.58, S2 = 0., S3 = 0., rhozero = 8129.0, grunzero = 1.6, b = 0.5, ezero = 0.;
-	MieGruneisenParameters_t MieGruneisenParams= {czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergy};
+	MieGruneisenParameters_t MieGruneisenParams= {czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergyVec};
 	/*
 	 * DEFINITION DE LA FONCTION A RESOUDRE (EQUATION D EVOLUTION DE L ENERGIE
 	 * INTERNE DANS LE SCHEMA VNR)
@@ -38,12 +38,14 @@ void launch_vnr_resolution(double *old_density, double *new_density, double *pre
 	solveNewton(&TheNewton, &VnrVars, internal_energy, pb_size, &solution);
     // Appel de l'eos avec la solution du newton pour calculer la nouvelle
     // pression et vitesse du son
-	#pragma omp parallel for
-    for (int i=0; i<pb_size; ++i) {
-        double specific_volume = 1. / new_density[i];
-        double dummy = 0.;
-        VnrVars.miegruneisen->solve(VnrVars.miegruneisen, specific_volume, solution[i], &new_p[i], &dummy, &new_vson[i]);
-    }
+  double *specific_volume = calloc(pb_size, sizeof(double));
+  for (int i = 0; i < pb_size; ++i) {
+    specific_volume[i] = 1. / new_density[i];
+  }
+  double *dummy = calloc(pb_size, sizeof(double));
+  VnrVars.miegruneisen->solve(VnrVars.miegruneisen, pb_size, specific_volume, solution, new_p, dummy, new_vson);
+  free(specific_volume);
+  free(dummy);
 #ifdef MEASURE_TIME
 	end = omp_get_wtime();
 	delta = end - begin;
