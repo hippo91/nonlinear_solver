@@ -9,9 +9,10 @@
 #include "miegruneisen.h"
 #define MIEGRUNEISEN
 #endif
-#define MEASURE_TIME
+//#define MEASURE_TIME
 
-void launch_vnr_resolution(double *old_density, double *new_density, double *pressure, double *internal_energy, int pb_size, double *solution, double *new_p, double *new_vson) {
+void launch_vnr_resolution(double *old_density, double *new_density, double *pressure, double *internal_energy,
+                           int pb_size, double *solution, double *new_p, double *new_vson) {
 #ifdef MEASURE_TIME
 	/*
 	 * POUR LA MESURE DU TEMPS
