@@ -26,7 +26,7 @@ void launch_vnr_resolution(double *old_density, double *new_density, double *pre
     /*
      * DEFINITION DE L EOS
      * */
-	double czero = 3980.0, S1 = 1.58, S2 = 0., S3 = 0., rhozero = 8129.0, grunzero = 1.6, b = 0.5, ezero = 0.;
+	double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0, grunzero = 2.02, b = 0.47, ezero = 0.;
 	MieGruneisenParameters_t MieGruneisenParams= {czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergyVec};
 	/*
 	 * DEFINITION DE LA FONCTION A RESOUDRE (EQUATION D EVOLUTION DE L ENERGIE
