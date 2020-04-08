@@ -9,8 +9,8 @@ int main() {
 	 * DECLARATION DES VARIABLES ET ALLOCATION MEMOIRE
 	 */
 	double* solution;
-	size_t pb_size = 5e+06;
-	int nbr_of_cycles = 10;
+	size_t pb_size = 10000;
+	int nbr_of_cycles = 50000;
 	double *old_density;
 	double *new_density;
 	double *pressure;
@@ -27,9 +27,11 @@ int main() {
 	//
 	for (int cycle = 0 ; cycle < nbr_of_cycles; ++cycle) {
 		launch_vnr_resolution(old_density, new_density, pressure, internal_energy, pb_size, solution, new_pressure, new_cson);
-		srand48(time(NULL));
-		int i = (int) (drand48() * pb_size);
-		printf("Energie Interne[%d] = %15.9g | Pression[%d] = %15.9g | Vitesse du son[%d] = %15.9g\n", i, solution[i], i, new_pressure[i], i, new_cson[i]);
+		if (cycle % 1000 == 0) {
+			srand48(time(NULL));
+			int i = (int) (drand48() * pb_size);
+			printf("Cycle %d ==> Energie Interne[%d] = %15.9g | Pression[%d] = %15.9g | Vitesse du son[%d] = %15.9g\n", cycle, i, solution[i], i, new_pressure[i], i, new_cson[i]);
+		};
 	}
 	/*
 	 * LIBERATION MEMOIRE
