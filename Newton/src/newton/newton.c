@@ -8,8 +8,8 @@
 #include "newton.h"
 #define NEWTON
 #endif
-#define DEBUG
-#define PRINTSOL
+// #define DEBUG
+// #define PRINTSOL
 
 /*
  * allConverged :
@@ -83,9 +83,9 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 #ifdef DEBUG
 		for (size_t i=0 ; i<pb_size ; ++i)
 		{
-			printf("F_k[%d]     = %15.9g | dF_k[%d]          = %15.9g\n", i, F_k[i], i, dF_k[i]);
-			printf("x_k[%d]     = %15.9g | delta_x_k[%d]     = %15.9g\n", i, x_k[i], i, delta_x_k[i]);
-			printf("x_k_pun[%d] = %15.9g | has_converged[%d] = %s\n", i, x_k_pun[i], i, has_converged[i] ? "True" : "False");
+			printf("F_k[%zu]     = %15.9g | dF_k[%zu]          = %15.9g\n", i, F_k[i], i, dF_k[i]);
+			printf("x_k[%zu]     = %15.9g | delta_x_k[%zu]     = %15.9g\n", i, x_k[i], i, delta_x_k[i]);
+			printf("x_k_pun[%zu] = %15.9g | has_converged[%zu] = %s\n", i, x_k_pun[i], i, has_converged[i] ? "True" : "False");
 		}
 #endif
 		//
@@ -108,7 +108,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 #ifdef PRINTSOL
 		printf("Convergence obtenue après %d itérations!\n", iter);
 		for (size_t i=0 ; i<pb_size ; ++i) {
-			printf("x[%d] = %15.9g\n", i, x_k[i]);
+			printf("x[%zu] = %15.9g\n", i, x_k[i]);
 		}
 	} else {
 		printf("Non convergence du Newton!\n");

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
-#define DEBUG
+// #define DEBUG
 
 void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t size_of_pb, double *func, double *dfunc)
 {
