@@ -7,7 +7,7 @@ void relative_gap(double *x_k, double *delta_x_k, double *func, size_t size_of_p
 	double epsilon = 1.0e-08;
 	double precision = 1.0e-09;
 #pragma omp parallel for
-	for (int i=0; i<size_of_pb; ++i) {
+	for (size_t i=0; i<size_of_pb; ++i) {
 		if (! has_converged[i]) {
 			x_k_pun[i] = x_k[i] + delta_x_k[i];
 		}

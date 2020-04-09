@@ -16,7 +16,7 @@
  * 	retourne true si tous les membres du tableau has_converged sont à true
  */
 static bool allConverged(bool *has_converged, size_t pb_size) {
-	for (int i=0 ; i<pb_size ; ++i)
+	for (size_t i=0 ; i<pb_size ; ++i)
 	{
 		if (! has_converged[i]) {
 			return (false);
@@ -51,7 +51,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 	 */
   allocVecForOMP(pb_size, 0., &x_k);
 #pragma omp parallel for
-	for (int i=0 ; i<pb_size ; ++i)
+	for (size_t i=0 ; i<pb_size ; ++i)
 	{
 		x_k[i] = x_ini[i];
 	}
@@ -81,7 +81,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 		Newton->check_convergence(x_k, delta_x_k, F_k, pb_size, x_k_pun, has_converged);
 		//
 #ifdef DEBUG
-		for (int i=0 ; i<pb_size ; ++i)
+		for (size_t i=0 ; i<pb_size ; ++i)
 		{
 			printf("F_k[%d]     = %15.9g | dF_k[%d]          = %15.9g\n", i, F_k[i], i, dF_k[i]);
 			printf("x_k[%d]     = %15.9g | delta_x_k[%d]     = %15.9g\n", i, x_k[i], i, delta_x_k[i]);
@@ -93,7 +93,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 		 * Mise à jour du tableau des inconnues
 		 */
 #pragma omp parallel for
-		for (int i=0 ; i<pb_size ; ++i)
+		for (size_t i=0 ; i<pb_size ; ++i)
 		{
 			x_k[i] = x_k_pun[i];
 		}
@@ -102,12 +102,12 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 	 * FIN DU NEWTON
 	 */
 	if (iter < NB_ITER_MAX) {
-		for (int i=0 ; i<pb_size ; ++i) {
+		for (size_t i=0 ; i<pb_size ; ++i) {
             (*x_sol)[i] = x_k_pun[i];
 		}
 #ifdef PRINTSOL
 		printf("Convergence obtenue après %d itérations!\n", iter);
-		for (int i=0 ; i<pb_size ; ++i) {
+		for (size_t i=0 ; i<pb_size ; ++i) {
 			printf("x[%d] = %15.9g\n", i, x_k[i]);
 		}
 	} else {
