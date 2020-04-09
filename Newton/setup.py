@@ -22,7 +22,7 @@ vnrinternalenergy_module = Extension('_vnrinternalenergy',
                                     'miegruneisen.c', 'newton.c', 'stop_criterions.c', 'utils.c',
                                     'vnr_internalenergy_evolution.c'],
                            include_dirs = [numpy_include],
-                           extra_compile_args=['-march=native', '-mtune=native', '-std=gnu99', '-fopenmp'],
+                           extra_compile_args=['-O3', '-march=native', '-mtune=native', '-std=gnu99', '-fopenmp'],
                            extra_link_args=['-fopenmp'],
                            )
 
