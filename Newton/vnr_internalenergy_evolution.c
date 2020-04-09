@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
+#define DEBUG
 
 void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t size_of_pb, double *func, double *dfunc)
 {
@@ -19,6 +20,9 @@ void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t s
 #pragma omp parallel for
     for (int i=0; i<size_of_pb; ++i) {
         specific_volume[i] = 1. / vars->density_new[i];
+#ifdef DEBUG
+        printf("specific_volume[%zu] = %15.9g | density_new[%zu] = %15.9g\n", i, specific_volume[i], i, vars->density_new[i]);
+#endif
     }
     // Appel de l'eos
     vars->miegruneisen->solve(vars->miegruneisen, size_of_pb, specific_volume, newton_var, pression, dpsurde, dummy);
