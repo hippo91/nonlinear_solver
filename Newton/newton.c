@@ -8,8 +8,8 @@
 #include "newton.h"
 #define NEWTON
 #endif
-#define DEBUG
-#define PRINTSOL
+// #define DEBUG
+// #define PRINTSOL
 
 /*
  * allConverged :
