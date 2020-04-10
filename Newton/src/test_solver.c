@@ -1,10 +1,10 @@
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "utils.h"
 #include "launch_vnr_resolution.h"
+#include "utils.h"
+#include "test_utils.h"
 
 /**
  * @brief Check if an array is filled with a unique uniform value.
@@ -21,23 +21,11 @@
 bool is_uniform_array_value(const double* const array, const size_t size, const double value, int* unvalid_index) {
 	size_t inv_ind = 0;
 	for (size_t i = 0; i < size; ++i) {
-		if (fabs(array[i] - value) / fabs(value) > 1.e-15) {
+		if (!almost_equal(array[i], value)) {
 			unvalid_index[inv_ind++] = i;
 		}
 	};
 	return inv_ind == 0;
-}
-
-/**
- * @brief Print to the standard error a formatted error message
- * 
- * @param array_name : name of the array 
- * @param index : index of the array from which the value will be printed
- * @param array : array 
- * @param expected : expected value that should be found a the arr[index] place
- */
-void print_array_index_error(const char* array_name, const size_t index, const double* const array, const double expected) {
-	fprintf(stderr, "%s[%zu] = %22.16g instead of %22.16g\n", array_name, index, array[index], expected);
 }
 
 /**

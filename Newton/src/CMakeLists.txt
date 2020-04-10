@@ -24,6 +24,7 @@ add_subdirectory( incrementation )
 add_subdirectory( criterions )
 add_subdirectory( newton )
 add_subdirectory( launch_vnr_resolution )
+add_subdirectory( test_utils )
 
 target_link_libraries( nonlinearsolver PRIVATE 
   launch_vnr_resolution
@@ -33,7 +34,7 @@ target_link_libraries( nonlinearsolver PRIVATE
 target_link_libraries( test_solver PRIVATE 
   launch_vnr_resolution
   utils
-  m
+  test_utils
   )
 
   add_test( NAME "Test_solver"
