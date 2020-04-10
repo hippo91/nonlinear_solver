@@ -17,7 +17,6 @@ void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t s
     allocVecForOMP(size_of_pb, 0., &dpsurde);
     allocVecForOMP(size_of_pb, 0., &dummy);
     allocVecForOMP(size_of_pb, 0., &specific_volume);
-#pragma omp parallel for
     for (size_t i=0; i<size_of_pb; ++i) {
         specific_volume[i] = 1. / vars->density_new[i];
 #ifdef DEBUG
@@ -27,7 +26,6 @@ void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t s
     // Appel de l'eos
     vars->miegruneisen->solve(vars->miegruneisen, size_of_pb, specific_volume, newton_var, pression, dpsurde, dummy);
     double delta_v = 0.;
-#pragma omp parallel for
     for (size_t i=0; i<size_of_pb; ++i) {
         delta_v = 1. / vars->density_new[i] - 1. / vars->density_old[i];
         // Fonction à annuler

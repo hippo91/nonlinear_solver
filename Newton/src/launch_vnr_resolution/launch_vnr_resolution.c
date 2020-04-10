@@ -55,7 +55,6 @@ void launch_vnr_resolution(double *old_density, double *new_density, double *pre
     // pression et vitesse du son
   double *specific_volume = NULL;
   allocVecForOMP(pb_size, 0., &specific_volume);
-#pragma omp parallel for
   for (int i = 0; i < pb_size; ++i) {
     specific_volume[i] = 1. / new_density[i];
   }

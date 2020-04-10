@@ -49,8 +49,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 	/*
 	 * Déclaration/Allocation/Initialisation des tableaux
 	 */
-  allocVecForOMP(pb_size, 0., &x_k);
-#pragma omp parallel for
+  	allocVecForOMP(pb_size, 0., &x_k);
 	for (size_t i=0 ; i<pb_size ; ++i)
 	{
 		x_k[i] = x_ini[i];
@@ -92,7 +91,6 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
 		/*
 		 * Mise à jour du tableau des inconnues
 		 */
-#pragma omp parallel for
 		for (size_t i=0 ; i<pb_size ; ++i)
 		{
 			x_k[i] = x_k_pun[i];

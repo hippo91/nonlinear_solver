@@ -21,7 +21,6 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, 
   double s2 = params->s2;
   double s3 = params->s3;
   double e_zero = params->e_zero;
-#pragma omp parallel for
   for (int i = 0; i < nb_cells; ++i) {
     double epsv = 0;
     double epsv2 = 0;

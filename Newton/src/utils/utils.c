@@ -9,7 +9,6 @@ void allocVecForOMP(size_t pb_size, double value, double **vec) {
      * numa en cas d'utilisation de openmp
      * */
     *vec = (double*)malloc(pb_size * sizeof(double));
-#pragma omp parallel for
     for (size_t i=0; i < pb_size; ++i) {
         (*vec)[i] = value;
     }
@@ -23,7 +22,6 @@ void allocVecBoolForOMP(size_t pb_size, bool **vec) {
      * numa en cas d'utilisation de openmp
      * */
     *vec = (bool*)malloc(pb_size * sizeof(bool));
-#pragma omp parallel for
     for (size_t i=0; i < pb_size; ++i) {
         (*vec)[i] = false;
     }
