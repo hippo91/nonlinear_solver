@@ -6,6 +6,12 @@
 #define PB_SIZE 2
 
 
+/**
+ * @brief Launch the test of the MieGruneisen equation of state 
+ * 
+ * @return int : success (0) or failure (1)
+ * @todo : adds test for non zero values of S2, S3 and ezero
+ */
 int main() {
 	double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0, grunzero = 2.02, b = 0.47, ezero = 0.;
 	MieGruneisenParameters_t copper_mat = {czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergyVec};
