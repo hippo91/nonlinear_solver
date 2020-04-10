@@ -14,5 +14,5 @@ target_link_libraries( test_miegruneisen
     eos
     test_utils
 )
-add_test( NAME "test_eos"
+add_test( NAME "Test_eos"
           COMMAND test_miegruneisen)
