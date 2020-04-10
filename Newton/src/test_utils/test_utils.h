@@ -27,3 +27,25 @@ bool almost_equal(const double value, const double reference) {
 void print_array_index_error(const char* array_name, const size_t index, const double* const array, const double expected) {
 	fprintf(stderr, "%s[%zu] = %22.16g instead of %22.16g\n", array_name, index, array[index], expected);
 }
+
+/**
+ * @brief Compares if two arrays are equals and print an error message if not
+ * 
+ * @param arr_a : first array
+ * @param arr_b : second array
+ * @param size : size of both array
+ * @param arr_a_name : name of first array
+ * @return true : if arrays are equals
+ * @return false : otherwise
+ */
+bool assert_equal_arrays(const double* const arr_a, const double* const arr_b, const size_t size,
+						 const char* arr_a_name) {
+	bool equality = true;
+	for (size_t i = 0; i < size; ++i) {
+		if (!almost_equal(arr_a[i], arr_b[i])) {
+			print_array_index_error(arr_a_name, i, arr_a, arr_b[i]);
+			equality = false;
+		}
+	}
+	return equality;
+}
