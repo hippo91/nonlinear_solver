@@ -15,6 +15,7 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 add_executable( nonlinearsolver main.c )
 add_executable( test_solver test_solver.c )
+enable_testing()
 
 add_subdirectory( eos )
 add_subdirectory( functions )
@@ -35,3 +36,6 @@ target_link_libraries( test_solver PRIVATE
   utils
   m
   )
+
+  add_test( NAME "Test_solver"
+            COMMAND test_solver )
