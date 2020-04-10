@@ -28,7 +28,6 @@ add_subdirectory( launch_vnr_resolution )
 target_link_libraries( nonlinearsolver PRIVATE 
   launch_vnr_resolution
   utils
-  m
   )
 
 target_link_libraries( test_solver PRIVATE 

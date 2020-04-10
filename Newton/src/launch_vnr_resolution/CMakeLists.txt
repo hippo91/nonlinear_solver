@@ -12,5 +12,4 @@ target_link_libraries( ${LIBRARY_NAME} PRIVATE
   criterions
   eos
   utils
-  m
   )
