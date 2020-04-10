@@ -92,12 +92,3 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, 
     }
   }
 }
-//int main() 
-//{
-//        double czero = 3980.0, S1 = 1.58, S2 = 0., S3 = 0., rhozero = 8129.0, grunzero = 1.6, b = 0.5, ezero = 0.;
-//        MieGruneisenParameters_t params= {czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergy};
-//        double rho = 9.000000000001e+03, e_int = 1.0e+04;
-//        double pression = 0., gruneisen = 0., vitesse_du_son = 0.;
-//        params.solve(&params, 1./rho, e_int, &pression, &gruneisen, &vitesse_du_son);
-//        printf("Pression = %15.9g \nGruneisen = %15.9g \nVitesse du son = %15.9g\n", pression, gruneisen, vitesse_du_son);
-//}
