@@ -55,7 +55,7 @@ bool test_ensure_positivity_incrementation() {
     double obtained[2 * PB_SIZE] = {0., 0., 0., 0.};
     double expected[2 * PB_SIZE] = {0.5, -1., 0.25, -1.};
 
-    ensure_positivity_incrementation(x_k, f, df, 2 * PB_SIZE, obtained);
+    ensure_same_sign_incrementation(x_k, f, df, 2 * PB_SIZE, obtained);
     return assert_equal_arrays(obtained, expected, 2 * PB_SIZE, "obtained");
 }
 
