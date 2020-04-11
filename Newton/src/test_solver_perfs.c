@@ -4,10 +4,17 @@
 #include "utils.h"
 #include "launch_vnr_resolution.h"
 
+/**
+ * @brief Test the performance of the solveur
+ * 
+ * @return int : 0 (SUCCESS) 1 (FAILURE)
+ */
 int main() {
 	/*
 	 * DECLARATION DES VARIABLES ET ALLOCATION MEMOIRE
 	 */
+	clock_t start, end;
+
 	double* solution;
 	size_t pb_size = 10000;
 	int nbr_of_cycles = 50000;
@@ -25,6 +32,7 @@ int main() {
 	allocVecForOMP(pb_size, 0., &new_pressure);
 	allocVecForOMP(pb_size, 0., &new_cson);
 	//
+	start = clock();
 	for (int cycle = 0 ; cycle < nbr_of_cycles; ++cycle) {
 		launch_vnr_resolution(old_density, new_density, pressure, internal_energy, pb_size, solution, new_pressure, new_cson);
 		if (cycle % 1000 == 0) {
@@ -33,6 +41,8 @@ int main() {
 			printf("Cycle %d ==> Energie Interne[%d] = %15.9g | Pression[%d] = %15.9g | Vitesse du son[%d] = %15.9g\n", cycle, i, solution[i], i, new_pressure[i], i, new_cson[i]);
 		};
 	}
+	end = clock();
+	double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 	/*
 	 * LIBERATION MEMOIRE
 	 */
@@ -41,5 +51,16 @@ int main() {
 	free(new_density);
 	free(pressure);
 	free(internal_energy);
-	return (EXIT_SUCCESS);
+
+	bool success = true;
+	// At the time this test has been created, it tooks around 3 minutes to run.
+	// Adds a possible variation of 10%
+	const double time_limit = 180. * 1.1;
+	if (cpu_time_used > time_limit) {
+		success = false;
+		printf("CPU time used (%6.4g seconds) is above the limit (%6.4g seconds)!\n", cpu_time_used, time_limit);
+	}
+
+	if (!success) return (EXIT_FAILURE);
+	return EXIT_SUCCESS;
 }

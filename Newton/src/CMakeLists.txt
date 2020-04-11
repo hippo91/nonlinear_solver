@@ -13,9 +13,9 @@ set( CMAKE_C_COMPILE_FEATURES c_std_99 )
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra -fopenmp" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-add_executable( nonlinearsolver main.c )
-add_executable( test_solver test_solver.c )
 enable_testing()
+add_executable( test_solver_perfs test_solver_perfs.c )
+add_executable( test_solver test_solver.c )
 
 add_subdirectory( eos )
 add_subdirectory( functions )
@@ -26,7 +26,7 @@ add_subdirectory( newton )
 add_subdirectory( launch_vnr_resolution )
 add_subdirectory( test_utils )
 
-target_link_libraries( nonlinearsolver PRIVATE 
+target_link_libraries( test_solver_perfs PRIVATE 
   launch_vnr_resolution
   utils
   )
@@ -39,3 +39,5 @@ target_link_libraries( test_solver PRIVATE
 
   add_test( NAME "Test_solver"
             COMMAND test_solver )
+  add_test( NAME "Test_solver_performances"
+            COMMAND test_solver_perfs )
