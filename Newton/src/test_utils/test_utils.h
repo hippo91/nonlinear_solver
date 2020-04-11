@@ -49,3 +49,26 @@ bool assert_equal_arrays(const double* const arr_a, const double* const arr_b, c
 	}
 	return equality;
 }
+
+
+/**
+ * @brief Compares if two arrays of bool are equals and print an error message if not
+ * 
+ * @param arr_a : first array
+ * @param arr_b : second array
+ * @param size : size of both array
+ * @param arr_a_name : name of first array
+ * @return true : if arrays are equals
+ * @return false : otherwise
+ */
+bool assert_equal_bool_arrays(const bool* const arr_a, const bool* const arr_b, const size_t size,
+						      const char* arr_a_name) {
+	bool equality = true;
+	for (size_t i = 0; i < size; ++i) {
+		if (arr_a[i] != arr_b[i]) {
+			fprintf(stderr, "%s[%zu] = %s instead of %s\n", arr_a_name, i, arr_a[i] ? "true" : "false", arr_b[i] ? "true" : "false");
+			equality = false;
+		}
+	}
+	return equality;
+}
