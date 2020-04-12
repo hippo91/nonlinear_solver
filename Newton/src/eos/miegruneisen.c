@@ -105,3 +105,95 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells,
         }
     }
 }
+
+/**
+ * @brief Compute the compression ($\dfrac{\rho - \rho_0}{\rho}$)
+ * 
+ * @param rho_zero : initial density
+ * @param specific_volume : specific volume
+ * @return double : the compression
+ */
+inline double compute_epsv(const double rho_zero, const double specific_volume)
+{
+    return 1.0 - rho_zero * specific_volume;
+}
+
+/**
+ * @brief Compute the Gruneisen coefficent divided by specific volume i.e the
+ *        derivative of the pressure with respect to the specific internal energy
+ * 
+ * @param gamma_zero : initial Gruneisen coefficient
+ * @param coeff_b : b coefficient
+ * @param epsv : compression of the material
+ * @param specific_volume : specific volume
+ * @return double : dp/de
+ */
+inline double compute_dp_de(const double gamma_zero, const double coeff_b,
+                            const double epsv, const double specific_volume)
+{
+    return (gamma_zero * (1.0 - epsv) + coeff_b * epsv) / specific_volume;
+}
+
+/**
+ * @brief Computes the square root of the denominator of the pressure on the hugoniot
+ * 
+ * @param s1 : s1 parameter
+ * @param s2 : s2 parameter
+ * @param s3 : s3 parameter
+ * @param epsv : compression of the material
+ * @return double : the denominator
+ */
+inline double compute_denom(const double s1, const double s2, const double s3,
+                            const double epsv)
+{
+    return 1. / (1. - (s1 + s2 * epsv + s3 * epsv * epsv) * epsv);
+}
+
+/**
+ * @brief Compute the pressure and the derivative of the pressure with respect to the specific
+ *        internal energy
+ * 
+ * @param params : parameters of the equation of state
+ * @param nb_cells : size of the arrays
+ * @param specific_volume : specific volume array
+ * @param internal_energy : internal energy array
+ * @param pressure : pressure array
+ * @param gamma_per_vol : dp/de array
+ */
+void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int nb_cells,
+                                     const double *specific_volume,
+                                     const double *internal_energy, double *pressure,
+                                     double *gamma_per_vol)
+{
+    const double c_zero_2 = params->c_zero * params->c_zero;
+    const double rho_zero = params->rho_zero;
+    const double gamma_zero = params->gamma_zero;
+    const double coeff_b = params->coeff_b;
+    const double s1 = params->s1;
+    const double s2 = params->s2;
+    const double s3 = params->s3;
+    const double e_zero = params->e_zero;
+    for (int i = 0; i < nb_cells; ++i)
+    {
+        // phi : pressure on hugoniot
+        double phi = 0;
+        // einth : specific internal energy on hugoniot
+        double einth = 0;
+        // epsv compression of the material
+        double epsv = compute_epsv(rho_zero, specific_volume[i]);
+        // Gruneisen coefficient divided by the specific volume : dp/de
+        gamma_per_vol[i] = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
+        if (epsv > 0)
+        {
+            const double denom = compute_denom(s1, s2, s3, epsv);
+            phi = rho_zero * c_zero_2 * epsv * denom * denom;
+            einth = e_zero + phi * epsv / (2. * rho_zero);
+        }
+        else
+        {
+            phi = rho_zero * c_zero_2 * epsv / (1. - epsv);
+            einth = e_zero;
+        }
+        pressure[i] = phi + gamma_per_vol[i] * (internal_energy[i] - einth);
+    }
+}
