@@ -1,12 +1,13 @@
 #include "miegruneisen.h"
-#include <omp.h>
 #include <math.h>
-#include <stdio.h>
+#include <omp.h>
 #include <signal.h>
+#include <stdio.h>
 
-void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, const double *specific_volume,
-    const double *internal_energy, double* pressure, double* gamma_per_vol, double* c_son)
-{
+void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells,
+                          const double *specific_volume,
+                          const double *internal_energy, double *pressure,
+                          double *gamma_per_vol, double *c_son) {
   // phi : pression sur l hugoniot
   // einth : energie interne specifique sur l hugoniot
   // dpdv : dp/dv
@@ -35,7 +36,8 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, 
     epsv = 1.0 - rho_zero * specific_volume[i];
     epsv2 = epsv * epsv;
     // Coefficient de gruneisen
-    gamma_per_vol[i] = (gamma_zero * (1.0 - epsv) + coeff_b * epsv) / specific_volume[i];
+    gamma_per_vol[i] =
+        (gamma_zero * (1.0 - epsv) + coeff_b * epsv) / specific_volume[i];
     redond_a = s1 + 2. * s2 * epsv + 3. * s3 * epsv2;
     if (epsv > 0) {
       // ============================================================
@@ -45,15 +47,17 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, 
       // deinth : derivee de einth par rapport a v
       // ============================================================
       denom = 1. / (1. - (s1 + s2 * epsv + s3 * epsv2) * epsv);
-      phi = rho_zero * c_zero_2 * epsv * denom * denom; 
+      phi = rho_zero * c_zero_2 * epsv * denom * denom;
       einth = e_zero + phi * epsv / (2. * rho_zero);
       //
       dphi = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
       //
       deinth = phi * (-1. - epsv * redond_a * denom);
       //
-      dpdv = dphi + (dgam - gamma_per_vol[i]) * (internal_energy[i] - einth) / specific_volume[i]
-                  - gamma_per_vol[i] * deinth;
+      dpdv = dphi +
+             (dgam - gamma_per_vol[i]) * (internal_energy[i] - einth) /
+                 specific_volume[i] -
+             gamma_per_vol[i] * deinth;
     } else {
       // ============================================================
       // traitement en tension : epsv < 0
@@ -67,7 +71,8 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, 
       //
       dphi = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
       //
-      dpdv = dphi + (dgam - gamma_per_vol[i]) * (internal_energy[i] - einth) / specific_volume[i];
+      dpdv = dphi + (dgam - gamma_per_vol[i]) * (internal_energy[i] - einth) /
+                        specific_volume[i];
     }
     // ****************************
     // Pression :
@@ -76,7 +81,8 @@ void solveVolumeEnergyVec(MieGruneisenParameters_t *params, const int nb_cells, 
     // ======================================
     // Carre de la vitesse du son :
     // ======================================
-    vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * gamma_per_vol[i] - dpdv);
+    vson_2 = specific_volume[i] * specific_volume[i] *
+             (pressure[i] * gamma_per_vol[i] - dpdv);
     if (vson_2 < 0) {
       printf("Carré de la vitesse du son < 0\n");
       printf("specific_volume[%d] = %15.9g\n", i, specific_volume[i]);
