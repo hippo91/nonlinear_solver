@@ -12,8 +12,9 @@
  * @return true : if value is equal to reference up to a relative precision
  * @return false : otherwise
  */
-bool almost_equal(const double value, const double reference) {
-	return (fabs(value - reference) / fabs(reference)) <= EPSILON;
+bool almost_equal(const double value, const double reference)
+{
+    return (fabs(value - reference) / fabs(reference)) <= EPSILON;
 }
 
 /**
@@ -24,8 +25,9 @@ bool almost_equal(const double value, const double reference) {
  * @param array : array 
  * @param expected : expected value that should be found a the arr[index] place
  */
-void print_array_index_error(const char* array_name, const size_t index, const double* const array, const double expected) {
-	fprintf(stderr, "%s[%zu] = %22.16g instead of %22.16g\n", array_name, index, array[index], expected);
+void print_array_index_error(const char *array_name, const size_t index, const double *const array, const double expected)
+{
+    fprintf(stderr, "%s[%zu] = %22.16g instead of %22.16g\n", array_name, index, array[index], expected);
 }
 
 /**
@@ -38,18 +40,20 @@ void print_array_index_error(const char* array_name, const size_t index, const d
  * @return true : if arrays are equals
  * @return false : otherwise
  */
-bool assert_equal_arrays(const double* const arr_a, const double* const arr_b, const size_t size,
-						 const char* arr_a_name) {
-	bool equality = true;
-	for (size_t i = 0; i < size; ++i) {
-		if (!almost_equal(arr_a[i], arr_b[i])) {
-			print_array_index_error(arr_a_name, i, arr_a, arr_b[i]);
-			equality = false;
-		}
-	}
-	return equality;
+bool assert_equal_arrays(const double *const arr_a, const double *const arr_b, const size_t size,
+                         const char *arr_a_name)
+{
+    bool equality = true;
+    for (size_t i = 0; i < size; ++i)
+    {
+        if (!almost_equal(arr_a[i], arr_b[i]))
+        {
+            print_array_index_error(arr_a_name, i, arr_a, arr_b[i]);
+            equality = false;
+        }
+    }
+    return equality;
 }
-
 
 /**
  * @brief Compares if two arrays of bool are equals and print an error message if not
@@ -61,14 +65,17 @@ bool assert_equal_arrays(const double* const arr_a, const double* const arr_b, c
  * @return true : if arrays are equals
  * @return false : otherwise
  */
-bool assert_equal_bool_arrays(const bool* const arr_a, const bool* const arr_b, const size_t size,
-						      const char* arr_a_name) {
-	bool equality = true;
-	for (size_t i = 0; i < size; ++i) {
-		if (arr_a[i] != arr_b[i]) {
-			fprintf(stderr, "%s[%zu] = %s instead of %s\n", arr_a_name, i, arr_a[i] ? "true" : "false", arr_b[i] ? "true" : "false");
-			equality = false;
-		}
-	}
-	return equality;
+bool assert_equal_bool_arrays(const bool *const arr_a, const bool *const arr_b, const size_t size,
+                              const char *arr_a_name)
+{
+    bool equality = true;
+    for (size_t i = 0; i < size; ++i)
+    {
+        if (arr_a[i] != arr_b[i])
+        {
+            fprintf(stderr, "%s[%zu] = %s instead of %s\n", arr_a_name, i, arr_a[i] ? "true" : "false", arr_b[i] ? "true" : "false");
+            equality = false;
+        }
+    }
+    return equality;
 }
