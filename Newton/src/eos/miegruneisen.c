@@ -180,7 +180,7 @@ void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int
         // einth : specific internal energy on hugoniot
         double einth = 0;
         // epsv compression of the material
-        double epsv = compute_epsv(rho_zero, specific_volume[i]);
+        const double epsv = compute_epsv(rho_zero, specific_volume[i]);
         // Gruneisen coefficient divided by the specific volume : dp/de
         gamma_per_vol[i] = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
         if (epsv > 0)
@@ -195,5 +195,77 @@ void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int
             einth = e_zero;
         }
         pressure[i] = phi + gamma_per_vol[i] * (internal_energy[i] - einth);
+    }
+}
+
+/**
+ * @brief Compute the pressure and the sound speed
+ * 
+ * @param params : parameters of the equation of state
+ * @param nb_cells : size of the arrays
+ * @param specific_volume : specific volume array
+ * @param internal_energy : internal energy array
+ * @param pressure : pressure array
+ * @param c_son : sound speed array
+ * @todo : factorizes the comutation of einth and phi to share with compute_pressure_and_derivative
+ */
+void compute_pressure_and_sound_speed(MieGruneisenParameters_t *params, const int nb_cells,
+                                      const double *specific_volume,
+                                      const double *internal_energy, double *pressure, double *c_son)
+{
+    const double c_zero_2 = params->c_zero * params->c_zero;
+    const double rho_zero = params->rho_zero;
+    const double gamma_zero = params->gamma_zero;
+    const double coeff_b = params->coeff_b;
+    const double s1 = params->s1;
+    const double s2 = params->s2;
+    const double s3 = params->s3;
+    const double e_zero = params->e_zero;
+    const double dgam = params->rho_zero * (params->gamma_zero - params->coeff_b);
+    for (int i = 0; i < nb_cells; ++i)
+    {
+        // phi : pressure on hugoniot
+        double phi = 0;
+        // einth : specific internal energy on hugoniot
+        double einth = 0;
+        // epsv compression of the material
+        const double epsv = compute_epsv(rho_zero, specific_volume[i]);
+        // Gruneisen coefficient divided by the specific volume : dp/de
+        const double gamma_per_vol = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
+        const double redond_a = s1 + 2. * s2 * epsv + 3. * s3 * epsv * epsv;
+        double dpdv = 0.;
+        if (epsv > 0)
+        {
+            const double denom = compute_denom(s1, s2, s3, epsv);
+            phi = rho_zero * c_zero_2 * epsv * denom * denom;
+            einth = e_zero + phi * epsv / (2. * rho_zero);
+            const double dphi = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
+            const double deinth = phi * (-1. - epsv * redond_a * denom);
+            dpdv = dphi + (dgam - gamma_per_vol) * (internal_energy[i] - einth) / specific_volume[i] - gamma_per_vol * deinth;
+        }
+        else
+        {
+            phi = rho_zero * c_zero_2 * epsv / (1. - epsv);
+            einth = e_zero;
+            const double dphi = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
+            dpdv = dphi + (dgam - gamma_per_vol) * (internal_energy[i] - einth) / specific_volume[i];
+        }
+        pressure[i] = phi + gamma_per_vol * (internal_energy[i] - einth);
+        double vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * gamma_per_vol - dpdv);
+        if (vson_2 < 0)
+        {
+            printf("Carré de la vitesse du son < 0\n");
+            printf("specific_volume[%d] = %15.9g\n", i, specific_volume[i]);
+            printf("pressure[%d] = %15.9g\n", i, pressure[i]);
+            printf("dpsurde[%d] = %15.9g\n", i, gamma_per_vol);
+            printf("dpdv[%d] = %15.9g\n", i, dpdv);
+            raise(SIGABRT);
+        }
+        c_son[i] = sqrt(vson_2);
+        //
+        if ((c_son[i] <= 0.) && (c_son[i] < 10000.))
+        {
+            c_son[i] = 0.;
+        }
     }
 }
