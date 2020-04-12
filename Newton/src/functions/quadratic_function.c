@@ -7,7 +7,7 @@
 #include <omp.h>
 #include <stdlib.h>
 
-void quadratic_function(void *empty, double *x, size_t size_of_pb, double *func,
+void quadratic_function(__attribute__((unused)) void *empty, double *x, size_t size_of_pb, double *func,
                         double *dfunc)
 {
     for (int i = 0; i < size_of_pb; ++i)
