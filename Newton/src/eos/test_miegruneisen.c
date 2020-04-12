@@ -16,7 +16,7 @@ int main()
     double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
            grunzero = 2.02, b = 0.47, ezero = 0.;
     MieGruneisenParameters_t copper_mat = {
-        czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergyVec};
+        czero, S1, S2, S3, rhozero, grunzero, b, ezero, compute_pressure_and_derivative, compute_pressure_and_sound_speed};
 
     double density[PB_SIZE] = {8700., 9200.};
     double specific_volume[PB_SIZE] = {1. / density[0], 1. / density[1]};
@@ -24,8 +24,8 @@ int main()
     double pressure[PB_SIZE] = {0., 0.};
     double gamma_per_vol[PB_SIZE] = {0., 0.};
     double cson[PB_SIZE] = {0., 0.};
-    solveVolumeEnergyVec(&copper_mat, PB_SIZE, specific_volume, internal_energy,
-                         pressure, gamma_per_vol, cson);
+    compute_pressure_and_derivative(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, gamma_per_vol);
+    compute_pressure_and_sound_speed(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, cson);
 
     bool success = true;
     double expected_pressure[] = {-3.391122999999982e+09, 2.248138143555919e+10};

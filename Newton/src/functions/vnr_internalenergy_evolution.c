@@ -28,8 +28,8 @@ void internal_energy_evolution_VNR(void *variables, double *newton_var,
 #endif
     }
     // Appel de l'eos
-    vars->miegruneisen->solve(vars->miegruneisen, size_of_pb, specific_volume,
-                              newton_var, pression, dpsurde, dummy);
+    vars->miegruneisen->get_pressure_and_derivative(vars->miegruneisen, size_of_pb, specific_volume,
+                                                    newton_var, pression, dpsurde);
     double delta_v = 0.;
     for (size_t i = 0; i < size_of_pb; ++i)
     {

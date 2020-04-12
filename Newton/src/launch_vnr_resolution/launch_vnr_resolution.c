@@ -32,7 +32,7 @@ void launch_vnr_resolution(double *old_density, double *new_density,
     double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
            grunzero = 2.02, b = 0.47, ezero = 0.;
     MieGruneisenParameters_t MieGruneisenParams = {
-        czero, S1, S2, S3, rhozero, grunzero, b, ezero, solveVolumeEnergyVec};
+        czero, S1, S2, S3, rhozero, grunzero, b, ezero, compute_pressure_and_derivative, compute_pressure_and_sound_speed};
     /*
    * DEFINITION DE LA FONCTION A RESOUDRE (EQUATION D EVOLUTION DE L ENERGIE
    * INTERNE DANS LE SCHEMA VNR)
@@ -68,8 +68,8 @@ void launch_vnr_resolution(double *old_density, double *new_density,
     }
     double *dummy = NULL;
     allocVecForOMP(pb_size, 0., &dummy);
-    VnrVars.miegruneisen->solve(VnrVars.miegruneisen, pb_size, specific_volume,
-                                solution, new_p, dummy, new_vson);
+    VnrVars.miegruneisen->get_pressure_and_sound_speed(VnrVars.miegruneisen, pb_size, specific_volume,
+                                                       solution, new_p, new_vson);
     free(l_old_density);
     free(l_new_density);
     free(l_pressure);
