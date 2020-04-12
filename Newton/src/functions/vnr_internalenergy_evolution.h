@@ -8,11 +8,13 @@
 typedef struct VnrVariables VnrVariables_t;
 
 struct VnrVariables {
-        double *density_old;
-        double *density_new;
-        double *internal_energy_old;
-        double *pressure;
-        MieGruneisenParameters_t *miegruneisen;
+  double *density_old;
+  double *density_new;
+  double *internal_energy_old;
+  double *pressure;
+  MieGruneisenParameters_t *miegruneisen;
 };
 
-void internal_energy_evolution_VNR(void *variables, double *newton_var, size_t size_of_pb, double *func, double *dfunc);
+void internal_energy_evolution_VNR(void *variables, double *newton_var,
+                                   size_t size_of_pb, double *func,
+                                   double *dfunc);
