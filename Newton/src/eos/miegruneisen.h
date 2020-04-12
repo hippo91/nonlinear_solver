@@ -18,10 +18,6 @@ struct MieGruneisenParameters
                                          const double *, double *, double *);
 };
 
-void solveVolumeEnergyVec(MieGruneisenParameters_t *, const int nb_cells,
-                          const double *specific_volume,
-                          const double *internal_energy, double *pressure,
-                          double *gamma_per_vol, double *c_son);
 
 void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int nb_cells,
                                      const double *specific_volume,
