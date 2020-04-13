@@ -201,10 +201,5 @@ void compute_pressure_and_sound_speed(MieGruneisenParameters_t *params, const in
             raise(SIGABRT);
         }
         c_son[i] = sqrt(vson_2);
-        //
-        if ((c_son[i] <= 0.) && (c_son[i] < 10000.))
-        {
-            c_son[i] = 0.;
-        }
     }
 }
