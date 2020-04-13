@@ -9,10 +9,12 @@ void allocVecForOMP(size_t pb_size, double value, double **vec)
      * utilisation de malloc + initialisation a la main pour eviter des effets
      * numa en cas d'utilisation de openmp
      * */
-    *vec = (double *)malloc(pb_size * sizeof(double));
-    for (size_t i = 0; i < pb_size; ++i)
-    {
-        (*vec)[i] = value;
+    *vec = (double *)calloc(pb_size, sizeof(double));
+    if (value != 0.) {
+        for (size_t i = 0; i < pb_size; ++i)
+        {
+            (*vec)[i] = value;
+        }
     }
 }
 
