@@ -4,7 +4,6 @@
 #include <signal.h>
 #include <stdio.h>
 
-
 /**
  * @brief Compute the compression ($\dfrac{\rho - \rho_0}{\rho}$)
  * 
@@ -12,7 +11,7 @@
  * @param specific_volume : specific volume
  * @return double : the compression
  */
-inline double compute_epsv(const double rho_zero, const double specific_volume)
+static inline double compute_epsv(const double rho_zero, const double specific_volume)
 {
     return 1.0 - rho_zero * specific_volume;
 }
@@ -27,7 +26,7 @@ inline double compute_epsv(const double rho_zero, const double specific_volume)
  * @param specific_volume : specific volume
  * @return double : dp/de
  */
-inline double compute_dp_de(const double gamma_zero, const double coeff_b,
+static inline double compute_dp_de(const double gamma_zero, const double coeff_b,
                             const double epsv, const double specific_volume)
 {
     return (gamma_zero * (1.0 - epsv) + coeff_b * epsv) / specific_volume;
@@ -42,10 +41,57 @@ inline double compute_dp_de(const double gamma_zero, const double coeff_b,
  * @param epsv : compression of the material
  * @return double : the denominator
  */
-inline double compute_denom(const double s1, const double s2, const double s3,
+static inline double compute_denom(const double s1, const double s2, const double s3,
                             const double epsv)
 {
     return 1. / (1. - (s1 + s2 * epsv + s3 * epsv * epsv) * epsv);
+}
+
+/**
+ * @brief Compute and returns the pressure in case of compression.
+ *        Also computes the value of pressure and internal energy on hugoniot (phi & einth)
+ * 
+ * @param rho_zero : initial density
+ * @param c_zero_2 : square of the initial sound speed
+ * @param e_zero : initial internal energy
+ * @param denom : square root of the denominator of the pressure on the hugoniot
+ * @param epsv : compression of the material
+ * @param gamma_per_vol : Gruneisen coefficient divided by the specific volume : dp/de
+ * @param internal_energy : internal energy
+ * @param phi : pressure on the hugoniot
+ * @param einth : internal energy on the hugoniot
+ * @return double : pressure
+ */
+static inline double compute_pressure_compression(const double rho_zero, const double c_zero_2, const double e_zero, const double denom,
+                                           const double epsv, const double gamma_per_vol, const double internal_energy,
+                                           double *phi, double *einth)
+{
+    *phi = rho_zero * c_zero_2 * epsv * denom * denom;
+    *einth = e_zero + *phi * epsv / (2. * rho_zero);
+    return *phi + gamma_per_vol * (internal_energy - *einth);
+}
+
+/**
+ * @brief Compute and returns the pressure in case of release.
+ *        Also computes the value of pressure and internal energy on hugoniot (phi & einth)
+ * 
+ * @param rho_zero : initial density
+ * @param c_zero_2 : square of initial sound speed
+ * @param e_zero : initial internal energy
+ * @param epsv : compression of the material
+ * @param gamma_per_vol : Gruneisen coefficient divided by the specific volume : dp/de
+ * @param internal_energy : internal energy
+ * @param phi : pressure on the hugoniot
+ * @param einth : internal energy on the hugoniot
+ * @return double : pressure
+ */
+static inline double compute_pressure_release(const double rho_zero, const double c_zero_2, const double e_zero,
+                                       const double epsv, const double gamma_per_vol, const double internal_energy,
+                                       double *phi, double *einth)
+{
+    *phi = rho_zero * c_zero_2 * epsv / (1. - epsv);
+    *einth = e_zero;
+    return *phi + gamma_per_vol * (internal_energy - *einth);
 }
 
 /**
@@ -85,15 +131,12 @@ void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int
         if (epsv > 0)
         {
             const double denom = compute_denom(s1, s2, s3, epsv);
-            phi = rho_zero * c_zero_2 * epsv * denom * denom;
-            einth = e_zero + phi * epsv / (2. * rho_zero);
+            pressure[i] = compute_pressure_compression(rho_zero, c_zero_2, e_zero, denom, epsv, gamma_per_vol[i], internal_energy[i], &phi, &einth);
         }
         else
         {
-            phi = rho_zero * c_zero_2 * epsv / (1. - epsv);
-            einth = e_zero;
+            pressure[i] = compute_pressure_release(rho_zero, c_zero_2, e_zero, epsv, gamma_per_vol[i], internal_energy[i], &phi, &einth);
         }
-        pressure[i] = phi + gamma_per_vol[i] * (internal_energy[i] - einth);
     }
 }
 
@@ -136,20 +179,17 @@ void compute_pressure_and_sound_speed(MieGruneisenParameters_t *params, const in
         if (epsv > 0)
         {
             const double denom = compute_denom(s1, s2, s3, epsv);
-            phi = rho_zero * c_zero_2 * epsv * denom * denom;
-            einth = e_zero + phi * epsv / (2. * rho_zero);
+            pressure[i] = compute_pressure_compression(rho_zero, c_zero_2, e_zero, denom, epsv, gamma_per_vol, internal_energy[i], &phi, &einth);
             const double dphi = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
             const double deinth = phi * (-1. - epsv * redond_a * denom);
             dpdv = dphi + (dgam - gamma_per_vol) * (internal_energy[i] - einth) / specific_volume[i] - gamma_per_vol * deinth;
         }
         else
         {
-            phi = rho_zero * c_zero_2 * epsv / (1. - epsv);
-            einth = e_zero;
+            pressure[i] = compute_pressure_release(rho_zero, c_zero_2, e_zero, epsv, gamma_per_vol, internal_energy[i], &phi, &einth);
             const double dphi = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
             dpdv = dphi + (dgam - gamma_per_vol) * (internal_energy[i] - einth) / specific_volume[i];
         }
-        pressure[i] = phi + gamma_per_vol * (internal_energy[i] - einth);
         double vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * gamma_per_vol - dpdv);
         if (vson_2 < 0)
         {
