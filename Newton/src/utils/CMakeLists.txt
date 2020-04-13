@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "utils" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "utils.h"
                 "utils.c" 

@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "incrementation" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "incrementations_methods.h"
                 "incrementations_methods.c" 

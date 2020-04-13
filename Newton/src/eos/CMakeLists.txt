@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "eos" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "miegruneisen.h"
                 "miegruneisen.c" 

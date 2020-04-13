@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "newton" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "newton.h"
                 "newton.c" 

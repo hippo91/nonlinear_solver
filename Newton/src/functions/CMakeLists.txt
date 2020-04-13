@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "functions" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "vnr_internalenergy_evolution.h"
                 "vnr_internalenergy_evolution.c" 

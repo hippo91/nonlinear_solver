@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "criterions" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "stop_criterions.h"
                 "stop_criterions.c" 

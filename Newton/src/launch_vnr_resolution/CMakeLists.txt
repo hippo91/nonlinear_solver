@@ -1,5 +1,5 @@
 set( LIBRARY_NAME "launch_vnr_resolution" )
-add_library( ${LIBRARY_NAME} SHARED "" )
+add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
                 "launch_vnr_resolution.h"
                 "launch_vnr_resolution.c" 
