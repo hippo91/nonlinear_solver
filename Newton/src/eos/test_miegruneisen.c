@@ -24,13 +24,21 @@ int main()
     double pressure[PB_SIZE] = {0., 0.};
     double gamma_per_vol[PB_SIZE] = {0., 0.};
     double cson[PB_SIZE] = {0., 0.};
-    compute_pressure_and_derivative(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, gamma_per_vol);
-    compute_pressure_and_sound_speed(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, cson);
 
     bool success = true;
     double expected_pressure[] = {-3.391122999999982e+09, 2.248138143555919e+10};
     double expected_gamma[] = {17930.499999999996, 18165.5};
     double expected_cson[] = {3837.312029974254, 4663.450646599814};
+
+    compute_pressure_and_derivative(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, gamma_per_vol);
+
+    if (!assert_equal_arrays(pressure, expected_pressure, PB_SIZE, "pressure"))
+        success = false;
+    if (!assert_equal_arrays(gamma_per_vol, expected_gamma, PB_SIZE,
+                             "gamma_per_vol"))
+        success = false;
+
+    compute_pressure_and_sound_speed(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, cson);
 
     if (!assert_equal_arrays(pressure, expected_pressure, PB_SIZE, "pressure"))
         success = false;
