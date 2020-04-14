@@ -1,6 +1,5 @@
 #include "miegruneisen.h"
 #include <math.h>
-#include <omp.h>
 #include <signal.h>
 #include <stdio.h>
 

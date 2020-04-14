@@ -2,7 +2,6 @@
 #include "newton.h"
 #include "stop_criterions.h"
 #include "vnr_internalenergy_evolution.h"
-#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

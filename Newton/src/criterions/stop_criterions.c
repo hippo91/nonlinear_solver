@@ -1,5 +1,4 @@
 #include <math.h>
-#include <omp.h>
 #include <stdbool.h>
 #include <stdlib.h>
 

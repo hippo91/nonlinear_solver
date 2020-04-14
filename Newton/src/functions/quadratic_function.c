@@ -4,7 +4,6 @@
  *  Created on: 19 sept. 2015
  *      Author: guillaume2
  */
-#include <omp.h>
 #include <stdlib.h>
 
 void quadratic_function(__attribute__((unused)) void *empty, double *x, size_t size_of_pb, double *func,
