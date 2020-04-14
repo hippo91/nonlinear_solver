@@ -19,24 +19,30 @@ int main()
     double *solution;
     size_t pb_size = 10000;
     int nbr_of_cycles = 50000;
-    double *old_density;
-    double *new_density;
+    double *old_density, *old_specific_volume;
+    double *new_density, *new_specific_volume;
     double *pressure;
     double *internal_energy;
     double *new_pressure;
     double *new_cson;
     allocVecForOMP(pb_size, 8230., &old_density);
+    allocVecForOMP(pb_size, 0., &old_specific_volume);
     allocVecForOMP(pb_size, 9500., &new_density);
+    allocVecForOMP(pb_size, 0., &new_specific_volume);
     allocVecForOMP(pb_size, 10.e+09, &pressure);
     allocVecForOMP(pb_size, 1.325e+04, &internal_energy);
     allocVecForOMP(pb_size, 0., &solution);
     allocVecForOMP(pb_size, 0., &new_pressure);
     allocVecForOMP(pb_size, 0., &new_cson);
+    for (size_t i = 0; i < pb_size; ++i) {
+        old_specific_volume[i] = 1. / old_density[i];
+        new_specific_volume[i] = 1. / new_density[i];
+    }
     //
     start = clock();
     for (int cycle = 0; cycle < nbr_of_cycles; ++cycle)
     {
-        launch_vnr_resolution(old_density, new_density, pressure, internal_energy, pb_size, solution, new_pressure, new_cson);
+        launch_vnr_resolution(old_specific_volume, new_specific_volume, pressure, internal_energy, pb_size, solution, new_pressure, new_cson);
         if (cycle % 1000 == 0)
         {
             srand48(time(NULL));
@@ -58,7 +64,7 @@ int main()
     bool success = true;
     // At the time this test has been created, it tooks around 3 minutes to run.
     // Adds a possible variation of 10%
-    const double time_limit = 140. * 1.1;
+    const double time_limit = 106. * 1.1;
     if (cpu_time_used > time_limit)
     {
         success = false;

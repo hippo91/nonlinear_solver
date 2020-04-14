@@ -9,8 +9,8 @@ typedef struct VnrVariables VnrVariables_t;
 
 struct VnrVariables
 {
-    double *density_old;
-    double *density_new;
+    double *specific_volume_old;
+    double *specific_volume_new;
     double *internal_energy_old;
     double *pressure;
     MieGruneisenParameters_t *miegruneisen;
