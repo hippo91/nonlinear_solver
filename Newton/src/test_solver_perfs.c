@@ -1,5 +1,6 @@
 #include "launch_vnr_resolution.h"
 #include "utils.h"
+#include "test_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -52,16 +53,22 @@ int main()
     }
     end = clock();
     double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    /*
-	 * LIBERATION MEMOIRE
-	 */
-    free(solution);
-    free(old_density);
-    free(new_density);
-    free(pressure);
-    free(internal_energy);
 
     bool success = true;
+    if (!check_uniform_array_value(old_density, pb_size, "old_density", 8230.))
+        success = false;
+    if (!check_uniform_array_value(new_density, pb_size, "new_density", 9500.))
+        success = false;
+    if (!check_uniform_array_value(pressure, pb_size, "pressure", 10.e+09))
+        success = false;
+    if (!check_uniform_array_value(internal_energy, pb_size, "internal_energy", 1.325e+04))
+        success = false;
+    if (!check_uniform_array_value(solution, pb_size, "solution", 200765.8953965593))
+        success = false;
+    if (!check_uniform_array_value(new_pressure, pb_size, "new_pressure", 13088079183.59054))
+        success = false;
+    if (!check_uniform_array_value(new_cson, pb_size, "new_cson", 4503.84710590959))
+        success = false;
     // At the time this test has been created, it tooks around 3 minutes to run.
     // Adds a possible variation of 10%
     const double time_limit = 95. * 1.1;
@@ -70,6 +77,15 @@ int main()
         success = false;
         printf("CPU time used (%6.4g seconds) is above the limit (%6.4g seconds)!\n", cpu_time_used, time_limit);
     }
+
+    /*
+	 * LIBERATION MEMOIRE
+	 */
+    free(solution);
+    free(old_density);
+    free(new_density);
+    free(pressure);
+    free(internal_energy);
 
     if (!success)
         return (EXIT_FAILURE);

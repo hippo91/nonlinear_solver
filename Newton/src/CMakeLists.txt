@@ -32,6 +32,7 @@ add_subdirectory( test_utils )
 target_link_libraries( test_solver_perfs PRIVATE 
   launch_vnr_resolution
   utils
+  test_utils
   )
 
 target_link_libraries( test_solver PRIVATE 
