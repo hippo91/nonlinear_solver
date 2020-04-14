@@ -31,7 +31,7 @@ static bool allConverged(bool *has_converged, size_t pb_size)
  * solveNewton :
  * 	resolution de fonction non linéaires
  */
-void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini, size_t pb_size, double **x_sol)
+void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini, size_t pb_size, double *x_sol)
 {
     // Contrôle des itérations
     int iter = 0;
@@ -106,7 +106,7 @@ void solveNewton(NewtonParameters_t *Newton, void *func_variables, double *x_ini
     {
         for (size_t i = 0; i < pb_size; ++i)
         {
-            (*x_sol)[i] = x_k_pun[i];
+            x_sol[i] = x_k_pun[i];
         }
 #ifdef PRINTSOL
         printf("Convergence obtenue après %d itérations!\n", iter);
