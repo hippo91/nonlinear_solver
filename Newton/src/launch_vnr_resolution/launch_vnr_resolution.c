@@ -38,19 +38,13 @@ void launch_vnr_resolution(double *old_specific_volume, double *new_specific_vol
    * INTERNE DANS LE SCHEMA VNR)
    * FIXATION DE LA METHODE D'INCREMENTATION ET DU CRITERE D'ARRET
    * */
-    double *l_old_specific_volume = NULL;
-    double *l_new_specific_volume = NULL;
     double *l_pressure = NULL;
     double *l_internal_energy = NULL;
-    allocVecForOMP(pb_size, 0., &l_old_specific_volume);
-    allocVecForOMP(pb_size, 0., &l_new_specific_volume);
     allocVecForOMP(pb_size, 0., &l_pressure);
     allocVecForOMP(pb_size, 0., &l_internal_energy);
-    memmove(l_old_specific_volume, old_specific_volume, pb_size * sizeof(double));
-    memmove(l_new_specific_volume, new_specific_volume, pb_size * sizeof(double));
     memmove(l_pressure, pressure, pb_size * sizeof(double));
     memmove(l_internal_energy, internal_energy, pb_size * sizeof(double));
-    VnrVariables_t VnrVars = {l_old_specific_volume, l_new_specific_volume, l_internal_energy,
+    VnrVariables_t VnrVars = {old_specific_volume, new_specific_volume, l_internal_energy,
                               l_pressure, &MieGruneisenParams};
     NewtonParameters_t TheNewton = {internal_energy_evolution_VNR,
                                     classical_incrementation, relative_gap};
@@ -62,8 +56,6 @@ void launch_vnr_resolution(double *old_specific_volume, double *new_specific_vol
     // pression et vitesse du son
     VnrVars.miegruneisen->get_pressure_and_sound_speed(VnrVars.miegruneisen, pb_size, new_specific_volume,
                                                        solution, new_p, new_vson);
-    free(l_old_specific_volume);
-    free(l_new_specific_volume);
     free(l_pressure);
     free(l_internal_energy);
 #ifdef MEASURE_TIME
