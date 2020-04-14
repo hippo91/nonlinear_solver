@@ -7,65 +7,6 @@
 #include <time.h>
 
 /**
- * @brief Check if an array is filled with a unique uniform value.
- * 		  Two values are said to be equal if their relative difference is below 1.e-15.
- * 
- * @param array : array to check
- * @param size : size of the array
- * @param value : value expected to be at every index of the array
- * @param unvalid_index : an array, which size is the same as the array to check, and will hold the indices
- * 						  where the value found in the array is different from the one expected
- * @return true : if all the indices of the array owns the same value
- * @return false : otherwise
- */
-bool is_uniform_array_value(const double *const array, const size_t size, const double value, int *unvalid_index)
-{
-    size_t inv_ind = 0;
-    for (size_t i = 0; i < size; ++i)
-    {
-        if (!almost_equal(array[i], value))
-        {
-            unvalid_index[inv_ind++] = i;
-        }
-    };
-    return inv_ind == 0;
-}
-
-/**
- * @brief Check if an array is filled with a unique uniform value and prints an error message
- * 		  if not.
- * 
- * @param arr : array to check
- * @param size : size of the array
- * @param arr_name : name of the array
- * @param expected : value expected to fill the array
- * @return true : if the array is uniformely filled with the expected value
- * @return false : otherwise
- */
-bool check_uniform_array_value(const double *const arr, const size_t size,
-                               const char *arr_name, const double expected)
-{
-    int invalid_entries[size];
-    for (size_t i = 0; i < size; ++i)
-        invalid_entries[i] = -1;
-
-    bool valid = is_uniform_array_value(arr, size, expected, invalid_entries);
-    if (!valid)
-    {
-        fprintf(stderr, "Wrong values for %s!\n", arr_name);
-        size_t _index = 0;
-        while (_index < size && invalid_entries[_index] != -1)
-        {
-            print_array_index_error(arr_name, invalid_entries[_index],
-                                    arr, expected);
-            _index++;
-        }
-    }
-
-    return valid;
-}
-
-/**
  * @brief Launch the test of the nonlinear solver
  * 
  * @return int : success (0) or failure (1)
