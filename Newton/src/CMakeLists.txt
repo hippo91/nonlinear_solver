@@ -41,7 +41,9 @@ target_link_libraries( test_solver PRIVATE
   test_utils
   )
 
-  add_test( NAME "Test_solver"
-            COMMAND test_solver )
-  add_test( NAME "Test_solver_performances"
-            COMMAND test_solver_perfs )
+add_test( NAME "Test_solver"
+          COMMAND test_solver )
+add_test( NAME "Test_solver_performances"
+          COMMAND test_solver_perfs )
+set_tests_properties( Test_solver_performances PROPERTIES
+                      ENVIRONMENT OMP_NUM_THREADS=1 )
