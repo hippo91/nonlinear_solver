@@ -1,9 +1,12 @@
 set( PYTHON_MODULE_NAME "vnr_internal_energy" )
+# Where to build the module
 set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module")
 
+# Need SWIG
 find_package( SWIG REQUIRED )
 include( UseSWIG )
 
+# Need Python
 if ( CMAKE_VERSION VERSION_LESS 3.12 )
     find_package( PythonLibs REQUIRED )
     set( "Python_INCLUDE_DIRS" ${PYTHON_INCLUDE_DIRS} )
