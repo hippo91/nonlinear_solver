@@ -8,7 +8,7 @@ if( " ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}" )
                        You should create a separate directory for build files." )
 endif()
 
-option( BUILD_SHARED_LIBS "Build all libraries as shared objects" OFF )
+option( BUILD_SHARED_LIBS "Build all libraries as shared objects" ON )
 
 set( CMAKE_C_STANDARD_REQUIRED ON )
 set( CMAKE_C_COMPILE_FEATURES c_std_99 )
