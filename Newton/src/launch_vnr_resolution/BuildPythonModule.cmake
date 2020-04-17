@@ -3,15 +3,26 @@ set( PYTHON_MODULE_NAME "vnr_internal_energy" )
 set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module")
 
 # Need SWIG
-find_package( SWIG REQUIRED )
-include( UseSWIG )
+find_package( SWIG )
 
 # Need Python
 if ( CMAKE_VERSION VERSION_LESS 3.12 )
-    find_package( PythonLibs REQUIRED )
+    find_package( PythonLibs )
     set( "Python_INCLUDE_DIRS" ${PYTHON_INCLUDE_DIRS} )
 else()
-    find_package( Python REQUIRED COMPONENTS Development )
+    find_package( Python COMPONENTS Development )
+endif()
+
+if ( NOT SWIG_FOUND )
+    message( STATUS "SWIG is needed to build the python module but cannot be found!" )
+    message( STATUS "Skipping the build of python module" )
+    return()
+endif()
+
+if ( NOT PythonLibs_FOUND AND NOT Python_FOUND )
+    message( STATUS "Python is needed to build the python module but cannot be found!" )
+    message( STATUS "Skipping the build of python module" )
+    return()
 endif()
 
 # Override the module name found in the swig source (.i) file
@@ -22,6 +33,7 @@ else()
     set_property( SOURCE launch_vnr_resolution.i PROPERTY SWIG_MODULE_NAME ${PYTHON_MODULE_NAME} )
 endif()
 
+include( UseSWIG )
 swig_add_library( ${PYTHON_MODULE_NAME}
     TYPE SHARED
     LANGUAGE Python
