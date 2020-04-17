@@ -14,14 +14,14 @@ else()
 endif()
 
 if ( NOT SWIG_FOUND )
-    message( STATUS "SWIG is needed to build the python module but cannot be found!" )
-    message( STATUS "Skipping the build of python module" )
+    message( "SWIG is needed to build the python module but cannot be found. " 
+             "Skipping the build of python module!" )
     return()
 endif()
 
 if ( NOT PythonLibs_FOUND AND NOT Python_FOUND )
-    message( STATUS "Python is needed to build the python module but cannot be found!" )
-    message( STATUS "Skipping the build of python module" )
+    message( "Python is needed to build the python module but cannot be found. "
+             "Skipping the build of python module!" )
     return()
 endif()
 

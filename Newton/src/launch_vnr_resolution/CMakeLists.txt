@@ -16,8 +16,8 @@ target_link_libraries( ${LIBRARY_NAME} PRIVATE
 
 
 if( NOT ${BUILD_SHARED_LIBS} )
-  message( STATUS "Static libraries are incompatible with the build of a python module." )
-  message( STATUS "Skipping the build of python module" )
+  message( "Static libraries are incompatible with the build of a python module. "
+           "Skipping the build of python module!" )
 else()
   include( BuildPythonModule.cmake )
 endif()
