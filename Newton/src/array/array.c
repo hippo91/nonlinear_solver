@@ -22,28 +22,17 @@ int build_array(const unsigned int size, const char * label, p_array arr) {
 
 
 int print_array(const p_array arr) {
-    unsigned int chunk_size = 10;
-    typedef struct pair {
-        unsigned int begin;
-        unsigned int end;
-    } s_pair;
-    s_pair iters[2];
-    unsigned int iters_size = 2;
-    if (arr->size <= chunk_size) {
-        iters[0].begin = 0;
-        iters[0].end = arr->size;
-        iters_size = 1;
-    } else {
-        iters[0].begin = 0;
-        iters[0].end = chunk_size;
-        iters[1].begin = arr->size - chunk_size;
-        iters[1].end = arr->size;
-    }
-    for (unsigned int iter_index=0; iter_index < iters_size; ++iter_index) {
-        for (unsigned int i=iters[iter_index].begin; i < iters[iter_index].end; ++i) {
-            printf("%s[%d] = %15.9g\n", arr->label, i, *(arr->data + i));
+    unsigned int chunk_size = PRINT_ARRAY_CHUNK_SIZE;
+    for (unsigned int i=0; i < arr->size; ++i) {
+        if ((i == chunk_size) && (arr->size > chunk_size * 2)) {
+            i = arr->size - chunk_size;
+            printf("...\n");
         }
-        if (iter_index != iters_size - 1) printf("...\n");
+        int ret = printf("%s[%d] = %15.9g\n", arr->label, i, *(arr->data + i));
+        if (ret < 0) {
+            perror("An error occured during the print of the array!");
+            return EXIT_FAILURE;
+        }
     }
     return EXIT_SUCCESS;
 }

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #define MAX_LABEL_SIZE 128
+#define PRINT_ARRAY_CHUNK_SIZE 10
 
 
 /**
@@ -27,10 +28,14 @@ typedef struct array {
 int build_array(const unsigned int size, const char * label, p_array arr); 
 
 /**
- * @brief Print the array on standard output
+ * @brief Print the array on standard output.
+ *        If the array size is above twice PRINT_ARRAY_CHUNK_SIZE
+ *        then only the first and last PRINT_ARRAY_CHUNK_SIZE indexes
+ *        are printed
  * 
  * @param[in] arr : array to print
- * @return int : 
+ * @return int EXIT_SUCCESS (0) : in case of success
+               EXIT_FAILURE (1) : otherwise
  */
 int print_array(const p_array arr);
 
