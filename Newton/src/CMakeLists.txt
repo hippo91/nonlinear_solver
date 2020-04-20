@@ -36,7 +36,8 @@ target_link_libraries( test_solver_perfs PRIVATE
   test_utils
   )
 
-target_link_libraries( test_solver PRIVATE 
+target_link_libraries( test_solver PRIVATE
+  array
   launch_vnr_resolution
   utils
   test_utils
