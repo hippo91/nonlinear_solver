@@ -20,6 +20,7 @@ enable_testing()
 add_executable( test_solver_perfs test_solver_perfs.c )
 add_executable( test_solver test_solver.c )
 
+add_subdirectory( array )
 add_subdirectory( eos )
 add_subdirectory( functions )
 add_subdirectory( utils )
