@@ -5,7 +5,10 @@ target_sources( ${LIBRARY_NAME} PRIVATE
                 "launch_vnr_resolution.c" 
               )
 target_include_directories( ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR} )
-target_link_libraries( ${LIBRARY_NAME} PRIVATE 
+target_link_libraries( ${LIBRARY_NAME}
+PUBLIC
+  array
+PRIVATE
   newton
   functions
   incrementation
