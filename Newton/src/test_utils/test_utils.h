@@ -92,6 +92,7 @@ bool assert_equal_bool_arrays(const bool *const arr_a, const bool *const arr_b, 
  * 						  where the value found in the array is different from the one expected
  * @return true : if all the indices of the array owns the same value
  * @return false : otherwise
+ * @todo : use array object instead of tuple size, name, array 
  */
 bool is_uniform_array_value(const double *const array, const size_t size, const double value, int *unvalid_index)
 {
