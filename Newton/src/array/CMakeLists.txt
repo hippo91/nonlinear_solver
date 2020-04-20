@@ -10,6 +10,7 @@ add_executable( test_array test_array.c )
 target_link_libraries( test_array  
   PRIVATE
     array
+    test_utils
 )
 add_test( NAME Test_array 
           COMMAND test_array )

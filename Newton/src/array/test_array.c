@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "array.h"
+#include "test_utils.h"
+
+/**
+ * @todo: split in different tests
+ * 
+ */
 
 /**
  * @brief Test the array object
@@ -16,11 +22,11 @@ int main() {
     build_array(expected_size, expected_str, &test_array);
 
     if (test_array.size != expected_size) {
-        fprintf(stderr, "Wrong value for the array's size : %d instead of %d", test_array.size, expected_size);
+        fprintf(stderr, "Wrong value for the array's size : %d instead of %d\n", test_array.size, expected_size);
         return EXIT_FAILURE;
     }
     if (strcmp(test_array.label, expected_str) != 0) {
-        fprintf(stderr, "Wrong value for the array's label : %s instead of %s", test_array.label, expected_str);
+        fprintf(stderr, "Wrong value for the array's label : %s instead of %s\n", test_array.label, expected_str);
         return EXIT_FAILURE;
     }
 
@@ -30,12 +36,17 @@ int main() {
     test_array.data[12] = -20.;
     test_array.data[25] = 30.;
     test_array.data[29] = -30.;
-    print_array(&test_array);
+    print_array(&test_array);  // No test here. Just for beauty...
+
+    fill_array(&test_array, 123.456);
+    if (!check_uniform_array_value(test_array.data, test_array.size, test_array.label, 123.456)) {
+        return EXIT_FAILURE;
+    }
 
     s_array failed_array;
     unsigned int res = build_array(-10, "Unvalid", &failed_array);
     if (res == 0) {
-        fprintf(stderr, "The build_array function should have failed because the array allocation should have failed!");
+        fprintf(stderr, "The build_array function should have failed because the array allocation should have failed!\n");
         return EXIT_FAILURE;
     }
 
@@ -43,7 +54,13 @@ int main() {
     for (int i=0; i<129; ++i) too_long[i] = 'a';
     res = build_array(10, too_long, &failed_array);
     if (res == 0) {
-        fprintf(stderr, "The build_array function should have failed because the label is too long!");
+        fprintf(stderr, "The build_array function should have failed because the label is too long!\n");
+        return EXIT_FAILURE;
+    }
+
+    clear_array(&test_array);
+    if (test_array.data != NULL || test_array.size != 0 || strcmp(test_array.label, "") != 0) { 
+        fprintf(stderr, "The data of array %s have not been correctly cleared!\n", test_array.label);
         return EXIT_FAILURE;
     }
 
