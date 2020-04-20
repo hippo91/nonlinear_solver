@@ -18,12 +18,20 @@ typedef struct array {
 /**
  * @brief Build an array
  * 
- * @param size : size of the array
- * @param label : label of the array
- * @param arr : the array
- * @return EXIT_SUCCESS (0) : in case of success
- * @return EXIT_FAILURE (1) : otherwise
+ * @param[in] size : size of the array
+ * @param[in] label : label of the array
+ * @param[in] arr : the array
+ * @return int EXIT_SUCCESS (0) : in case of success
+               EXIT_FAILURE (1) : otherwise
  */
 int build_array(const unsigned int size, const char * label, p_array arr); 
+
+/**
+ * @brief Print the array on standard output
+ * 
+ * @param[in] arr : array to print
+ * @return int : 
+ */
+int print_array(const p_array arr);
 
 #endif
