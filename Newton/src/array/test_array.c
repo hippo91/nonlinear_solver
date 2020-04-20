@@ -3,6 +3,12 @@
 #include <string.h>
 #include "array.h"
 
+/**
+ * @brief Test the array object
+ * 
+ * @return int EXIT_SUCCESS (0) : in case of success
+               EXIT_FAILURE (1) : otherwise
+ */
 int main() {
     const unsigned int expected_size = 30;
     const char* expected_str = "An array for testing";
@@ -20,8 +26,10 @@ int main() {
 
     test_array.data[0] = 10.;
     test_array.data[9] = -10.;
-    test_array.data[25] = 10.;
-    test_array.data[29] = -10.;
+    test_array.data[10] = 20.;
+    test_array.data[12] = -20.;
+    test_array.data[25] = 30.;
+    test_array.data[29] = -30.;
     print_array(&test_array);
 
     s_array failed_array;
