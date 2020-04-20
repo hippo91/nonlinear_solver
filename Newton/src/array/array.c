@@ -36,3 +36,25 @@ int print_array(const p_array arr) {
     }
     return EXIT_SUCCESS;
 }
+
+
+int fill_array(const p_array arr, const double value) {
+    if (arr->size == 0) {
+        fprintf(stderr, "The size of array %s is zero! Aborting.", arr->label);
+        return EXIT_FAILURE;
+    }
+    if (arr->data == NULL) {
+        fprintf(stderr, "The data of array %s is NULL! Aborting.", arr->label);
+        return EXIT_FAILURE;
+    }
+    for (unsigned int i=0; i < arr->size; ++i) arr->data[i] = value;
+    return EXIT_SUCCESS;
+}
+
+
+void clear_array(const p_array arr) {
+    free(arr->data);
+    arr->data = NULL;
+    arr->size = 0;
+    strcpy(arr->label, "");
+}

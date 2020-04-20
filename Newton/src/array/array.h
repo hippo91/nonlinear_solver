@@ -27,6 +27,16 @@ typedef struct array {
  */
 int build_array(const unsigned int size, const char * label, p_array arr); 
 
+
+/**
+ * @brief Clear the array by freeing the data memory, setting the size to zero 
+ *        and the label to empty string
+ * 
+ * @param arr : array to clear
+ */
+void clear_array(const p_array arr);
+
+
 /**
  * @brief Print the array on standard output.
  *        If the array size is above twice PRINT_ARRAY_CHUNK_SIZE
@@ -38,5 +48,16 @@ int build_array(const unsigned int size, const char * label, p_array arr);
                EXIT_FAILURE (1) : otherwise
  */
 int print_array(const p_array arr);
+
+
+/**
+ * @brief Fill the array with the value
+ *
+ * @param[in] p_array : array to fill 
+ * @param[in] value : value to fill the array with
+ * @return int EXIT_SUCCESS (0) : in case of success
+               EXIT_FAILURE (1) : otherwise
+ */
+int fill_array(const p_array, const double value);
 
 #endif
