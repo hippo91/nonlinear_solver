@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "array.h"
 
 #define EPSILON 1e-15
 
@@ -13,7 +14,7 @@
  * @return true : if value is equal to reference up to a relative precision
  * @return false : otherwise
  */
-bool almost_equal(const double value, const double reference)
+static bool almost_equal(const double value, const double reference)
 {
     return (fabs(value - reference) / fabs(reference)) <= EPSILON;
 }
@@ -26,10 +27,38 @@ bool almost_equal(const double value, const double reference)
  * @param array : array 
  * @param expected : expected value that should be found a the arr[index] place
  */
-void print_array_index_error(const char *array_name, const size_t index, const double *const array, const double expected)
+static void print_array_index_error(const char *array_name, const size_t index, const double *const array, const double expected)
 {
     fprintf(stderr, "%s[%zu] = %22.16g instead of %22.16g\n", array_name, index, array[index], expected);
 }
+
+
+/**
+ * @brief Check if an array is filled with a unique uniform value.
+ * 		  Two values are said to be equal if their relative difference is below 1.e-15.
+ * 
+ * @param array : array to check
+ * @param size : size of the array
+ * @param value : value expected to be at every index of the array
+ * @param unvalid_index : an array, which size is the same as the array to check, and will hold the indices
+ * 						  where the value found in the array is different from the one expected
+ * @return true : if all the indices of the array owns the same value
+ * @return false : otherwise
+ * @todo : use array object instead of tuple size, name, array 
+ */
+static bool is_uniform_array_value(const double *const array, const size_t size, const double value, int *unvalid_index)
+{
+    size_t inv_ind = 0;
+    for (size_t i = 0; i < size; ++i)
+    {
+        if (!almost_equal(array[i], value))
+        {
+            unvalid_index[inv_ind++] = i;
+        }
+    };
+    return inv_ind == 0;
+}
+
 
 /**
  * @brief Compares if two arrays are equals and print an error message if not
@@ -81,31 +110,6 @@ bool assert_equal_bool_arrays(const bool *const arr_a, const bool *const arr_b, 
     return equality;
 }
 
-/**
- * @brief Check if an array is filled with a unique uniform value.
- * 		  Two values are said to be equal if their relative difference is below 1.e-15.
- * 
- * @param array : array to check
- * @param size : size of the array
- * @param value : value expected to be at every index of the array
- * @param unvalid_index : an array, which size is the same as the array to check, and will hold the indices
- * 						  where the value found in the array is different from the one expected
- * @return true : if all the indices of the array owns the same value
- * @return false : otherwise
- * @todo : use array object instead of tuple size, name, array 
- */
-bool is_uniform_array_value(const double *const array, const size_t size, const double value, int *unvalid_index)
-{
-    size_t inv_ind = 0;
-    for (size_t i = 0; i < size; ++i)
-    {
-        if (!almost_equal(array[i], value))
-        {
-            unvalid_index[inv_ind++] = i;
-        }
-    };
-    return inv_ind == 0;
-}
 
 /**
  * @brief Check if an array is filled with a unique uniform value and prints an error message
@@ -139,4 +143,18 @@ bool check_uniform_array_value(const double *const arr, const size_t size,
     }
 
     return valid;
+}
+
+
+/**
+ * @brief Check if an array is filled with a unique uniform value and prints an error message
+ * 		  if not.
+ * 
+ * @param arr : array to check
+ * @param expected : value expected to fill the array
+ * @return true : if the array is uniformely filled with the expected value
+ * @return false : otherwise
+ */
+bool check_uniform_value(const p_array arr, const double expected) {
+    return check_uniform_array_value(arr->data, arr->size, arr->label, expected);
 }
