@@ -44,19 +44,19 @@ int main()
     launch_vnr_resolution(&old_specific_volume, &new_specific_volume, &pressure, &internal_energy, &solution, &new_pressure, &new_cson);
 
     bool success = true;
-    if (!check_uniform_array_value(old_density.data, old_density.size, old_density.label, 8230.))
+    if (!check_uniform_value(&old_density, 8230.))
         success = false;
-    if (!check_uniform_array_value(new_density.data, new_density.size, new_density.label, 9500.))
+    if (!check_uniform_value(&new_density, 9500.))
         success = false;
-    if (!check_uniform_array_value(pressure.data, pressure.size, pressure.label, 10.e+09))
+    if (!check_uniform_value(&pressure, 10.e+09))
         success = false;
-    if (!check_uniform_array_value(internal_energy.data, internal_energy.size, internal_energy.label, 1.325e+04))
+    if (!check_uniform_value(&internal_energy, 1.325e+04))
         success = false;
-    if (!check_uniform_array_value(solution.data, solution.size, solution.label, 200765.8953965593))
+    if (!check_uniform_value(&solution, 200765.8953965593))
         success = false;
-    if (!check_uniform_array_value(new_pressure.data, new_pressure.size, new_pressure.label, 13088079183.59054))
+    if (!check_uniform_value(&new_pressure, 13088079183.59054))
         success = false;
-    if (!check_uniform_array_value(new_cson.data, new_cson.size, new_cson.label, 4503.84710590959))
+    if (!check_uniform_value(&new_cson, 4503.84710590959))
         success = false;
 
     clear_array(&old_density);

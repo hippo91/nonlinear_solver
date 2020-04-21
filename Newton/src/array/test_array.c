@@ -39,7 +39,7 @@ int main() {
     print_array(&test_array);  // No test here. Just for beauty...
 
     fill_array(&test_array, 123.456);
-    if (!check_uniform_array_value(test_array.data, test_array.size, test_array.label, 123.456)) {
+    if (!check_uniform_value(&test_array, 123.456)) {
         return EXIT_FAILURE;
     }
 

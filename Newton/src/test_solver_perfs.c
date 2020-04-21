@@ -60,19 +60,19 @@ int main()
     double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
     bool success = true;
-    if (!check_uniform_array_value(old_density.data, old_density.size, old_density.label, 8230.))
+    if (!check_uniform_value(&old_density, 8230.))
         success = false;
-    if (!check_uniform_array_value(new_density.data, new_density.size, new_density.label, 9500.))
+    if (!check_uniform_value(&new_density, 9500.))
         success = false;
-    if (!check_uniform_array_value(pressure.data, pressure.size, pressure.label, 10.e+09))
+    if (!check_uniform_value(&pressure, 10.e+09))
         success = false;
-    if (!check_uniform_array_value(internal_energy.data, internal_energy.size, internal_energy.label, 1.325e+04))
+    if (!check_uniform_value(&internal_energy, 1.325e+04))
         success = false;
-    if (!check_uniform_array_value(solution.data, solution.size, solution.label, 200765.8953965593))
+    if (!check_uniform_value(&solution, 200765.8953965593))
         success = false;
-    if (!check_uniform_array_value(new_pressure.data, new_pressure.size, new_pressure.label, 13088079183.59054))
+    if (!check_uniform_value(&new_pressure, 13088079183.59054))
         success = false;
-    if (!check_uniform_array_value(new_cson.data, new_cson.size, new_cson.label, 4503.84710590959))
+    if (!check_uniform_value(&new_cson, 4503.84710590959))
         success = false;
     // At the time this test has been created, it tooks around 3 minutes to run.
     // Adds a possible variation of 10%
