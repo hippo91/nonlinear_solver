@@ -33,7 +33,8 @@ int main()
     fill_array(pressure, 10.e+09);
     fill_array(internal_energy, 1.325e+04);
 
-    for (size_t i = 0; i < pb_size; ++i) {
+    for (size_t i = 0; i < pb_size; ++i)
+    {
         old_specific_volume->data[i] = 1. / old_density->data[i];
         new_specific_volume->data[i] = 1. / new_density->data[i];
     }
@@ -66,7 +67,6 @@ int main()
     DELETE_ARRAY(solution);
     DELETE_ARRAY(new_pressure);
     DELETE_ARRAY(new_cson);
-
 
     if (!success)
         return (EXIT_FAILURE);

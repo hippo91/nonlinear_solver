@@ -17,16 +17,19 @@
  *        This is the recommended way to ends the life of an array
  * 
  */
-#define DELETE_ARRAY(arr_ptr) clear_array(arr_ptr); free(arr_ptr);
+#define DELETE_ARRAY(arr_ptr) \
+    clear_array(arr_ptr);     \
+    free(arr_ptr);
 
 /**
  * @brief Defines an array object
  * 
  */
-typedef struct array {
+typedef struct array
+{
     unsigned int size;
     char label[128];
-    double* data;
+    double *data;
 } s_array, *p_array;
 
 /**
@@ -39,8 +42,7 @@ typedef struct array {
  * @param[in] label : label of the array
  * @return p_array : pointer on the newly created array in case of success, NULL otherwise
  */
-p_array build_array(const unsigned int size, const char * label); 
-
+p_array build_array(const unsigned int size, const char *label);
 
 /**
  * @brief Clear the array by freeing the data memory, setting the size to zero 
@@ -51,7 +53,6 @@ p_array build_array(const unsigned int size, const char * label);
  * @param arr : array to clear
  */
 void clear_array(const p_array arr);
-
 
 /**
  * @brief Print the array on standard output.
@@ -64,7 +65,6 @@ void clear_array(const p_array arr);
                EXIT_FAILURE (1) : otherwise
  */
 int print_array(const p_array arr);
-
 
 /**
  * @brief Fill the array with the value
