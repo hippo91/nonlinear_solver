@@ -22,6 +22,15 @@ int build_array(const unsigned int size, const char * label, p_array arr) {
 
 
 int print_array(const p_array arr) {
+    if (!arr) {
+        fprintf(stderr, "Cannot print an unexisting array (NULL pointer)!");
+        return EXIT_FAILURE;
+    }
+
+    if (arr->size == 0) {
+        printf("%s[] = empty\n", arr->label);
+    }
+
     unsigned int chunk_size = PRINT_ARRAY_CHUNK_SIZE;
     for (unsigned int i=0; i < arr->size; ++i) {
         if ((i == chunk_size) && (arr->size > chunk_size * 2)) {
