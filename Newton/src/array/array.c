@@ -39,6 +39,10 @@ int print_array(const p_array arr) {
 
 
 int fill_array(const p_array arr, const double value) {
+    if (!arr) {
+        fprintf(stderr, "The array has not been created (NULL pointer)!");
+        return EXIT_FAILURE;
+    }
     if (arr->size == 0) {
         fprintf(stderr, "The size of array %s is zero! Aborting.", arr->label);
         return EXIT_FAILURE;
