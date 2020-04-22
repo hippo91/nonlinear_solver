@@ -53,8 +53,11 @@ int fill_array(const p_array arr, const double value) {
 
 
 void clear_array(const p_array arr) {
-    free(arr->data);
-    arr->data = NULL;
-    arr->size = 0;
-    strcpy(arr->label, "");
+    if (arr) {
+        free(arr->data);
+        arr->data = NULL;
+        arr->size = 0;
+        strcpy(arr->label, "");
+    }
+
 }
