@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #define MAX_LABEL_SIZE 128
+#define MAX_ARRAY_SIZE 1000000000
 #define PRINT_ARRAY_CHUNK_SIZE 10
 
 
@@ -17,15 +18,15 @@ typedef struct array {
 } s_array, *p_array;
 
 /**
- * @brief Build an array
+ * @brief Build an array and returns a pointer to it.
+ *        Once used, the array should be cleared thanks to the function
+ *        clear_array and the memory released by freeing the pointer.
  * 
  * @param[in] size : size of the array
  * @param[in] label : label of the array
- * @param[in] arr : the array
- * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ * @return p_array : pointer on the newly created array in case of success, NULL otherwise
  */
-int build_array(const unsigned int size, const char * label, p_array arr); 
+p_array build_array(const unsigned int size, const char * label); 
 
 
 /**

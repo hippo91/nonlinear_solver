@@ -3,21 +3,35 @@
 #include <string.h>
 #include "array.h"
 
-int build_array(const unsigned int size, const char * label, p_array arr) {
-    arr->data = (double *)calloc(size, sizeof(double));
-    if (arr->data == NULL) {
-        fprintf(stderr, "An error has occured when building the array %s\n", label);
-        fprintf(stderr, "The allocation has failed!\n");
-        return EXIT_FAILURE;
-    }
+p_array build_array(const unsigned int size, const char * label) {
+    // Checks correctness of arguments
     if (strlen(label) >= MAX_LABEL_SIZE) {
         fprintf(stderr, "An error has occured when building the array %s\n", label);
         fprintf(stderr, "The label size is above the limit : %d!\n", MAX_LABEL_SIZE);
-        return EXIT_FAILURE;
+        return NULL;
     }
-    strcpy(arr->label, label);
-    arr->size = size;
-    return EXIT_SUCCESS;
+    if (size > MAX_ARRAY_SIZE) {
+        fprintf(stderr, "An error has occured when building the array %s\n", label);
+        fprintf(stderr, "The size of array (%u) is above the limit : %d!\n", size, MAX_ARRAY_SIZE);
+        return NULL;
+    }
+
+    // Allocate memory for the array structure
+    p_array arr_ptr = (p_array)malloc(sizeof(s_array));
+
+    // Fill the array structure
+    arr_ptr->data = (double *)calloc(size, sizeof(double));
+
+    if (arr_ptr->data == NULL) {
+        fprintf(stderr, "An error has occured when building the array %s\n", label);
+        fprintf(stderr, "The allocation has failed!\n");
+        free(arr_ptr);
+        return NULL;
+    }
+
+    strcpy(arr_ptr->label, label);
+    arr_ptr->size = size;
+    return arr_ptr;
 };
 
 
@@ -72,5 +86,4 @@ void clear_array(const p_array arr) {
         arr->size = 0;
         strcpy(arr->label, "");
     }
-
 }
