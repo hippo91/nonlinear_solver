@@ -18,15 +18,15 @@ int main()
 {
     const size_t pb_size = 10;
 
-    p_array old_density = build_array(pb_size, "old_density");
-    p_array old_specific_volume = build_array(pb_size, "old_specific_volume");
-    p_array new_density = build_array(pb_size, "new_density");
-    p_array new_specific_volume = build_array(pb_size, "new_specific_volume");
-    p_array pressure = build_array(pb_size, "pressure");
-    p_array internal_energy = build_array(pb_size, "internal_energy");
-    p_array solution = build_array(pb_size, "solution");
-    p_array new_pressure = build_array(pb_size, "new_pressure");
-    p_array new_cson = build_array(pb_size, "new_cson");
+    BUILD_ARRAY(old_density, pb_size)
+    BUILD_ARRAY(old_specific_volume, pb_size)
+    BUILD_ARRAY(new_density, pb_size)
+    BUILD_ARRAY(new_specific_volume, pb_size)
+    BUILD_ARRAY(pressure, pb_size)
+    BUILD_ARRAY(internal_energy, pb_size)
+    BUILD_ARRAY(solution, pb_size)
+    BUILD_ARRAY(new_pressure, pb_size)
+    BUILD_ARRAY(new_cson, pb_size)
 
     fill_array(old_density, 8230.);
     fill_array(new_density, 9500.);
@@ -57,24 +57,15 @@ int main()
     if (!check_uniform_value(new_cson, 4503.84710590959))
         success = false;
 
-    clear_array(old_density);
-    free(old_density);
-    clear_array(old_specific_volume);
-    free(old_specific_volume);
-    clear_array(new_density);
-    free(new_density);
-    clear_array(new_specific_volume);
-    free(new_specific_volume);
-    clear_array(pressure);
-    free(pressure);
-    clear_array(internal_energy);
-    free(internal_energy);
-    clear_array(solution);
-    free(solution);
-    clear_array(new_pressure);
-    free(new_pressure);
-    clear_array(new_cson);
-    free(new_cson);
+    DELETE_ARRAY(old_density)
+    DELETE_ARRAY(old_specific_volume);
+    DELETE_ARRAY(new_density);
+    DELETE_ARRAY(new_specific_volume);
+    DELETE_ARRAY(pressure);
+    DELETE_ARRAY(internal_energy);
+    DELETE_ARRAY(solution);
+    DELETE_ARRAY(new_pressure);
+    DELETE_ARRAY(new_cson);
 
 
     if (!success)
