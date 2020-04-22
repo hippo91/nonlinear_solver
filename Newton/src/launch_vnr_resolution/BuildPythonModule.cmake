@@ -58,6 +58,7 @@ target_include_directories( ${PYTHON_MODULE_NAME}
 )
 target_link_libraries( ${PYTHON_MODULE_NAME}
     PRIVATE
+        array
         newton
         functions
         incrementation
