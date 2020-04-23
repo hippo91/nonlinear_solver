@@ -1,7 +1,25 @@
 #include "array.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+bool is_valid_array(const p_array arr)
+{
+    if (arr == NULL) {
+        fprintf(stderr, "The array has not been created! (NULL pointer)\n");
+        return false;
+    }
+    if (arr->data == NULL) {
+        fprintf(stderr, "The data member of the array %s is null! (NULL pointer)\n", arr->label);
+        return false;
+    }
+    if (arr->size == 0) {
+        fprintf(stderr, "The size of the array %s is nill!\n", arr->label);
+        return false;
+    }
+    return true;
+}
 
 p_array build_array(const unsigned int size, const char *label)
 {
@@ -71,19 +89,8 @@ int print_array(const p_array arr)
 
 int fill_array(const p_array arr, const double value)
 {
-    if (!arr)
-    {
-        fprintf(stderr, "The array has not been created (NULL pointer)!\n");
-        return EXIT_FAILURE;
-    }
-    if (arr->size == 0)
-    {
-        fprintf(stderr, "The size of array %s is zero! Aborting.\n", arr->label);
-        return EXIT_FAILURE;
-    }
-    if (arr->data == NULL)
-    {
-        fprintf(stderr, "The data of array %s is NULL! Aborting.\n", arr->label);
+    if (!is_valid_array(arr)) {
+        fprintf(stderr, "The array is not valid!\n");
         return EXIT_FAILURE;
     }
     for (unsigned int i = 0; i < arr->size; ++i)
@@ -100,4 +107,28 @@ void clear_array(const p_array arr)
         arr->size = 0;
         strcpy(arr->label, "");
     }
+}
+
+int copy_array(const p_array origin, p_array dest)
+{
+    if (!is_valid_array(origin))
+    {
+        fprintf(stderr, "The origin array is not valid!\n");
+        return EXIT_FAILURE;
+    }
+    if (!is_valid_array(dest))
+    {
+        fprintf(stderr, "The destination array is not valid!\n");
+        return EXIT_FAILURE;
+    }
+    if (origin->size != dest->size) {
+        fprintf(stderr, "The sizes of the arrays mismatch!\n");
+        fprintf(stderr, "Size of origin array (%s) is (%u)\n", origin->label, origin->size);
+        fprintf(stderr, "Size of destination array (%s) is (%u)\n", dest->label, dest->size);
+        return EXIT_FAILURE;
+    }
+    for (unsigned int i = 0; i < origin->size; ++i) {
+        dest->data[i] = origin->data[i];
+    }
+    return EXIT_SUCCESS;
 }

@@ -76,4 +76,28 @@ int print_array(const p_array arr);
  */
 int fill_array(const p_array, const double value);
 
+/**
+ * @brief Copies origin's data into destination's one
+ * 
+ * @warning : arrays should have been created and have the same size
+ * @param origin : array to be copied
+ * @param dest : modified array
+ * @return int EXIT_SUCCESS (0) : in case of success
+               EXIT_FAILURE (1) : otherwise
+ */
+int copy_array(const p_array origin, p_array dest);
+
+/**
+ * @brief Check if the array is valid.
+ *        An array is valid if:
+ *          - its pointer is not NULL;
+ *          - its data member is not NULL;
+ *          - its size member is not equal to zero.
+ * 
+ * @param arr : array to check
+ * @return true : if the array is valid
+ * @return false : otherwise
+ */
+bool is_valid_array(const p_array arr);
+
 #endif

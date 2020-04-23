@@ -13,7 +13,7 @@ typedef struct unittest {
  * @brief Test the build array function in case of success
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_build_array()
 {
@@ -40,7 +40,7 @@ int test_build_array()
  * @brief Test the build_array function in case the label is too long
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_build_array_label_too_long()
 {
@@ -65,7 +65,7 @@ int test_build_array_label_too_long()
  * @brief Test the build_array function in case the size is too high
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_build_array_size_too_high()
 {
@@ -87,7 +87,7 @@ int test_build_array_size_too_high()
  * @brief Test the fill_array function when everything is ok
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_fill_array()
 {
@@ -110,7 +110,7 @@ int test_fill_array()
  *        to the array struct is NULL
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_fill_array_null_ptr()
 {
@@ -130,7 +130,7 @@ int test_fill_array_null_ptr()
  * @brief Test the fill_array function in case the array size is nill
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_fill_array_null_size()
 {
@@ -152,7 +152,7 @@ int test_fill_array_null_size()
  * @brief Test the fill_array_data function in case the data of the array struct is NULL
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_fill_array_data_null_ptr()
 {
@@ -177,7 +177,7 @@ int test_fill_array_data_null_ptr()
  * @brief Test the clear_array function
  * 
  * @return int EXIT_SUCCESS (0) : in case of success
-               EXIT_FAILURE (1) : otherwise
+ *             EXIT_FAILURE (1) : otherwise
  */
 int test_clear_array()
 {
@@ -193,6 +193,101 @@ int test_clear_array()
     free(valid_array);
     return EXIT_SUCCESS;
 }
+
+/**
+ * @brief Test the is_valid_array function
+ * 
+ * @return int EXIT_SUCCESS (0) : in case of success
+ *             EXIT_FAILURE (1) : otherwise
+ */
+int test_is_valid_array()
+{
+    p_array null_ptr = NULL;
+
+    if(is_valid_array(null_ptr)) {
+        fprintf(stderr, "The is_valid_array function should have return false "
+                        "because the array points to NULL\n");
+        return EXIT_FAILURE;
+    }
+
+    s_array unvalid = {10, "unvalid", NULL};
+
+    if(is_valid_array(&unvalid)) {
+        fprintf(stderr, "The is_valid_array function should have return false "
+                        "because the data member of array %s points to NULL\n", unvalid.label);
+        return EXIT_FAILURE;
+    }
+
+    p_array null_size = build_array(10, "null_size");
+    null_size->size = 0;
+
+    if(is_valid_array(null_size)) {
+        fprintf(stderr, "The is_valid_array function should have return false "
+                        "because the data member of array %s points to NULL\n",null_size->label);
+        DELETE_ARRAY(null_size)
+        return EXIT_FAILURE;
+    }
+
+    DELETE_ARRAY(null_size)
+    return EXIT_SUCCESS;
+}
+
+/**
+ * @brief Test the copy_array function in case of success
+ * 
+ * @return int EXIT_SUCCESS (0) : in case of success
+ *             EXIT_FAILURE (1) : otherwise
+ */
+int test_copy_array()
+{
+    BUILD_ARRAY(origin, 3)
+    BUILD_ARRAY(dest, 3)
+
+    fill_array(origin, 3.141596);
+    if (copy_array(origin, dest) == EXIT_FAILURE) {
+        fprintf(stderr, "The copy_array function has failed!\n");
+        return EXIT_FAILURE;
+    }
+
+    if (!check_uniform_value(dest, 3.141596)) {
+        fprintf(stderr, "The copy_array function has failed!\n");
+        print_array(origin);
+        print_array(dest);
+        return EXIT_FAILURE;
+    }
+
+    DELETE_ARRAY(origin)
+    DELETE_ARRAY(dest)
+    return EXIT_SUCCESS;
+}
+
+/**
+ * @brief Test the copy_array function in case of different sizes between arrays
+ * 
+ * @return int EXIT_SUCCESS (0) : in case of success
+ *             EXIT_FAILURE (1) : otherwise
+ */
+int test_copy_array_size_mismatch()
+{
+    BUILD_ARRAY(origin, 3)
+    BUILD_ARRAY(dest, 4)
+
+    fill_array(origin, 3.141596);
+    if (copy_array(origin, dest) == EXIT_SUCCESS)
+    {
+        fprintf(stderr, "The copy_array function has succeeded when it should not!\n");
+        fprintf(stderr, "The size of array %s is %u whereas the size of array %s is %u!\n",
+                origin->label, origin->size, dest->label, dest->size);
+        DELETE_ARRAY(origin)
+        DELETE_ARRAY(dest)
+        return EXIT_FAILURE;
+    }
+
+    DELETE_ARRAY(origin)
+    DELETE_ARRAY(dest)
+    return EXIT_SUCCESS;
+}
+
 
 /**
  * @brief Print usage of this program
@@ -227,7 +322,10 @@ int main(int argc, char* argv[])
         TEST_DECLARATION(test_fill_array_null_ptr),
         TEST_DECLARATION(test_fill_array_null_size),
         TEST_DECLARATION(test_fill_array_data_null_ptr),
-        TEST_DECLARATION(test_clear_array)
+        TEST_DECLARATION(test_clear_array),
+        TEST_DECLARATION(test_is_valid_array),
+        TEST_DECLARATION(test_copy_array),
+        TEST_DECLARATION(test_copy_array_size_mismatch)
     };
     const int test_number = sizeof(test_collection) / sizeof(s_unittest);
 

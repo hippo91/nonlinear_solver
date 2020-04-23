@@ -28,3 +28,9 @@ add_test( NAME Test_fill_array_data_null_ptr
           COMMAND test_array 6 )
 add_test( NAME Test_clear_array
           COMMAND test_array 7 )
+add_test( NAME Test_is_valid_array
+          COMMAND test_array 8 )
+add_test( NAME Test_copy_array
+          COMMAND test_array 9 )
+add_test( NAME Test_copy_array_size_mismatch
+          COMMAND test_array 10 )
