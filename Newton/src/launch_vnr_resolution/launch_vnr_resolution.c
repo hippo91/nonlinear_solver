@@ -36,6 +36,12 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         int remain_chunk_size = pb_size % n_threads;
         if (tid == n_threads - 1) chunk_size += remain_chunk_size;
 
+        // s_array thread_old_spec_vol = {chunk_size, old_specific_volume->label, old_specific_volume->data + offset};
+        // s_array thread_new_spec_vol = {chunk_size, new_specific_volume->label, new_specific_volume->data + offset};
+        s_array thread_internal_energy = {chunk_size, "Thread internal energy", internal_energy->data + offset};
+        // s_array thread_pressure = {chunk_size, pressure->label, pressure->data + offset};
+        s_array thread_solution = {chunk_size, "Thread solution", solution->data + offset};
+
         VnrVariables_t VnrVars = {old_specific_volume->data + offset,
                                   new_specific_volume->data + offset,
                                   internal_energy->data + offset,
@@ -43,7 +49,7 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
                                   &MieGruneisenParams};
         NewtonParameters_s TheNewton = {internal_energy_evolution_VNR,
                                         classical_incrementation, relative_gap};
-        solveNewton(&TheNewton, &VnrVars, internal_energy->data + offset, chunk_size, solution->data + offset);
+        solveNewton(&TheNewton, &VnrVars, &thread_internal_energy, &thread_solution);
         // Appel de l'eos avec la solution du newton pour calculer la nouvelle
         // pression et vitesse du son
         VnrVars.miegruneisen->get_pressure_and_sound_speed(VnrVars.miegruneisen, chunk_size, new_specific_volume->data + offset,

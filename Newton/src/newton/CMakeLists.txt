@@ -5,4 +5,9 @@ target_sources( ${LIBRARY_NAME} PRIVATE
                 "newton.c" 
               )
 target_include_directories( ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR} )
-target_link_libraries( ${LIBRARY_NAME} PRIVATE utils )
+target_link_libraries( ${LIBRARY_NAME}
+  PUBLIC
+    array  
+  PRIVATE
+    utils
+)
