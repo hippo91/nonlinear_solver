@@ -12,5 +12,19 @@ target_link_libraries( test_array
     array
     test_utils
 )
-add_test( NAME Test_array 
-          COMMAND test_array )
+add_test( NAME Test_build_array
+          COMMAND test_array 0 )
+add_test( NAME Test_build_array_label_too_long
+          COMMAND test_array 1 )
+add_test( NAME Test_build_array_size_too_high
+          COMMAND test_array 2 )
+add_test( NAME Test_fill_array
+          COMMAND test_array 3 )
+add_test( NAME Test_fill_array_null_ptr
+          COMMAND test_array 4 )
+add_test( NAME Test_fill_array_null_size
+          COMMAND test_array 5 )
+add_test( NAME Test_fill_array_data_null_ptr
+          COMMAND test_array 6 )
+add_test( NAME Test_clear_array
+          COMMAND test_array 7 )
