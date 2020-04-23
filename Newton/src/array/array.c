@@ -73,17 +73,17 @@ int fill_array(const p_array arr, const double value)
 {
     if (!arr)
     {
-        fprintf(stderr, "The array has not been created (NULL pointer)!");
+        fprintf(stderr, "The array has not been created (NULL pointer)!\n");
         return EXIT_FAILURE;
     }
     if (arr->size == 0)
     {
-        fprintf(stderr, "The size of array %s is zero! Aborting.", arr->label);
+        fprintf(stderr, "The size of array %s is zero! Aborting.\n", arr->label);
         return EXIT_FAILURE;
     }
     if (arr->data == NULL)
     {
-        fprintf(stderr, "The data of array %s is NULL! Aborting.", arr->label);
+        fprintf(stderr, "The data of array %s is NULL! Aborting.\n", arr->label);
         return EXIT_FAILURE;
     }
     for (unsigned int i = 0; i < arr->size; ++i)
