@@ -41,7 +41,7 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
                                   internal_energy->data + offset,
                                   pressure->data + offset,
                                   &MieGruneisenParams};
-        NewtonParameters_t TheNewton = {internal_energy_evolution_VNR,
+        NewtonParameters_s TheNewton = {internal_energy_evolution_VNR,
                                         classical_incrementation, relative_gap};
         solveNewton(&TheNewton, &VnrVars, internal_energy->data + offset, chunk_size, solution->data + offset);
         // Appel de l'eos avec la solution du newton pour calculer la nouvelle
