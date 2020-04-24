@@ -14,9 +14,8 @@ int main()
     BUILD_ARRAY(x_k, PB_SIZE)
     BUILD_ARRAY(delta_x_k, PB_SIZE)
     BUILD_ARRAY(func, PB_SIZE)
-    BUILD_ARRAY(x_k_pun, PB_SIZE)
     BUILD_ARRAY(expected_x_k_un, PB_SIZE)
-    p_array built_arrays[] = {x_k, delta_x_k, func, x_k_pun, expected_x_k_un};
+    p_array built_arrays[] = {x_k, delta_x_k, func, expected_x_k_un};
     const unsigned int nb_arrays = sizeof(built_arrays) / sizeof(p_array);
 
     for (unsigned int i = 0; i < nb_arrays; ++i) {
@@ -45,10 +44,10 @@ int main()
     bool has_converged[PB_SIZE] = {false, false};
     bool expected_has_converged[PB_SIZE] = {false, true};
 
-    relative_gap(x_k, delta_x_k, func, x_k_pun, has_converged);
+    relative_gap(x_k, delta_x_k, func, has_converged);
 
     bool success = true;
-    if (!assert_equal(x_k_pun, expected_x_k_un))
+    if (!assert_equal(x_k, expected_x_k_un))
         success = false;
     if (!assert_equal_bool_arrays(has_converged, expected_has_converged, PB_SIZE, "has_converged"))
         success = false;

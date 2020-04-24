@@ -64,8 +64,6 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     const int NB_ITER_MAX = 40;
     const unsigned int pb_size = x_ini->size;
 
-    // Array of unknwon at k iteration
-    BUILD_ARRAY(x_k, pb_size)
     // Array of the values of the function to vanish
     BUILD_ARRAY(F_k, pb_size)
     // Array of the values of the derivative of the function to vanish
@@ -74,7 +72,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     BUILD_ARRAY(delta_x_k, pb_size)
 
     // Check that every array building has been successfull
-    p_array built_arrays[4] = {x_k, F_k, dF_k, delta_x_k};
+    p_array built_arrays[] = {F_k, dF_k, delta_x_k};
     const size_t nb_arrays = sizeof(built_arrays) / sizeof(p_array);
     for (unsigned int i = 0; i < nb_arrays; ++i) {
         if (built_arrays[i] == NULL) {
@@ -86,13 +84,12 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
 
     // Initialization
     enum e_solver_status {SUCCESS, FAILURE, ERROR} solver_status = SUCCESS;
+    p_array x_k = x_sol;
     if (copy_array(x_ini, x_k) == EXIT_FAILURE) {
         fprintf(stderr, "Unable to initialize the Newton-Raphson solver!\n");
         cleanup_memory(built_arrays, nb_arrays);
         return EXIT_FAILURE;
     }
-    // Array of unknwon at k+1 iteration
-    p_array x_k_pun = x_sol;
     // Array of convergence markers
     bool *has_converged;
     // TODO: check successfull creation of has_converged array
@@ -105,7 +102,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
         // Compute delta_x
         Newton->increment_the_vector(x_k->data, F_k->data, dF_k->data, pb_size, delta_x_k->data);
         // Check the convergence and apply increments
-        Newton->check_convergence(x_k, delta_x_k, F_k, x_k_pun, has_converged);
+        Newton->check_convergence(x_k, delta_x_k, F_k, has_converged);
 
         if (allConverged(has_converged, pb_size)) {
             solver_status = SUCCESS;
@@ -116,11 +113,6 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
             break;
         }
 
-        // Update
-        if (copy_array(x_k_pun, x_k) == EXIT_FAILURE) {
-            solver_status = ERROR;
-            break;
-        }
         ++iter;
     }
 
