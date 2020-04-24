@@ -26,6 +26,19 @@ static bool allConverged(bool *has_converged, size_t pb_size)
     return (true);
 }
 
+/**
+ * @brief Cleanup the memory by deleting the arrays
+ * 
+ * @param built_arrays : pointers to the arrays that have been built
+ * @param nb_arrays : number of arrays
+ */
+static void cleanup_memory(p_array* built_arrays, const size_t nb_arrays) 
+{
+    for (unsigned int j = 0; j < nb_arrays; ++j) {
+        DELETE_ARRAY(built_arrays[j]);
+    }
+}
+
 
 /**
  * @brief Use Newton-Raphson to solve a function
@@ -34,6 +47,7 @@ static bool allConverged(bool *has_converged, size_t pb_size)
  * @param func_variables : parameters of the function to solve
  * @param x_ini : initial values of the unknown
  * @param x_sol : solution
+ * @warning : the solution is modified in any cases, even in case of ERROR or FAILURE!
  * 
  * @return EXIT_SUCCESS (0) in case of success
  *         EXIT_FAILURE (1) otherwise
@@ -53,7 +67,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     // Array of unknwon at k iteration
     BUILD_ARRAY(x_k, pb_size)
     // Array of unknwon at k+1 iteration
-    BUILD_ARRAY(x_k_pun, pb_size)
+    p_array x_k_pun = x_sol;
     // Array of the values of the function to vanish
     BUILD_ARRAY(F_k, pb_size)
     // Array of the values of the derivative of the function to vanish
@@ -62,14 +76,12 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     BUILD_ARRAY(delta_x_k, pb_size)
 
     // Check that every array building has been successfull
-    p_array builded_arrays[5] = {x_k, x_k_pun, F_k, dF_k, delta_x_k};
-    for (int i = 0; i < 5; ++i) {
-        if (builded_arrays[i] == NULL) {
+    p_array built_arrays[4] = {x_k, F_k, dF_k, delta_x_k};
+    const size_t nb_arrays = sizeof(built_arrays) / sizeof(p_array);
+    for (unsigned int i = 0; i < nb_arrays; ++i) {
+        if (built_arrays[i] == NULL) {
             fprintf(stderr, "Error when building the %d th array!\n", i);
-            // Deletes the arrays that have been created
-            for (int j = 0; j < 5; ++j) {
-                DELETE_ARRAY(builded_arrays[j]);
-            }
+            cleanup_memory(built_arrays, nb_arrays);
             return EXIT_FAILURE;
         }
     }
@@ -80,10 +92,9 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     allocVecBoolForOMP(pb_size, &has_converged);
 
     // Initialization
+    enum e_solver_status {SUCCESS, FAILURE, ERROR} solver_status = SUCCESS;
     copy_array(x_ini, x_k);
 
-    enum e_solver_status {SUCCESS, FAILURE, ERROR};
-    enum e_solver_status solver_status = SUCCESS;
     while (true)
     {
         // Compute F and dF
@@ -110,14 +121,8 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
         ++iter;
     }
 
-    // Write the solution found
-    if (solver_status == SUCCESS)
-        copy_array(x_k_pun, x_sol);
-
     // Clear the memory
-    for (int i = 0; i < 5; ++i) {
-        DELETE_ARRAY(builded_arrays[i]);
-    }
+    cleanup_memory(built_arrays, nb_arrays);
     free(has_converged);
 
     if (solver_status == FAILURE)
