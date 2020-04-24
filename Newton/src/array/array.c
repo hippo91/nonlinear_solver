@@ -127,8 +127,6 @@ int copy_array(const p_array origin, p_array dest)
         fprintf(stderr, "Size of destination array (%s) is (%u)\n", dest->label, dest->size);
         return EXIT_FAILURE;
     }
-    for (unsigned int i = 0; i < origin->size; ++i) {
-        dest->data[i] = origin->data[i];
-    }
+    memcpy(dest->data, origin->data, origin->size * sizeof(double));
     return EXIT_SUCCESS;
 }
