@@ -111,22 +111,16 @@ void solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini
 	 */
     if (iter < NB_ITER_MAX)
     {
-        for (size_t i = 0; i < pb_size; ++i)
-        {
-            x_sol->data[i] = x_k_pun->data[i];
-        }
+        copy_array(x_k_pun, x_sol);
 #ifdef PRINTSOL
         printf("Convergence obtenue après %d itérations!\n", iter);
-        for (size_t i = 0; i < pb_size; ++i)
-        {
-            printf("x[%zu] = %15.9g\n", i, x_k->data[i]);
-        }
+        print_array(x_k);
+#endif
     }
     else
     {
         printf("Non convergence du Newton!\n");
         exit(1);
-#endif
     }
     /*
 	 * Libération de la mémoire
