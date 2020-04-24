@@ -85,6 +85,13 @@ bool assert_equal_arrays(const double *const arr_a, const double *const arr_b, c
     return equality;
 }
 
+bool assert_equal(const p_array arr_a, const p_array arr_b)
+{
+    if (arr_a->size != arr_b->size) return false;
+
+    return assert_equal_arrays(arr_a->data, arr_b->data, arr_a->size, arr_a->label);
+}
+
 /**
  * @brief Compares if two arrays of bool are equals and print an error message if not
  * 

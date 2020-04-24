@@ -105,7 +105,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
         // Compute delta_x
         Newton->increment_the_vector(x_k->data, F_k->data, dF_k->data, pb_size, delta_x_k->data);
         // Check the convergence and apply increments
-        Newton->check_convergence(x_k->data, delta_x_k->data, F_k->data, pb_size, x_k_pun->data, has_converged);
+        Newton->check_convergence(x_k, delta_x_k, F_k, x_k_pun, has_converged);
 
         if (allConverged(has_converged, pb_size)) {
             solver_status = SUCCESS;

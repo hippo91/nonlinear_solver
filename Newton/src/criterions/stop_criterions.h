@@ -1,4 +1,5 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include "array.h"
 
-void relative_gap(double *x_k, double *delta_x_k, double *func, size_t size_of_pb, double *x_k_pun, bool *has_converged);
+int relative_gap(p_array x_k, p_array delta_x_k, p_array func, p_array x_k_pun, bool *has_converged);
