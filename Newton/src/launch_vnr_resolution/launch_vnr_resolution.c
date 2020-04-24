@@ -49,7 +49,12 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
                                   &MieGruneisenParams};
         NewtonParameters_s TheNewton = {internal_energy_evolution_VNR,
                                         classical_incrementation, relative_gap};
-        solveNewton(&TheNewton, &VnrVars, &thread_internal_energy, &thread_solution);
+        int ret_code = solveNewton(&TheNewton, &VnrVars, &thread_internal_energy, &thread_solution);
+
+        if (ret_code == EXIT_FAILURE) {
+            fprintf(stderr, "Unable to solve the equation! Aborting!\n");
+            exit(1);
+        }
         // Appel de l'eos avec la solution du newton pour calculer la nouvelle
         // pression et vitesse du son
         VnrVars.miegruneisen->get_pressure_and_sound_speed(VnrVars.miegruneisen, chunk_size, new_specific_volume->data + offset,
