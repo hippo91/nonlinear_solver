@@ -10,7 +10,6 @@
 #define NEWTON
 #endif
 // #define DEBUG
-// #define PRINTSOL
 
 /*
  * allConverged :
@@ -28,83 +27,72 @@ static bool allConverged(bool *has_converged, size_t pb_size)
     return (true);
 }
 
-/*
- * solveNewton :
- * 	resolution de fonction non linéaires
+#define SAFE_BUILD_ARRAY(name, size) BUILD_ARRAY(name, size) \
+                                     if (!is_valid_array(name)) { \
+                                        fprintf(stderr, "Error when building the array " #name "!\n"); \
+                                        return EXIT_FAILURE; \
+                                     }
+
+/**
+ * @brief Use Newton-Raphson to solve a function
  * 
- * todo : put a return code in order to catch problem and delete correctly the arrays in the caller
+ * @param Newton : parameters of the Newton-Raphson algorithm
+ * @param func_variables : parameters of the function to solve
+ * @param x_ini : initial values of the unknown
+ * @param x_sol : solution
+ * 
+ * @return EXIT_SUCCESS (0) in case of success
+ *         EXIT_FAILURE (1) otherwise
  */
-void solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini, p_array x_sol)
+int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini, p_array x_sol)
 {
     if (x_ini->size != x_sol->size) {
         fprintf(stderr, "Size mismatch between array x_ini (%s with size %u) and x_sol (%s with size %u)\n",
                 x_ini->label, x_ini->size, x_sol->label, x_sol->size);
-        DELETE_ARRAY(x_ini)
-        DELETE_ARRAY(x_sol)
-        exit(1);
+        return EXIT_FAILURE;
     }
-    // Contrôle des itérations
     int iter = 0;
-    int NB_ITER_MAX = 40;
-    unsigned int pb_size = x_ini->size;
-    // Tableau des inconnues à l'itération k
-    BUILD_ARRAY(x_k, pb_size)
-    // Tableau des inconnues à l'itération k+1
-    BUILD_ARRAY(x_k_pun, pb_size)
-    // Tableau des valeurs de la fonction à annuler
-    BUILD_ARRAY(F_k, pb_size)
-    // Tableau des valeurs de la dérivée de la fonction à annuler
-    BUILD_ARRAY(dF_k, pb_size)
-    // Tableau des valeurs d'incrémentation
-    BUILD_ARRAY(delta_x_k, pb_size)
-    if (!is_valid_array(delta_x_k)) {
-        fprintf(stderr, "Error when building the array delta_x_k!\n");
-        exit(1);
-    }
-    // Tableau des indicateurs de convergence
+    const int NB_ITER_MAX = 40;
+    const unsigned int pb_size = x_ini->size;
+    // Array of unknwon at k iteration
+    SAFE_BUILD_ARRAY(x_k, pb_size)
+    // Array of unknwon at k+1 iteration
+    SAFE_BUILD_ARRAY(x_k_pun, pb_size)
+    // Array of the values of the function to vanish
+    SAFE_BUILD_ARRAY(F_k, pb_size)
+    // Array of the values of the derivative of the function to vanish
+    SAFE_BUILD_ARRAY(dF_k, pb_size)
+    // Array of the values of incrementation
+    SAFE_BUILD_ARRAY(delta_x_k, pb_size)
+    // Array of convergence markers
     bool *has_converged;
-    /*
-	 * Déclaration/Allocation/Initialisation des tableaux
-	 */
-    copy_array(x_ini, x_k);
     allocVecBoolForOMP(pb_size, &has_converged);
-    /*
-	 * DEBUT DU NEWTON
-	 */
+
+    copy_array(x_ini, x_k);
+
     while ((!allConverged(has_converged, pb_size)) && (iter++ < NB_ITER_MAX))
     {
 #ifdef DEBUG
         printf("<--- ITERATION : %d --->\n", iter);
 #endif
-        /*
-		 * Evaluation DE F et dF
-		 */
+        // Compute F and dF
         Newton->evaluate_the_function(func_variables, x_k->data, pb_size, F_k->data, dF_k->data);
-        /*
-		 * Calcul des incréments
-		 */
+        // Compute delta_x
         Newton->increment_the_vector(x_k->data, F_k->data, dF_k->data, pb_size, delta_x_k->data);
-        /*
-		 * Vérification de la convergence + application des incréments
-		 */
+        // Check the convergence and apply increments
         Newton->check_convergence(x_k->data, delta_x_k->data, F_k->data, pb_size, x_k_pun->data, has_converged);
-        //
+
 #ifdef DEBUG
+        print_array(F_k);
+        print_array(dF_k);
+        print_array(x_k);
+        print_array(delta_x_k);
+        print_array(x_k_pun);
         for (size_t i = 0; i < pb_size; ++i)
-        {
-            printf("F_k[%zu]     = %15.9g | dF_k[%zu]          = %15.9g\n", i, F_k[i], i, dF_k[i]);
-            printf("x_k[%zu]     = %15.9g | delta_x_k[%zu]     = %15.9g\n", i, x_k[i], i, delta_x_k[i]);
-            printf("x_k_pun[%zu] = %15.9g | has_converged[%zu] = %s\n", i, x_k_pun[i], i, has_converged[i] ? "True" : "False");
-        }
+            printf("has_converged[%zu] = %s\n", i, has_converged[i] ? "True" : "False");
 #endif
-        //
-        /*
-		 * Mise à jour du tableau des inconnues
-		 */
-        for (size_t i = 0; i < pb_size; ++i)
-        {
-            x_k->data[i] = x_k_pun->data[i];
-        }
+
+        copy_array(x_k_pun, x_k);
     }
     /*
 	 * FIN DU NEWTON
@@ -112,15 +100,16 @@ void solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini
     if (iter < NB_ITER_MAX)
     {
         copy_array(x_k_pun, x_sol);
-#ifdef PRINTSOL
-        printf("Convergence obtenue après %d itérations!\n", iter);
+#ifdef DEBUG
+        printf("Convergence acquired afer %d iterations!\n", iter);
         print_array(x_k);
 #endif
     }
     else
     {
-        printf("Non convergence du Newton!\n");
-        exit(1);
+        fprintf(stderr, "Maximum iterations number reached (%d)!\n", NB_ITER_MAX);
+        fprintf(stderr, "Newton-Raphson algorithm has not converged!\n");
+        return EXIT_FAILURE;
     }
     /*
 	 * Libération de la mémoire
@@ -131,4 +120,6 @@ void solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini
     DELETE_ARRAY(dF_k)
     DELETE_ARRAY(delta_x_k)
     free(has_converged);
+    
+    return EXIT_SUCCESS;
 }

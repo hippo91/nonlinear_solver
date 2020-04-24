@@ -9,4 +9,4 @@ typedef struct NewtonParameters
     void (*check_convergence)(double *, double *, double *, size_t, double *, bool *);
 } NewtonParameters_s;
 
-void solveNewton(NewtonParameters_s *, void *, p_array, p_array);
+int solveNewton(NewtonParameters_s *, void *, p_array, p_array);
