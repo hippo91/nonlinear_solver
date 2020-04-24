@@ -9,7 +9,6 @@
 #include "newton.h"
 #define NEWTON
 #endif
-// #define DEBUG
 
 /*
  * allConverged :
@@ -66,9 +65,9 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     p_array builded_arrays[5] = {x_k, x_k_pun, F_k, dF_k, delta_x_k};
     for (int i = 0; i < 5; ++i) {
         if (builded_arrays[i] == NULL) {
-            fprintf(stderr, "Error when building the array!\n");
-            // Deletes the arrays that have been created before the failing one
-            for (int j = 0; j < i; ++j) {
+            fprintf(stderr, "Error when building the %d th array!\n", i);
+            // Deletes the arrays that have been created
+            for (int j = 0; j < 5; ++j) {
                 DELETE_ARRAY(builded_arrays[j]);
             }
             return EXIT_FAILURE;
@@ -80,13 +79,13 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     // TODO: check successfull creation of has_converged array
     allocVecBoolForOMP(pb_size, &has_converged);
 
+    // Initialization
     copy_array(x_ini, x_k);
 
-    while ((!allConverged(has_converged, pb_size)) && (iter++ < NB_ITER_MAX))
+    enum e_solver_status {SUCCESS, FAILURE, ERROR};
+    enum e_solver_status solver_status = SUCCESS;
+    while (true)
     {
-#ifdef DEBUG
-        printf("<--- ITERATION : %d --->\n", iter);
-#endif
         // Compute F and dF
         Newton->evaluate_the_function(func_variables, x_k->data, pb_size, F_k->data, dF_k->data);
         // Compute delta_x
@@ -94,44 +93,44 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
         // Check the convergence and apply increments
         Newton->check_convergence(x_k->data, delta_x_k->data, F_k->data, pb_size, x_k_pun->data, has_converged);
 
-#ifdef DEBUG
-        print_array(F_k);
-        print_array(dF_k);
-        print_array(x_k);
-        print_array(delta_x_k);
-        print_array(x_k_pun);
-        for (size_t i = 0; i < pb_size; ++i)
-            printf("has_converged[%zu] = %s\n", i, has_converged[i] ? "True" : "False");
-#endif
-
-        copy_array(x_k_pun, x_k);
-    }
-    /*
-	 * FIN DU NEWTON
-	 */
-    if (iter < NB_ITER_MAX)
-    {
-        copy_array(x_k_pun, x_sol);
-#ifdef DEBUG
-        printf("Convergence acquired afer %d iterations!\n", iter);
-        print_array(x_k);
-#endif
-    }
-    else
-    {
-        fprintf(stderr, "Maximum iterations number reached (%d)!\n", NB_ITER_MAX);
-        fprintf(stderr, "Newton-Raphson algorithm has not converged!\n");
-
-        for (int i = 0; i < 5; ++i) {
-            DELETE_ARRAY(builded_arrays[i]);
+        if (allConverged(has_converged, pb_size)) {
+            solver_status = SUCCESS;
+            break;
         }
-        return EXIT_FAILURE;
+        if (iter == NB_ITER_MAX) {
+            solver_status = FAILURE;
+            break;
+        }
+
+        // Update
+        if (copy_array(x_k_pun, x_k) == EXIT_FAILURE) {
+            solver_status = ERROR;
+            break;
+        }
+        ++iter;
     }
 
+    // Write the solution found
+    if (solver_status == SUCCESS)
+        copy_array(x_k_pun, x_sol);
+
+    // Clear the memory
     for (int i = 0; i < 5; ++i) {
         DELETE_ARRAY(builded_arrays[i]);
     }
     free(has_converged);
-    
+
+    if (solver_status == FAILURE)
+    {
+        fprintf(stderr, "Maximum iterations number reached (%d)!\n", NB_ITER_MAX);
+        fprintf(stderr, "Newton-Raphson algorithm has not converged!\n");
+        return EXIT_FAILURE;
+    }
+    if (solver_status == ERROR)
+    {
+        fprintf(stderr, "An error has been encountered during the Newton-Raphson algorithm!");
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
 }
