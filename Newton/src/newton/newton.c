@@ -27,11 +27,6 @@ static bool allConverged(bool *has_converged, size_t pb_size)
     return (true);
 }
 
-#define SAFE_BUILD_ARRAY(name, size) BUILD_ARRAY(name, size) \
-                                     if (!is_valid_array(name)) { \
-                                        fprintf(stderr, "Error when building the array " #name "!\n"); \
-                                        return EXIT_FAILURE; \
-                                     }
 
 /**
  * @brief Use Newton-Raphson to solve a function
@@ -51,21 +46,38 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
                 x_ini->label, x_ini->size, x_sol->label, x_sol->size);
         return EXIT_FAILURE;
     }
+
     int iter = 0;
     const int NB_ITER_MAX = 40;
     const unsigned int pb_size = x_ini->size;
+
     // Array of unknwon at k iteration
-    SAFE_BUILD_ARRAY(x_k, pb_size)
+    BUILD_ARRAY(x_k, pb_size)
     // Array of unknwon at k+1 iteration
-    SAFE_BUILD_ARRAY(x_k_pun, pb_size)
+    BUILD_ARRAY(x_k_pun, pb_size)
     // Array of the values of the function to vanish
-    SAFE_BUILD_ARRAY(F_k, pb_size)
+    BUILD_ARRAY(F_k, pb_size)
     // Array of the values of the derivative of the function to vanish
-    SAFE_BUILD_ARRAY(dF_k, pb_size)
+    BUILD_ARRAY(dF_k, pb_size)
     // Array of the values of incrementation
-    SAFE_BUILD_ARRAY(delta_x_k, pb_size)
+    BUILD_ARRAY(delta_x_k, pb_size)
+
+    // Check that every array building has been successfull
+    p_array builded_arrays[5] = {x_k, x_k_pun, F_k, dF_k, delta_x_k};
+    for (int i = 0; i < 5; ++i) {
+        if (builded_arrays[i] == NULL) {
+            fprintf(stderr, "Error when building the array!\n");
+            // Deletes the arrays that have been created before the failing one
+            for (int j = 0; j < i; ++j) {
+                DELETE_ARRAY(builded_arrays[j]);
+            }
+            return EXIT_FAILURE;
+        }
+    }
+
     // Array of convergence markers
     bool *has_converged;
+    // TODO: check successfull creation of has_converged array
     allocVecBoolForOMP(pb_size, &has_converged);
 
     copy_array(x_ini, x_k);
@@ -109,16 +121,16 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     {
         fprintf(stderr, "Maximum iterations number reached (%d)!\n", NB_ITER_MAX);
         fprintf(stderr, "Newton-Raphson algorithm has not converged!\n");
+
+        for (int i = 0; i < 5; ++i) {
+            DELETE_ARRAY(builded_arrays[i]);
+        }
         return EXIT_FAILURE;
     }
-    /*
-	 * Libération de la mémoire
-	 */
-    DELETE_ARRAY(x_k)
-    DELETE_ARRAY(x_k_pun)
-    DELETE_ARRAY(F_k)
-    DELETE_ARRAY(dF_k)
-    DELETE_ARRAY(delta_x_k)
+
+    for (int i = 0; i < 5; ++i) {
+        DELETE_ARRAY(builded_arrays[i]);
+    }
     free(has_converged);
     
     return EXIT_SUCCESS;
