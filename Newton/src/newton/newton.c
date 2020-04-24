@@ -66,8 +66,6 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
 
     // Array of unknwon at k iteration
     BUILD_ARRAY(x_k, pb_size)
-    // Array of unknwon at k+1 iteration
-    p_array x_k_pun = x_sol;
     // Array of the values of the function to vanish
     BUILD_ARRAY(F_k, pb_size)
     // Array of the values of the derivative of the function to vanish
@@ -86,14 +84,19 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
         }
     }
 
+    // Initialization
+    enum e_solver_status {SUCCESS, FAILURE, ERROR} solver_status = SUCCESS;
+    if (copy_array(x_ini, x_k) == EXIT_FAILURE) {
+        fprintf(stderr, "Unable to initialize the Newton-Raphson solver!\n");
+        cleanup_memory(built_arrays, nb_arrays);
+        return EXIT_FAILURE;
+    }
+    // Array of unknwon at k+1 iteration
+    p_array x_k_pun = x_sol;
     // Array of convergence markers
     bool *has_converged;
     // TODO: check successfull creation of has_converged array
     allocVecBoolForOMP(pb_size, &has_converged);
-
-    // Initialization
-    enum e_solver_status {SUCCESS, FAILURE, ERROR} solver_status = SUCCESS;
-    copy_array(x_ini, x_k);
 
     while (true)
     {
