@@ -83,7 +83,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     while (true)
     {
         // Compute F and dF
-        Newton->evaluate_the_function(func_variables, x_k->data, pb_size, F_k->data, dF_k->data);
+        Newton->evaluate_the_function(func_variables, x_k, F_k, dF_k);
         // Compute delta_x
         Newton->increment_the_vector(x_k, F_k, dF_k, delta_x_k);
         // Check the convergence and apply increments

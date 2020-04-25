@@ -5,8 +5,10 @@ target_sources( ${LIBRARY_NAME} PRIVATE
                 "vnr_internalenergy_evolution.c" 
               )
 target_include_directories( ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR} )
-target_link_libraries( ${LIBRARY_NAME} 
-    PRIVATE
-    "eos"
-    "utils"
+target_link_libraries( ${LIBRARY_NAME}
+  PUBLIC
+    array
+  PRIVATE
+    eos
+    utils
 )

@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include "array.h"
 #ifndef MIEGRUNEISEN
 #include "miegruneisen.h"
 #define MIEGRUNEISEN
@@ -16,6 +17,5 @@ struct VnrVariables
     MieGruneisenParameters_t *miegruneisen;
 };
 
-void internal_energy_evolution_VNR(void *variables, double *newton_var,
-                                   size_t size_of_pb, double *func,
-                                   double *dfunc);
+void internal_energy_evolution_VNR(void *variables, const p_array newton_var,
+                                   p_array func, p_array dfunc);
