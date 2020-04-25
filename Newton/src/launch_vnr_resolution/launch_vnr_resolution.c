@@ -20,8 +20,11 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
     // EOS definition
     double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
            grunzero = 2.02, b = 0.47, ezero = 0.;
-    MieGruneisenParameters_t MieGruneisenParams = {
+    MieGruneisenParameters_s MieGruneisenParams = {
         czero, S1, S2, S3, rhozero, grunzero, b, ezero, compute_pressure_and_derivative, compute_pressure_and_sound_speed};
+
+    // Compute all terms that are parameters of the eos (i.e all that depends on specific_volume)
+
     // Function to solve (internal energy evolution in the vNR scheme)
 #pragma omp parallel
     {

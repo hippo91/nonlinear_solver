@@ -15,7 +15,7 @@ int main()
 {
     double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
            grunzero = 2.02, b = 0.47, ezero = 0.;
-    MieGruneisenParameters_t copper_mat = {
+    MieGruneisenParameters_s copper_mat = {
         czero, S1, S2, S3, rhozero, grunzero, b, ezero, compute_pressure_and_derivative, compute_pressure_and_sound_speed};
 
     double density[PB_SIZE] = {8700., 9200.};

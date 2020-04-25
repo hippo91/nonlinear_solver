@@ -104,7 +104,7 @@ static inline double compute_pressure_release(const double rho_zero, const doubl
  * @param pressure : pressure array
  * @param gamma_per_vol : dp/de array
  */
-void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int nb_cells,
+void compute_pressure_and_derivative(MieGruneisenParameters_s *params, const int nb_cells,
                                      const double *specific_volume,
                                      const double *internal_energy, double *pressure,
                                      double *gamma_per_vol)
@@ -150,7 +150,7 @@ void compute_pressure_and_derivative(MieGruneisenParameters_t *params, const int
  * @param c_son : sound speed array
  * @todo : factorizes the comutation of einth and phi to share with compute_pressure_and_derivative
  */
-void compute_pressure_and_sound_speed(MieGruneisenParameters_t *params, const int nb_cells,
+void compute_pressure_and_sound_speed(MieGruneisenParameters_s *params, const int nb_cells,
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son)
 {
