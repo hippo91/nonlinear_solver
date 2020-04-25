@@ -10,23 +10,6 @@
 #define NEWTON
 #endif
 
-/*
- * allConverged :
- * 	retourne true si tous les membres du tableau has_converged sont à true
- */
-static bool allConverged(bool *has_converged, size_t pb_size)
-{
-    for (size_t i = 0; i < pb_size; ++i)
-    {
-        if (!has_converged[i])
-        {
-            return (false);
-        }
-    }
-    return (true);
-}
-
-
 /**
  * @brief Use Newton-Raphson to solve a function
  * 
@@ -95,12 +78,12 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
             }
         }
         // Check the convergence
-        Newton->check_convergence(delta_x_k, F_k, has_converged);
-
-        if (allConverged(has_converged, pb_size)) {
+        if (Newton->check_convergence(delta_x_k, F_k, has_converged))
+        {
             solver_status = SUCCESS;
             break;
         }
+
         if (iter == NB_ITER_MAX) {
             solver_status = FAILURE;
             break;

@@ -37,9 +37,18 @@ int main()
     bool has_converged[PB_SIZE] = {false, false};
     bool expected_has_converged[PB_SIZE] = {false, true};
 
-    relative_gap(delta_x_k, func, has_converged);
+    bool all_conv = relative_gap(delta_x_k, func, has_converged);
 
-    bool success = assert_equal_bool_arrays(has_converged, expected_has_converged, PB_SIZE, "has_converged");
+    bool success = true;
+    
+    if (!assert_equal_bool_arrays(has_converged, expected_has_converged, PB_SIZE, "has_converged"))
+    {
+        success = false;
+    }
+    if (all_conv)
+    {
+        success = false;
+    }
 
     if (!success)
         return (EXIT_FAILURE);
