@@ -26,19 +26,6 @@ static bool allConverged(bool *has_converged, size_t pb_size)
     return (true);
 }
 
-/**
- * @brief Cleanup the memory by deleting the arrays
- * 
- * @param built_arrays : pointers to the arrays that have been built
- * @param nb_arrays : number of arrays
- */
-static void cleanup_memory(p_array* built_arrays, const size_t nb_arrays) 
-{
-    for (unsigned int j = 0; j < nb_arrays; ++j) {
-        DELETE_ARRAY(built_arrays[j]);
-    }
-}
-
 
 /**
  * @brief Use Newton-Raphson to solve a function
@@ -74,12 +61,10 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     // Check that every array building has been successfull
     p_array built_arrays[] = {F_k, dF_k, delta_x_k};
     const size_t nb_arrays = sizeof(built_arrays) / sizeof(p_array);
-    for (unsigned int i = 0; i < nb_arrays; ++i) {
-        if (built_arrays[i] == NULL) {
-            fprintf(stderr, "Error when building the %d th array!\n", i);
-            cleanup_memory(built_arrays, nb_arrays);
-            return EXIT_FAILURE;
-        }
+    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
+    {
+        cleanup_memory(built_arrays, nb_arrays);
+        return EXIT_FAILURE;
     }
 
     // Initialization

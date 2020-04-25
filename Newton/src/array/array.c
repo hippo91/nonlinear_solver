@@ -130,3 +130,22 @@ int copy_array(const p_array origin, p_array dest)
     memcpy(dest->data, origin->data, origin->size * sizeof(double));
     return EXIT_SUCCESS;
 }
+
+void cleanup_memory(p_array* built_arrays, const unsigned int nb_arrays)
+{
+    for (unsigned int j = 0; j < nb_arrays; ++j) {
+        DELETE_ARRAY(built_arrays[j]);
+    }
+}
+
+
+int check_arrays_building(p_array* built_arrays, const unsigned int nb_arrays)
+{
+    for (unsigned int i = 0; i < nb_arrays; ++i) {
+        if (built_arrays[i] == NULL) {
+            fprintf(stderr, "Error when building the %d th array!\n", i);
+            return EXIT_FAILURE;
+        }
+    }
+    return EXIT_SUCCESS;
+}

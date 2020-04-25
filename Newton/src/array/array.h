@@ -100,4 +100,25 @@ int copy_array(const p_array origin, p_array dest);
  */
 bool is_valid_array(const p_array arr);
 
+
+/**
+ * @brief Cleanup the memory by deleting the arrays
+ * 
+ * @param built_arrays : pointers to the arrays that have been built
+ * @param nb_arrays : number of arrays
+ */
+void cleanup_memory(p_array* built_arrays, const unsigned int nb_arrays);
+
+
+/**
+ * @brief Check if all the arrays have been successfully built
+ * 
+ * @param built_arrays : pointers to the arrays that have been built
+ * @param nb_arrays : number of arrays
+ * @return int EXIT_SUCCESS (0) : in case of success
+ *             EXIT_FAILURE (1) : otherwise
+ */
+int check_arrays_building(p_array* built_arrays, const unsigned int nb_arrays);
+
+
 #endif
