@@ -16,7 +16,10 @@ int main()
     double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
            grunzero = 2.02, b = 0.47, ezero = 0.;
     MieGruneisenParameters_s copper_mat = {
-        czero, S1, S2, S3, rhozero, grunzero, b, ezero, compute_pressure_and_derivative, compute_pressure_and_sound_speed};
+        czero, S1, S2, S3, rhozero, grunzero, b, ezero,
+        NULL, NULL, NULL, NULL, NULL,
+        compute_pressure_and_derivative, compute_pressure_and_sound_speed,
+        init, finalize};
 
     double density[PB_SIZE] = {8700., 9200.};
     double specific_volume[PB_SIZE] = {1. / density[0], 1. / density[1]};
@@ -29,6 +32,8 @@ int main()
     double expected_pressure[] = {-3.391122999999982e+09, 2.248138143555919e+10};
     double expected_gamma[] = {17930.499999999996, 18165.5};
     double expected_cson[] = {3837.312029974254, 4663.450646599814};
+
+    copper_mat.init(&copper_mat, PB_SIZE, specific_volume);
 
     compute_pressure_and_derivative(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, gamma_per_vol);
 
@@ -47,6 +52,8 @@ int main()
         success = false;
     if (!assert_equal_arrays(cson, expected_cson, PB_SIZE, "cson"))
         success = false;
+
+    copper_mat.finalize(&copper_mat);
 
     if (!success)
         return (EXIT_FAILURE);

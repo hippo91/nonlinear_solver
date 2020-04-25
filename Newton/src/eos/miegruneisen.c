@@ -46,51 +46,92 @@ static inline double compute_denom(const double s1, const double s2, const doubl
     return 1. / (1. - (s1 + s2 * epsv + s3 * epsv * epsv) * epsv);
 }
 
-/**
- * @brief Compute and returns the pressure in case of compression.
- *        Also computes the value of pressure and internal energy on hugoniot (phi & einth)
- * 
- * @param rho_zero : initial density
- * @param c_zero_2 : square of the initial sound speed
- * @param e_zero : initial internal energy
- * @param denom : square root of the denominator of the pressure on the hugoniot
- * @param epsv : compression of the material
- * @param gamma_per_vol : Gruneisen coefficient divided by the specific volume : dp/de
- * @param internal_energy : internal energy
- * @param phi : pressure on the hugoniot
- * @param einth : internal energy on the hugoniot
- * @return double : pressure
- */
-static inline double compute_pressure_compression(const double rho_zero, const double c_zero_2, const double e_zero, const double denom,
-                                           const double epsv, const double gamma_per_vol, const double internal_energy,
-                                           double *phi, double *einth)
+int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const double * const specific_volume)
 {
-    *phi = rho_zero * c_zero_2 * epsv * denom * denom;
-    *einth = e_zero + *phi * epsv / (2. * rho_zero);
-    return *phi + gamma_per_vol * (internal_energy - *einth);
+    if (params->phi == NULL)
+    {
+        params->phi = (double *)calloc(nb_cells, sizeof(double));
+        if (params->phi == NULL)
+        {
+            fprintf(stderr, "Error during allocation of params->phi array!\n");
+            return EXIT_FAILURE;
+        }
+    }
+    if (params->dphi == NULL)
+    {
+        params->dphi = (double *)calloc(nb_cells, sizeof(double));
+        if (params->dphi == NULL)
+        {
+            fprintf(stderr, "Error during allocation of params->dphi array!\n");
+            return EXIT_FAILURE;
+        }
+    }
+    if (params->einth == NULL)
+    {
+        params->einth = (double *)calloc(nb_cells, sizeof(double));
+        if (params->einth == NULL)
+        {
+            fprintf(stderr, "Error during allocation of params->einth array!\n");
+            return EXIT_FAILURE;
+        }
+    }
+    if (params->deinth == NULL)
+    {
+        params->deinth = (double *)calloc(nb_cells, sizeof(double));
+        if (params->deinth == NULL)
+        {
+            fprintf(stderr, "Error during allocation of params->deinth array!\n");
+            return EXIT_FAILURE;
+        }
+    }
+    if (params->gamma_per_vol == NULL)
+    {
+        params->gamma_per_vol = (double *)calloc(nb_cells, sizeof(double));
+        if (params->gamma_per_vol == NULL)
+        {
+            fprintf(stderr, "Error during allocation of params->gamma_per_vol array!\n");
+            return EXIT_FAILURE;
+        }
+    }
+
+    const double s1 = params->s1;
+    const double s2 = params->s2;
+    const double s3 = params->s3;
+    const double rho_zero = params->rho_zero;
+    const double gamma_zero = params->gamma_zero;
+    const double coeff_b = params->coeff_b;
+    const double e_zero = params->e_zero;
+    const double c_zero_2 = params->c_zero * params->c_zero;
+    for (unsigned int i = 0; i < nb_cells; ++i)
+    {
+        const double epsv = compute_epsv(rho_zero, specific_volume[i]);
+        params->gamma_per_vol[i] = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
+        if (epsv > 0)
+        {
+            const double denom = compute_denom(s1, s2, s3, epsv);
+            params->phi[i] = rho_zero * c_zero_2 * epsv * denom * denom;
+            params->einth[i] = e_zero + params->phi[i] * epsv / (2. * rho_zero);
+            const double redond_a = s1 + 2. * s2 * epsv + 3. * s3 * epsv * epsv;
+            params->dphi[i] = params->phi[i] * rho_zero * (-1. / epsv - 2. * redond_a * denom);
+            params->deinth[i] = params->phi[i] * (-1. - epsv * redond_a * denom);
+        }
+        else
+        {
+            params->phi[i] = rho_zero * c_zero_2 * epsv / (1. - epsv);
+            params->einth[i] = e_zero;
+            params->dphi[i] = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
+        }
+    }
+    return EXIT_SUCCESS;
 }
 
-/**
- * @brief Compute and returns the pressure in case of release.
- *        Also computes the value of pressure and internal energy on hugoniot (phi & einth)
- * 
- * @param rho_zero : initial density
- * @param c_zero_2 : square of initial sound speed
- * @param e_zero : initial internal energy
- * @param epsv : compression of the material
- * @param gamma_per_vol : Gruneisen coefficient divided by the specific volume : dp/de
- * @param internal_energy : internal energy
- * @param phi : pressure on the hugoniot
- * @param einth : internal energy on the hugoniot
- * @return double : pressure
- */
-static inline double compute_pressure_release(const double rho_zero, const double c_zero_2, const double e_zero,
-                                       const double epsv, const double gamma_per_vol, const double internal_energy,
-                                       double *phi, double *einth)
+void finalize(MieGruneisenParameters_s *params)
 {
-    *phi = rho_zero * c_zero_2 * epsv / (1. - epsv);
-    *einth = e_zero;
-    return *phi + gamma_per_vol * (internal_energy - *einth);
+    free(params->gamma_per_vol);
+    free(params->phi);
+    free(params->dphi);
+    free(params->einth);
+    free(params->deinth);
 }
 
 /**
@@ -105,37 +146,14 @@ static inline double compute_pressure_release(const double rho_zero, const doubl
  * @param gamma_per_vol : dp/de array
  */
 void compute_pressure_and_derivative(MieGruneisenParameters_s *params, const int nb_cells,
-                                     const double *specific_volume,
+                                     __attribute__((unused)) const double *specific_volume,
                                      const double *internal_energy, double *pressure,
                                      double *gamma_per_vol)
 {
-    const double c_zero_2 = params->c_zero * params->c_zero;
-    const double rho_zero = params->rho_zero;
-    const double gamma_zero = params->gamma_zero;
-    const double coeff_b = params->coeff_b;
-    const double s1 = params->s1;
-    const double s2 = params->s2;
-    const double s3 = params->s3;
-    const double e_zero = params->e_zero;
     for (int i = 0; i < nb_cells; ++i)
     {
-        // phi : pressure on hugoniot
-        double phi = 0;
-        // einth : specific internal energy on hugoniot
-        double einth = 0;
-        // epsv compression of the material
-        const double epsv = compute_epsv(rho_zero, specific_volume[i]);
-        // Gruneisen coefficient divided by the specific volume : dp/de
-        gamma_per_vol[i] = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
-        if (epsv > 0)
-        {
-            const double denom = compute_denom(s1, s2, s3, epsv);
-            pressure[i] = compute_pressure_compression(rho_zero, c_zero_2, e_zero, denom, epsv, gamma_per_vol[i], internal_energy[i], &phi, &einth);
-        }
-        else
-        {
-            pressure[i] = compute_pressure_release(rho_zero, c_zero_2, e_zero, epsv, gamma_per_vol[i], internal_energy[i], &phi, &einth);
-        }
+        gamma_per_vol[i] = params->gamma_per_vol[i];
+        pressure[i] = params->phi[i] + params->gamma_per_vol[i] * (internal_energy[i] - params->einth[i]);
     }
 }
 
@@ -154,48 +172,18 @@ void compute_pressure_and_sound_speed(MieGruneisenParameters_s *params, const in
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son)
 {
-    const double c_zero_2 = params->c_zero * params->c_zero;
-    const double rho_zero = params->rho_zero;
-    const double gamma_zero = params->gamma_zero;
-    const double coeff_b = params->coeff_b;
-    const double s1 = params->s1;
-    const double s2 = params->s2;
-    const double s3 = params->s3;
-    const double e_zero = params->e_zero;
     const double dgam = params->rho_zero * (params->gamma_zero - params->coeff_b);
     for (int i = 0; i < nb_cells; ++i)
     {
-        // phi : pressure on hugoniot
-        double phi = 0;
-        // einth : specific internal energy on hugoniot
-        double einth = 0;
-        // epsv compression of the material
-        const double epsv = compute_epsv(rho_zero, specific_volume[i]);
-        // Gruneisen coefficient divided by the specific volume : dp/de
-        const double gamma_per_vol = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
-        const double redond_a = s1 + 2. * s2 * epsv + 3. * s3 * epsv * epsv;
-        double dpdv = 0.;
-        if (epsv > 0)
-        {
-            const double denom = compute_denom(s1, s2, s3, epsv);
-            pressure[i] = compute_pressure_compression(rho_zero, c_zero_2, e_zero, denom, epsv, gamma_per_vol, internal_energy[i], &phi, &einth);
-            const double dphi = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
-            const double deinth = phi * (-1. - epsv * redond_a * denom);
-            dpdv = dphi + (dgam - gamma_per_vol) * (internal_energy[i] - einth) / specific_volume[i] - gamma_per_vol * deinth;
-        }
-        else
-        {
-            pressure[i] = compute_pressure_release(rho_zero, c_zero_2, e_zero, epsv, gamma_per_vol, internal_energy[i], &phi, &einth);
-            const double dphi = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
-            dpdv = dphi + (dgam - gamma_per_vol) * (internal_energy[i] - einth) / specific_volume[i];
-        }
-        double vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * gamma_per_vol - dpdv);
+        pressure[i] = params->phi[i] + params->gamma_per_vol[i] * (internal_energy[i] - params->einth[i]);
+        double dpdv = params->dphi[i] + (dgam - params->gamma_per_vol[i]) * (internal_energy[i] - params->einth[i]) / specific_volume[i] - params->gamma_per_vol[i] * params->deinth[i];
+        double vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * params->gamma_per_vol[i] - dpdv);
         if (vson_2 < 0)
         {
             printf("Carré de la vitesse du son < 0\n");
             printf("specific_volume[%d] = %15.9g\n", i, specific_volume[i]);
             printf("pressure[%d] = %15.9g\n", i, pressure[i]);
-            printf("dpsurde[%d] = %15.9g\n", i, gamma_per_vol);
+            printf("dpsurde[%d] = %15.9g\n", i, params->gamma_per_vol[i]);
             printf("dpdv[%d] = %15.9g\n", i, dpdv);
             raise(SIGABRT);
         }
