@@ -25,8 +25,10 @@ void internal_energy_evolution_VNR(void *variables, const p_array newton_var, p_
     assert(vars->specific_volume_old->size == vars->pressure->size);
 
     const unsigned int pb_size = newton_var->size;
+
     BUILD_ARRAY(pression, pb_size)
     BUILD_ARRAY(dpsurde, pb_size)
+
     p_array built_arrays[] = {pression, dpsurde};
     const unsigned int nb_arrays = sizeof(built_arrays) / sizeof(p_array);
     if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
@@ -34,6 +36,7 @@ void internal_energy_evolution_VNR(void *variables, const p_array newton_var, p_
         cleanup_memory(built_arrays, nb_arrays);
         exit(1);
     }
+
     // Call of EOS
     vars->miegruneisen->get_pressure_and_derivative(vars->miegruneisen, pb_size, vars->specific_volume_new->data,
                                                     newton_var->data, pression->data, dpsurde->data);
