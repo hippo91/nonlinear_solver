@@ -2,6 +2,7 @@
 
 #include "incrementations_methods.h"
 #include "test_utils.h"
+#include "array.h"
 
 #define PB_SIZE 2
 
@@ -13,14 +14,37 @@
  */
 bool test_classical_incrementation()
 {
-    double x_k[PB_SIZE] = {-1., 2.};
-    double f[PB_SIZE] = {123.456, -987.654};
-    double df[PB_SIZE] = {-30., -50.};
-    double obtained[PB_SIZE] = {0., 0.};
-    double expected[PB_SIZE] = {4.1152, -19.75308};
+    BUILD_ARRAY(x_k, PB_SIZE)
+    BUILD_ARRAY(f, PB_SIZE)
+    BUILD_ARRAY(df, PB_SIZE)
+    BUILD_ARRAY(obtained, PB_SIZE)
+    BUILD_ARRAY(expected, PB_SIZE)
 
-    classical_incrementation(x_k, f, df, PB_SIZE, obtained);
-    return assert_equal_arrays(obtained, expected, PB_SIZE, "obtained");
+    p_array built_arrays[] = {x_k, f, df, obtained, expected};
+    const unsigned int nb_arrays = sizeof(built_arrays) / sizeof(p_array);
+    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
+    {
+        cleanup_memory(built_arrays, nb_arrays);
+        return EXIT_FAILURE;
+    }
+
+    x_k->data[0] = -1.;
+    x_k->data[1] = 2.;
+
+    f->data[0] = 123.456;
+    f->data[1] = -987.654;
+
+    df->data[0] = -30.;
+    df->data[1] = -50.;
+
+    expected->data[0] = 4.1152;
+    expected->data[1] = -19.75308;
+
+    classical_incrementation(x_k, f, df, obtained);
+    int status = assert_equal(obtained, expected);
+
+    cleanup_memory(built_arrays, nb_arrays);
+    return status;
 }
 
 /**
@@ -31,14 +55,38 @@ bool test_classical_incrementation()
  */
 bool test_damped_incrementation()
 {
-    double x_k[PB_SIZE] = {-1., 2.};
-    double f[PB_SIZE] = {123.456, -987.654};
-    double df[PB_SIZE] = {-30., -50.};
-    double obtained[PB_SIZE] = {0., 0.};
-    double expected[PB_SIZE] = {4.1152 * 0.5, -19.75308 * 0.5};
+    BUILD_ARRAY(x_k, PB_SIZE)
+    BUILD_ARRAY(f, PB_SIZE)
+    BUILD_ARRAY(df, PB_SIZE)
+    BUILD_ARRAY(obtained, PB_SIZE)
+    BUILD_ARRAY(expected, PB_SIZE)
 
-    damped_incrementation(x_k, f, df, PB_SIZE, obtained);
-    return assert_equal_arrays(obtained, expected, PB_SIZE, "obtained");
+    p_array built_arrays[] = {x_k, f, df, obtained, expected};
+    const unsigned int nb_arrays = sizeof(built_arrays) / sizeof(p_array);
+    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
+    {
+        cleanup_memory(built_arrays, nb_arrays);
+        return EXIT_FAILURE;
+    }
+
+    x_k->data[0] = -1.;
+    x_k->data[1] = 2.;
+
+    f->data[0] = 123.456;
+    f->data[1] = -987.654;
+
+    df->data[0] = -30.;
+    df->data[1] = -50.;
+
+    expected->data[0] = 4.1152 * 0.5;
+    expected->data[1] = -19.75308 * 0.5;
+
+    damped_incrementation(x_k, f, df, obtained);
+    int status = assert_equal(obtained, expected);
+
+    cleanup_memory(built_arrays, nb_arrays);
+
+    return status;
 }
 
 /**
@@ -49,14 +97,46 @@ bool test_damped_incrementation()
  */
 bool test_ensure_positivity_incrementation()
 {
-    double x_k[2 * PB_SIZE] = {-1., 2., -1, 2.};
-    double f[2 * PB_SIZE] = {4., 2., 4., 2.};
-    double df[2 * PB_SIZE] = {-2., 0.5, -16., 2.};
-    double obtained[2 * PB_SIZE] = {0., 0., 0., 0.};
-    double expected[2 * PB_SIZE] = {0.5, -1., 0.25, -1.};
+    BUILD_ARRAY(x_k, 2 * PB_SIZE)
+    BUILD_ARRAY(f, 2 * PB_SIZE)
+    BUILD_ARRAY(df, 2 * PB_SIZE)
+    BUILD_ARRAY(obtained, 2 * PB_SIZE)
+    BUILD_ARRAY(expected, 2 * PB_SIZE)
 
-    ensure_same_sign_incrementation(x_k, f, df, 2 * PB_SIZE, obtained);
-    return assert_equal_arrays(obtained, expected, 2 * PB_SIZE, "obtained");
+    p_array built_arrays[] = {x_k, f, df, obtained, expected};
+    const unsigned int nb_arrays = sizeof(built_arrays) / sizeof(p_array);
+    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
+    {
+        cleanup_memory(built_arrays, nb_arrays);
+        return EXIT_FAILURE;
+    }
+
+    x_k->data[0] = -1.;
+    x_k->data[1] = 2.;
+    x_k->data[2] = -1;
+    x_k->data[3] = 2.;
+
+    f->data[0] = 4.;
+    f->data[1] = 2.;
+    f->data[2] = 4.;
+    f->data[3] = 2.;
+
+    df->data[0] = -2.;
+    df->data[1] = 0.5;
+    df->data[2] = -16.;
+    df->data[3] = 2.;
+
+    expected->data[0] = 0.5;
+    expected->data[1] = -1.;
+    expected->data[2] = 0.25;
+    expected->data[3] = -1.;
+
+    ensure_same_sign_incrementation(x_k, f, df, obtained);
+    int status = assert_equal(obtained, expected);
+
+    cleanup_memory(built_arrays, nb_arrays);
+
+    return status;
 }
 
 /**

@@ -5,11 +5,16 @@ target_sources( ${LIBRARY_NAME} PRIVATE
                 "incrementations_methods.c" 
               )
 target_include_directories( ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR} )
+target_link_libraries( ${LIBRARY_NAME}
+  PUBLIC
+    array
+)
 
 
 add_executable( test_incrementation_methods test_incrementation_methods )
 target_link_libraries( test_incrementation_methods
   PRIVATE
+    array
     incrementation
     test_utils
 )

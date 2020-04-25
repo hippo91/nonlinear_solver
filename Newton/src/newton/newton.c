@@ -85,7 +85,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
         // Compute F and dF
         Newton->evaluate_the_function(func_variables, x_k->data, pb_size, F_k->data, dF_k->data);
         // Compute delta_x
-        Newton->increment_the_vector(x_k->data, F_k->data, dF_k->data, pb_size, delta_x_k->data);
+        Newton->increment_the_vector(x_k, F_k, dF_k, delta_x_k);
         // Check the convergence and apply increments
         Newton->check_convergence(x_k, delta_x_k, F_k, has_converged);
 
