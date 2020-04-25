@@ -7,7 +7,7 @@
 typedef struct NewtonParameters
 {
     void (*evaluate_the_function)(void *, const p_array, p_array, p_array);
-    incrementation_fct_ptr increment_the_vector;
+    incrementation_fct_ptr compute_increment_vector;
     criterion_fct_ptr check_convergence;
 } NewtonParameters_s;
 

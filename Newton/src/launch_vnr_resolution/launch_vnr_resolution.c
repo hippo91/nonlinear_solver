@@ -42,7 +42,7 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         s_array thread_pressure = {chunk_size, "Thread pressure", pressure->data + offset};
         s_array thread_solution = {chunk_size, "Thread solution", solution->data + offset};
 
-        VnrVariables_t VnrVars = {&thread_old_spec_vol,
+        VnrVariables_s VnrVars = {&thread_old_spec_vol,
                                   &thread_new_spec_vol,
                                   &thread_internal_energy,
                                   &thread_pressure,
