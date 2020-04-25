@@ -24,13 +24,13 @@ void internal_energy_evolution_VNR(void *variables, const p_array newton_var,
     allocVecForOMP(pb_size, 0., &pression);
     allocVecForOMP(pb_size, 0., &dpsurde);
     // Appel de l'eos
-    vars->miegruneisen->get_pressure_and_derivative(vars->miegruneisen, pb_size, vars->specific_volume_new,
+    vars->miegruneisen->get_pressure_and_derivative(vars->miegruneisen, pb_size, vars->specific_volume_new->data,
                                                     newton_var->data, pression, dpsurde);
     for (size_t i = 0; i < pb_size; ++i)
     {
-        const double delta_v = vars->specific_volume_new[i] - vars->specific_volume_old[i];
+        const double delta_v = vars->specific_volume_new->data[i] - vars->specific_volume_old->data[i];
         // Fonction à annuler
-        func->data[i] = newton_var->data[i] + (pression[i] + vars->pressure[i]) * delta_v * 0.5 - vars->internal_energy_old[i];
+        func->data[i] = newton_var->data[i] + (pression[i] + vars->pressure->data[i]) * delta_v * 0.5 - vars->internal_energy_old->data[i];
         // Dérivée de la fonction à annuler
         dfunc->data[i] = 1. + dpsurde[i] * delta_v * 0.5;
     }

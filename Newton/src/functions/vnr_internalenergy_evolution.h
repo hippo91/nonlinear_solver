@@ -10,10 +10,10 @@ typedef struct VnrVariables VnrVariables_t;
 
 struct VnrVariables
 {
-    double *specific_volume_old;
-    double *specific_volume_new;
-    double *internal_energy_old;
-    double *pressure;
+    const p_array specific_volume_old;
+    const p_array specific_volume_new;
+    const p_array internal_energy_old;
+    const p_array pressure;
     MieGruneisenParameters_t *miegruneisen;
 };
 
