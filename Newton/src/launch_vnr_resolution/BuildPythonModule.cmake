@@ -64,5 +64,4 @@ target_link_libraries( ${PYTHON_MODULE_NAME}
         incrementation
         criterions
         eos
-        utils
 )

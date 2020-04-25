@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 #include "array.h"
-#include "utils.h"
 #ifndef NEWTON
 #include "newton.h"
 #define NEWTON
@@ -17,7 +16,7 @@
  * @param func_variables : parameters of the function to solve
  * @param x_ini : initial values of the unknown
  * @param x_sol : solution
- * @warning : the solution is modified in any cases, even in case of ERROR or FAILURE!
+ * @warning : the solution is modified in any cases, even in case of FAILURE!
  * 
  * @return EXIT_SUCCESS (0) in case of success
  *         EXIT_FAILURE (1) otherwise
@@ -41,27 +40,28 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     // Array of the values of incrementation
     BUILD_ARRAY(delta_x_k, pb_size)
 
-    // Check that every array building has been successfull
     p_array built_arrays[] = {F_k, dF_k, delta_x_k};
     const size_t nb_arrays = sizeof(built_arrays) / sizeof(p_array);
-    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
+
+    // Array of convergence markers
+    bool *has_converged = (bool *)calloc(pb_size, sizeof(bool));
+
+    // Check that every array building has been successfull
+    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE || has_converged == NULL)
     {
+        fprintf(stderr, "Error during allocation/creation of arrays!\n");
         cleanup_memory(built_arrays, nb_arrays);
         return EXIT_FAILURE;
     }
 
     // Initialization
-    enum e_solver_status {SUCCESS, FAILURE, ERROR} solver_status = SUCCESS;
+    enum e_solver_status {SUCCESS, FAILURE} solver_status = SUCCESS;
     p_array x_k = x_sol;
     if (copy_array(x_ini, x_k) == EXIT_FAILURE) {
         fprintf(stderr, "Unable to initialize the Newton-Raphson solver!\n");
         cleanup_memory(built_arrays, nb_arrays);
         return EXIT_FAILURE;
     }
-    // Array of convergence markers
-    bool *has_converged;
-    // TODO: check successfull creation of has_converged array
-    allocVecBoolForOMP(pb_size, &has_converged);
 
     while (true)
     {
@@ -100,11 +100,6 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     {
         fprintf(stderr, "Maximum iterations number reached (%d)!\n", NB_ITER_MAX);
         fprintf(stderr, "Newton-Raphson algorithm has not converged!\n");
-        return EXIT_FAILURE;
-    }
-    if (solver_status == ERROR)
-    {
-        fprintf(stderr, "An error has been encountered during the Newton-Raphson algorithm!");
         return EXIT_FAILURE;
     }
 

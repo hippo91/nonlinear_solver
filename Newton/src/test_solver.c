@@ -6,7 +6,6 @@
 #include "array.h"
 #include "launch_vnr_resolution.h"
 #include "test_utils.h"
-#include "utils.h"
 
 /**
  * @brief Launch the test of the nonlinear solver

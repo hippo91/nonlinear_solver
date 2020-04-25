@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 #include "array.h"
-#include "utils.h"
 
 void internal_energy_evolution_VNR(void *variables, const p_array newton_var, p_array func, p_array dfunc)
 {

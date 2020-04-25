@@ -10,6 +10,4 @@ target_link_libraries( ${LIBRARY_NAME}
     array
     incrementation
     criterions
-  PRIVATE
-    utils
 )

@@ -23,7 +23,6 @@ add_executable( test_solver test_solver.c )
 add_subdirectory( array )
 add_subdirectory( eos )
 add_subdirectory( functions )
-add_subdirectory( utils )
 add_subdirectory( incrementation )
 add_subdirectory( criterions )
 add_subdirectory( newton )
@@ -32,14 +31,12 @@ add_subdirectory( test_utils )
 
 target_link_libraries( test_solver_perfs PRIVATE 
   launch_vnr_resolution
-  utils
   test_utils
   )
 
 target_link_libraries( test_solver PRIVATE
   array
   launch_vnr_resolution
-  utils
   test_utils
   )
 
