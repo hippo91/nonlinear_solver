@@ -102,6 +102,8 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
     const double coeff_b = params->coeff_b;
     const double e_zero = params->e_zero;
     const double c_zero_2 = params->c_zero * params->c_zero;
+    const double rho_czero2 = rho_zero * c_zero_2;
+    const double inv_rhozero_x2 = 1. / (2.* rho_zero); 
     for (unsigned int i = 0; i < nb_cells; ++i)
     {
         const double epsv = compute_epsv(rho_zero, specific_volume[i]);
@@ -109,15 +111,16 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
         if (epsv > 0)
         {
             const double denom = compute_denom(s1, s2, s3, epsv);
-            params->phi[i] = rho_zero * c_zero_2 * epsv * denom * denom;
-            params->einth[i] = e_zero + params->phi[i] * epsv / (2. * rho_zero);
-            const double redond_a = s1 + 2. * s2 * epsv + 3. * s3 * epsv * epsv;
-            params->dphi[i] = params->phi[i] * rho_zero * (-1. / epsv - 2. * redond_a * denom);
-            params->deinth[i] = params->phi[i] * (-1. - epsv * redond_a * denom);
+            const double phi = rho_czero2 * epsv * denom * denom;
+            params->phi[i] = phi;
+            params->einth[i] = e_zero + phi * epsv * inv_rhozero_x2;
+            const double redond_a = (s1 + 2. * s2 * epsv + 3. * s3 * epsv * epsv);
+            params->dphi[i] = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
+            params->deinth[i] = phi * (-1. - epsv * redond_a * denom);
         }
         else
         {
-            params->phi[i] = rho_zero * c_zero_2 * epsv / (1. - epsv);
+            params->phi[i] = rho_czero2 * epsv / (1. - epsv);
             params->einth[i] = e_zero;
             params->dphi[i] = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
         }

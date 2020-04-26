@@ -74,7 +74,7 @@ int main()
         success = false;
     // At the time this test has been created, it tooks around 3 minutes to run.
     // Adds a possible variation of 10%
-    const double time_limit = 60. * 1.1;
+    const double time_limit = 52. * 1.1;
     if (cpu_time_used > time_limit)
     {
         success = false;
