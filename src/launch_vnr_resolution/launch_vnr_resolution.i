@@ -3,8 +3,8 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include "launch_vnr_resolution.h"
 #include "array.h"
+#include "launch_vnr_resolution.h"
 %}
 
 %include "numpy.i"
