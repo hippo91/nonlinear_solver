@@ -17,17 +17,17 @@ set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -pg" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 enable_testing()
-add_executable( test_solver_perfs test_solver_perfs.c )
-add_executable( test_solver test_solver.c )
+add_executable( test_solver_perfs src/test_solver_perfs.c )
+add_executable( test_solver src/test_solver.c )
 
-add_subdirectory( array )
-add_subdirectory( eos )
-add_subdirectory( functions )
-add_subdirectory( incrementation )
-add_subdirectory( criterions )
-add_subdirectory( newton )
-add_subdirectory( launch_vnr_resolution )
-add_subdirectory( test_utils )
+add_subdirectory( src/array )
+add_subdirectory( src/eos )
+add_subdirectory( src/functions )
+add_subdirectory( src/incrementation )
+add_subdirectory( src/criterions )
+add_subdirectory( src/newton )
+add_subdirectory( src/launch_vnr_resolution )
+add_subdirectory( src/test_utils )
 
 target_link_libraries( test_solver_perfs PRIVATE 
   launch_vnr_resolution
