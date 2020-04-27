@@ -26,14 +26,14 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
     assert(is_valid_array(new_p));
     assert(is_valid_array(new_vson));
 
-    const int pb_size = old_specific_volume->size;
+    const unsigned int pb_size = old_specific_volume->size;
 
-    assert(pb_size = new_specific_volume->size);
-    assert(pb_size = pressure->size);
-    assert(pb_size = internal_energy->size);
-    assert(pb_size = solution->size);
-    assert(pb_size = new_p->size);
-    assert(pb_size = new_vson->size);
+    assert(pb_size == new_specific_volume->size);
+    assert(pb_size == pressure->size);
+    assert(pb_size == internal_energy->size);
+    assert(pb_size == solution->size);
+    assert(pb_size == new_p->size);
+    assert(pb_size == new_vson->size);
 
     // Function to solve (internal energy evolution in the vNR scheme)
 #pragma omp parallel
@@ -60,6 +60,8 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         int ret_code = MieGruneisenParams.init(&MieGruneisenParams, chunk_size, new_specific_volume->data + offset);
         if (ret_code == EXIT_FAILURE) {
             fprintf(stderr, "An error occured during MieGruneisen initialization!\n");
+            fprintf(stderr, "Thread id : %d(/%d)\n", tid, n_threads);
+            fprintf(stderr, "Chunk size : %d\n", chunk_size);
             exit(1);
         }
 

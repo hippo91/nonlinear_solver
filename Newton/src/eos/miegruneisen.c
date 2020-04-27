@@ -53,7 +53,7 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
         params->phi = (double *)calloc(nb_cells, sizeof(double));
         if (params->phi == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->phi array!\n");
+            fprintf(stderr, "Error during allocation of params->phi array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
@@ -62,7 +62,7 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
         params->dphi = (double *)calloc(nb_cells, sizeof(double));
         if (params->dphi == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->dphi array!\n");
+            fprintf(stderr, "Error during allocation of params->dphi array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
@@ -71,7 +71,7 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
         params->einth = (double *)calloc(nb_cells, sizeof(double));
         if (params->einth == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->einth array!\n");
+            fprintf(stderr, "Error during allocation of params->einth array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
@@ -80,7 +80,7 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
         params->deinth = (double *)calloc(nb_cells, sizeof(double));
         if (params->deinth == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->deinth array!\n");
+            fprintf(stderr, "Error during allocation of params->deinth array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
@@ -89,7 +89,7 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
         params->gamma_per_vol = (double *)calloc(nb_cells, sizeof(double));
         if (params->gamma_per_vol == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->gamma_per_vol array!\n");
+            fprintf(stderr, "Error during allocation of params->gamma_per_vol array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
