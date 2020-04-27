@@ -6,12 +6,7 @@ set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module")
 find_package( SWIG )
 
 # Need Python
-if ( CMAKE_VERSION VERSION_LESS 3.12 )
-    find_package( PythonLibs )
-    set( "Python_INCLUDE_DIRS" ${PYTHON_INCLUDE_DIRS} )
-else()
-    find_package( Python COMPONENTS Development )
-endif()
+find_package( Python COMPONENTS Development Interpreter )
 
 if ( NOT SWIG_FOUND )
     message( "SWIG is needed to build the python module but cannot be found. " 
@@ -23,6 +18,28 @@ if ( NOT PythonLibs_FOUND AND NOT Python_FOUND )
     message( "Python is needed to build the python module but cannot be found. "
              "Skipping the build of python module!" )
     return()
+endif()
+
+# Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
+# This comes to hand if we also need to use the NumPy C API
+execute_process( COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.get_include())" 
+                 RESULT_VARIABLE NUMPY_FOUND
+                 OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
+                 ERROR_VARIABLE NUMPY_ERROR
+                 OUTPUT_STRIP_TRAILING_WHITESPACE
+                 ERROR_STRIP_TRAILING_WHITESPACE
+                )
+if( NOT ${NUMPY_FOUND} EQUAL 0 )
+    message( "Numpy headers cannot be found. " )
+    message( "The command that should find Numpy headers exited with error : ")
+    message( "${NUMPY_ERROR}" )
+    message( "However the python module can (and will) be built " )
+    message( "but you would need to install numpy in order to use it!" )
+else()
+    message( STATUS "Found Numpy: ${NUMPY_INCLUDE_DIR}" )
+    # In fact we don't care about NUMPY_INCLUDE_DIR variable.
+    # The only dependency to numpy is the numpy.i file which is
+    # bundlded in the project.
 endif()
 
 # Override the module name found in the swig source (.i) file
