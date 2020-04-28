@@ -7,3 +7,7 @@
 build/
 *.egg-info
 __pycache__
+# Ignore swig built files
+*.so
+*PYTHON_wrap.c
+vnr_internal_energy.py
