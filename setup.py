@@ -37,7 +37,6 @@ class CMakeBuild(build_ext):
                 '-DCMAKE_BUILD_TYPE=%s' % cfg,
                 '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}'.format(extdir),
                 '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY={}'.format(self.build_temp),
-                '-DPYTHON_MODULE_DIR={}'.format(extdir),
                 '-DPYTHON_LIBRARY_NAME={}'.format(ext.name + sysconfig.get_config_var('EXT_SUFFIX'))
             ]
 
@@ -82,6 +81,8 @@ setup(name='vnr_internal_energy',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown',
       install_requires=['numpy>=1.15.1'],
+      packages=['python_extension'],
+      package_dir={'':'src'},
       ext_modules=[CMakeExtension('_vnr_internal_energy')],
       cmdclass={'build_ext': CMakeBuild},
       zip_safe=False,
