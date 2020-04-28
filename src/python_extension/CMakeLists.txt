@@ -1,9 +1,3 @@
-if( NOT ${BUILD_SHARED_LIBS} )
-  message( "Static libraries are incompatible with the build of a python module. "
-           "Skipping the build of python module!" )
-  return()
-endif()
-
 set( PYTHON_MODULE_NAME "vnr_internal_energy" CACHE STRING "Name of the python module to generate" )
 # Where to build the module
 set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module" CACHE PATH "Path toward the directory where the python module is built" )
