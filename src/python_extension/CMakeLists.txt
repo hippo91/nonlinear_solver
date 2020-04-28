@@ -1,3 +1,9 @@
+if( NOT ${BUILD_SHARED_LIBS} )
+  message( "Static libraries are incompatible with the build of a python module. "
+           "Skipping the build of python module!" )
+  return()
+endif()
+
 set( PYTHON_MODULE_NAME "vnr_internal_energy" CACHE STRING "Name of the python module to generate" )
 # Where to build the module
 set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module" CACHE PATH "Path toward the directory where the python module is built" )
@@ -54,28 +60,25 @@ else()
     set_property( SOURCE launch_vnr_resolution.i PROPERTY SWIG_MODULE_NAME ${PYTHON_MODULE_NAME} )
 endif()
 
+set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_TARGET_INCLUDE_DIRECTORIES TRUE )
+
 swig_add_library( ${PYTHON_MODULE_NAME}
     TYPE SHARED
     LANGUAGE Python
-    SOURCES "launch_vnr_resolution.i"
+    SOURCES launch_vnr_resolution.i
     OUTPUT_DIR "${PYTHON_MODULE_DIR}"
     OUTFILE_DIR "${CMAKE_CURRENT_BINARY_DIR}/swig_gen"
-)
-target_sources( ${PYTHON_MODULE_NAME}
-    PRIVATE
-        "launch_vnr_resolution.h"
-        "launch_vnr_resolution.c"
 )
 set_target_properties( ${PYTHON_MODULE_NAME}
     PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${PYTHON_MODULE_DIR}"
 )
 target_include_directories( ${PYTHON_MODULE_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}
     PRIVATE
         ${Python_INCLUDE_DIRS}
 )
+
+swig_link_libraries( ${PYTHON_MODULE_NAME} PRIVATE launch_vnr_resolution )
 target_link_libraries( ${PYTHON_MODULE_NAME}
     PRIVATE
         array

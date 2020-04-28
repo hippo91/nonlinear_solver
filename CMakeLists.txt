@@ -29,6 +29,7 @@ add_subdirectory( src/criterions )
 add_subdirectory( src/newton )
 add_subdirectory( src/launch_vnr_resolution )
 add_subdirectory( src/test_utils )
+add_subdirectory( src/python_extension )
 
 target_link_libraries( test_solver_perfs PRIVATE 
   launch_vnr_resolution

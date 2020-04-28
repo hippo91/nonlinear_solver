@@ -15,11 +15,3 @@ PRIVATE
   criterions
   eos
   )
-
-
-if( NOT ${BUILD_SHARED_LIBS} )
-  message( "Static libraries are incompatible with the build of a python module. "
-           "Skipping the build of python module!" )
-else()
-  include( BuildPythonModule.cmake )
-endif()
