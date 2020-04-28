@@ -1,6 +1,9 @@
-set( PYTHON_MODULE_NAME "vnr_internal_energy" )
+set( PYTHON_MODULE_NAME "vnr_internal_energy" CACHE STRING "Name of the python module to generate" )
 # Where to build the module
-set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module")
+set( PYTHON_MODULE_DIR "${CMAKE_BINARY_DIR}/python_module" CACHE PATH "Path toward the directory where the python module is built" )
+# The library created/used by python should follow a specific pattern which will be set by setup.py
+# If not generated via setup.py doesn't take care
+set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the library that will be used by setup.py" )
 
 # Need SWIG
 find_package( SWIG )
@@ -42,15 +45,15 @@ else()
     # bundlded in the project.
 endif()
 
+include( UseSWIG )
 # Override the module name found in the swig source (.i) file
 # https://gitlab.kitware.com/cmake/cmake/issues/18374
-if( CMAKE_VESION VERSION_LESS "3.18" ) 
+if( CMAKE_VERSION VERSION_LESS "3.18" ) 
     set( CMAKE_SWIG_FLAGS -module ${PYTHON_MODULE_NAME} )
 else()
     set_property( SOURCE launch_vnr_resolution.i PROPERTY SWIG_MODULE_NAME ${PYTHON_MODULE_NAME} )
 endif()
 
-include( UseSWIG )
 swig_add_library( ${PYTHON_MODULE_NAME}
     TYPE SHARED
     LANGUAGE Python
@@ -81,4 +84,11 @@ target_link_libraries( ${PYTHON_MODULE_NAME}
         incrementation
         criterions
         eos
+)
+
+add_custom_command( TARGET ${PYTHON_MODULE_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E rename "_${PYTHON_MODULE_NAME}.so" "${PYTHON_LIBRARY_NAME}" 
+    WORKING_DIRECTORY "${PYTHON_MODULE_DIR}"
+    COMMENT "Working inside ${PYTHON_MODULE_DIR}"
 )
