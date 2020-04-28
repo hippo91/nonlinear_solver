@@ -35,9 +35,10 @@ class CMakeBuild(build_ext):
 
             cmake_args = [
                 '-DCMAKE_BUILD_TYPE=%s' % cfg,
-                '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir),
-                '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), self.build_temp),
-                '-DPYTHON_LIBRARY_NAME={}'.format(ext.name + sysconfig.get_config_var('SO'))
+                '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}'.format(extdir),
+                '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY={}'.format(self.build_temp),
+                '-DPYTHON_MODULE_DIR={}'.format(extdir),
+                '-DPYTHON_LIBRARY_NAME={}'.format(ext.name + sysconfig.get_config_var('EXT_SUFFIX'))
             ]
 
             if platform.system() == 'Windows':
@@ -68,7 +69,6 @@ class CMakeBuild(build_ext):
             subprocess.check_call(['cmake', '--build', '.', '--config', cfg],
                                   cwd=self.build_temp)
 
-
 # The following line is parsed by Sphinx
 version = '1.0.0'
 
@@ -87,9 +87,6 @@ setup(name='vnr_internal_energy',
       zip_safe=False,
       classifiers=[
           "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: MIT License",
-          "Operating System :: MacOS",
-          "Operating System :: Microsoft :: Windows",
           "Operating System :: POSIX :: Linux",
       ],
       )
