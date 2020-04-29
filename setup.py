@@ -12,16 +12,27 @@ import sysconfig
 from pprint import pprint
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+from setuptools.command.install import install
 
+
+class BuildExtensionFirst(setuptools.command.install.install):
+    """
+    Because we use swig to generate py files, the extension building should
+    occure before copying the sources
+    """
+    def run(self):
+        self.run_command("build_ext")
+        super().run()
 
 class CMakeExtension(Extension):
     def __init__(self, name, cmake_lists_dir='.', sources=[], **kwa):
         Extension.__init__(self, name, sources=sources, **kwa)
         self.cmake_lists_dir = os.path.abspath(cmake_lists_dir)
 
-
 class CMakeBuild(build_ext):
-
+    """
+    Calls cmake to build the module
+    """
     def build_extensions(self):
         try:
             out = subprocess.check_output(['cmake', '--version'])
@@ -85,7 +96,8 @@ setup(name='vnr_internal_energy',
       package_dir={'':'src'},
       package_data={'launch_vnr_resolution_c': ['vnr_internal_energy.py']},
       ext_modules=[CMakeExtension('_vnr_internal_energy')],
-      cmdclass={'build_ext': CMakeBuild},
+      cmdclass={'build_ext': CMakeBuild,
+                'install': BuildExtensionFirst},
       zip_safe=False,
       classifiers=[
           "Programming Language :: Python :: 3",
