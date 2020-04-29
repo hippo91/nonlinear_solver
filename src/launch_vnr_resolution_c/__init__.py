@@ -1,0 +1,1 @@
+from .vnr_internal_energy import launch_vnr_resolution
