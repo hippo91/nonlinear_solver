@@ -48,7 +48,9 @@ class CMakeBuild(build_ext):
                 '-DCMAKE_BUILD_TYPE=%s' % cfg,
                 '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}'.format(extdir),
                 '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY={}'.format(self.build_temp),
-                '-DBUILD_SHARED_LIBS=OFF',
+                '-DBUILD_SHARED_LIBS=OFF',  # Avoid the need to install/remove multiple .so files
+                # Give the PYTHON_LIBRARY_NAME (*.cpython-37m-x86_64-linux-gnu.so) so that the .so
+                # obtained via swig can be renamed accordingly to the need of pip/python
                 '-DPYTHON_LIBRARY_NAME={}'.format(ext.name + sysconfig.get_config_var('EXT_SUFFIX'))
             ]
 
@@ -94,7 +96,10 @@ setup(name='vnr_internal_energy',
       long_description_content_type='text/markdown',
       install_requires=['numpy>=1.15.1'],
       package_dir={'':'src'},
+      # This is not sufficient to have swig generated files copied/installed. 
+      # The BuildExtensionFirst hack is also need
       packages=['launch_vnr_resolution_c'],
+      # Need to copy the swig generated shared object inside the pip installation directory
       package_data={'launch_vnr_resolution_c': ['_vnr_internal_energy.so']},
       ext_modules=[CMakeExtension('_vnr_internal_energy')],
       cmdclass={'build_ext': CMakeBuild,
