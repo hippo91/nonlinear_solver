@@ -48,6 +48,7 @@ class CMakeBuild(build_ext):
                 '-DCMAKE_BUILD_TYPE=%s' % cfg,
                 '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}'.format(extdir),
                 '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY={}'.format(self.build_temp),
+                '-DBUILD_SHARED_LIBS=OFF',
                 '-DPYTHON_LIBRARY_NAME={}'.format(ext.name + sysconfig.get_config_var('EXT_SUFFIX'))
             ]
 
