@@ -65,7 +65,7 @@ Let's create a header and a source file named `cubic.h` and `cubic.c` and put th
 
 The code in `cubic.h` declares the function prototype :
 
-    ```c
+    ```C
     void cubic_function(void *params, const p_array x, p_array fx, p_array dfx);
     ```
 
@@ -73,7 +73,7 @@ The first parameter is a pointer to a structure that contains parameters of the 
 The next three parameters are respectively the unknown x (input), the value of the function (output) and the value of the derivative of the function according to x. Those 3 parameters are `p_array`'s that is to say pointers
 to a structure describing the array :
 
-    ```c
+    ```C
     struct array
     {
         unsigned int size;
@@ -85,7 +85,7 @@ This structure holds the size of the array, its label (i.e name for example) and
 
 Knowing this, the code inside `cubic.c` file may be written :
 
-    ```c
+    ```C
     void cubic_function(__attribute__((unused)) void *params, const p_array x, p_array fx, p_array dfx)
     {
         for (unsigned int i = 0; i < x->size; ++i)
