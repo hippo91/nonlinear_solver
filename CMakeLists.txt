@@ -52,3 +52,13 @@ add_test( NAME "Test_solver_performances"
           COMMAND test_solver_perfs )
 set_tests_properties( Test_solver_performances PROPERTIES
                       ENVIRONMENT OMP_NUM_THREADS=1 )
+
+add_executable( solve_cubic src/solve_cubic.c )
+target_link_libraries( solve_cubic 
+  PRIVATE 
+    array
+    functions
+    criterions
+    incrementation
+    newton
+)
