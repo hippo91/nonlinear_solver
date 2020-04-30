@@ -3,7 +3,7 @@
 This code is a collection of libraries, written in `C`, that implement a Newton-Raphson solver.
 A Newton-Raphson solver allows to find the solution of an equation of type :
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=f(x)&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?f(x)&space;=&space;0" title="f(x) = 0" /></a>
+![General equation to solve](/doc/images/fxzero.gif)
 
 While the present solver may be used to solve any kind of one dimensional equation,
 it has been developped in order to give a fast computation process of internal energy evolution in the Von Neumann - Richtmyer (VNR) scheme. This scheme is used to solve shock propagation problems as in [https://github.com/hippo91/XVOF].
@@ -58,54 +58,57 @@ The library comes with units tests that may run using `ctest` after the code has
 
 In this example the solver is used to solve the following equation :
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=x^3&space;-&space;2&space;x^2&space;&plus;&space;1&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?x^3&space;-&space;2&space;x^2&space;&plus;&space;1&space;=&space;0" title="x^3 - 2 x^2 + 1 = 0" /></a>
+![Cubic function](/doc/images/cubic_function.gif)
 
 First of all, the function should be coded.
 Let's create a header and a source file named `cubic.h` and `cubic.c` and put them in the `functions` directory in the `src` directory.
 
 The code in `cubic.h` declares the function prototype :
 
-    ```C
-    void cubic_function(void *params, const p_array x, p_array fx, p_array dfx);
-    ```
+```C
+void cubic_function(void *params, const p_array x, p_array fx, p_array dfx);
+```
 
 The first parameter is a pointer to a structure that contains parameters of the function. It is useless here.
 The next three parameters are respectively the unknown x (input), the value of the function (output) and the value of the derivative of the function according to x. Those 3 parameters are `p_array`'s that is to say pointers
 to a structure describing the array :
 
-    ```C
-    struct array
-    {
-        unsigned int size;
-        char label[128];
-        double *data;
-    };
-    ```
+```C
+struct array
+{
+    unsigned int size;
+    char label[128];
+    double *data;
+};
+```
+
 This structure holds the size of the array, its label (i.e name for example) and the data.
 
 Knowing this, the code inside `cubic.c` file may be written :
 
-    ```C
-    void cubic_function(__attribute__((unused)) void *params, const p_array x, p_array fx, p_array dfx)
+```C
+void cubic_function(__attribute__((unused)) void *params, const p_array x, p_array fx, p_array dfx)
+{
+    for (unsigned int i = 0; i < x->size; ++i)
     {
-        for (unsigned int i = 0; i < x->size; ++i)
-        {
-            fx->data[i] = x->data[i] * x->data[i] * x->data[i] - 2. * x->data[i] * x->data[i] + 1;
-            dfx->data[i] = 3. * x->data[i] * x->data[i] - 4. * x->data[i];
-        }
+        fx->data[i] = x->data[i] * x->data[i] * x->data[i] - 2. * x->data[i] * x->data[i] + 1;
+        dfx->data[i] = 3. * x->data[i] * x->data[i] - 4. * x->data[i];
     }
-    ```
+}
+```
 
 The attribute `__attribute__((unused))` is here to declare to the compiler that this parameters is not used. Otherwise the compiler will complain.
 
 In order to compile those files, they have to be added to the `target_sources` command in the `CMakeLists.txt` file of the `src/functions` directory:
 
-    target_sources( ${LIBRARY_NAME} PRIVATE
-                    "vnr_internalenergy_evolution.h"
-                    "vnr_internalenergy_evolution.c" 
-                    "cubic.h"
-                    "cubic.c"
-                )
+```CMake
+target_sources( ${LIBRARY_NAME} PRIVATE
+                "vnr_internalenergy_evolution.h"
+                "vnr_internalenergy_evolution.c" 
+                "cubic.h"
+                "cubic.c"
+            )
+```
 
 ## Run
 ******
