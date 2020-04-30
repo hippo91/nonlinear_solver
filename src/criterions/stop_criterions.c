@@ -7,16 +7,6 @@
 #include "array.h"
 
 
-/**
- * @brief Check the convergence of the function.
- * 		  The convergence is obtained if the value of the function is sufficiently close to zero.
- * 
- * @param delta_x_k : Newton's incrementation vector
- * @param func : vector of the function's values
- * @param has_converged : vector of boolean indicating the convergence 
- * @return true : if all cells have converged
- * @return false : otherwise
- */
 bool relative_gap(p_array delta_x_k, p_array func, bool *has_converged)
 {
     assert(is_valid_array(delta_x_k));
