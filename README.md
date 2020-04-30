@@ -60,6 +60,8 @@ In this example the solver is used to solve the following equation :
 
 ![Cubic function](/doc/images/cubic_function.gif)
 
+#### Code the function!
+
 First of all, the function should be coded.
 Let's create a header and a source file named [`cubic.h`](src/functions/cubic.h) and [`cubic.c`](src/functions/cubic.c) and put them in the `functions` directory in the `src` directory.
 
@@ -110,6 +112,8 @@ target_sources( ${LIBRARY_NAME} PRIVATE
             )
 ```
 
+#### Combines the solver and the function
+
 To solve this equation, an executable, named for exemple `solve_cubic` has to be produced.
 In order to achieve this another source file, named [`solve_cubic.c`](src/solve_cubic.c) is created inside the `src` directory.
 
@@ -140,10 +144,111 @@ Here the first member is the function to solve. The second one is a function for
 
 The last member is a function that decides if the convergence is achieved or not. For the moment only one function is coded : *relative_gap*.
 
-## Run
+After the newton algorithm setup, the usefull arrays are created :
+
+```C
+    // Create the arrays of initial unknown and solution
+    BUILD_ARRAY(x, 3)
+    BUILD_ARRAY(sol, 3)
+    // It is usefull to store the created arrays in an array
+    p_array built_arrays[] = {x, sol};
+    const unsigned int nb_arrays = sizeof(built_arrays) / sizeof(p_array);
+
+    // Use array helpers to check everything is fine after building
+    if (check_arrays_building(built_arrays, nb_arrays) == EXIT_FAILURE)
+    {
+        // If something wrong then clean the memory and returns
+        fprintf(stderr, "An error occured during the building of arrays!\n");
+        cleanup_memory(built_arrays, nb_arrays);
+        return EXIT_FAILURE;
+    }
+```
+
+Here the arrays have a size equal to 3, that is to say, the solver will solve three times the equation for three different initial values of x :
+
+```C
+    // Initialize the vector of unknowns
+    x->data[0] = -1;
+    x->data[1] = 0.25;
+    x->data[2] = 2.;
+```
+
+Then the solver is called, its status checked and printings are made : 
+
+```C
+    int status = solveNewton(&newton, NULL, x, sol);
+
+    if (status == EXIT_FAILURE) {
+        fprintf(stderr, "An error occured during the solver run!\n");
+    } else {
+        printf("SUCCESS!\n");
+        printf("Initial vector :\n");
+        print_array(x);
+        printf("Solution vector :\n");
+        print_array(sol);
+    }
+
+    // Dont forget to clean the memory
+    cleanup_memory(built_arrays, nb_arrays);
+    return status;
+```
+
+The compilation of this file is included in the build process by adding the following lines at the end of the [`CMakeLists.txt`](CMakeLists.txt) file :
+
+```CMake
+add_executable( solve_cubic src/solve_cubic.c )
+target_link_libraries( solve_cubic 
+  PRIVATE 
+    array
+    functions
+    criterions
+    incrementation
+    newton
+)
+```
+
+After compilation and execution the results are :
+
+```
+SUCCESS!
+Initial vector :
+x[0] =              -1
+x[1] =            0.25
+x[2] =               2
+Solution vector :
+sol[0] =    -0.618033989
+sol[1] =      1.61803399
+sol[2] =      1.61803399
+```
+
+While these results are correct, only two roots of the polynomial are found.
+If the incrementation is changed :
+
+```C
+    // First parametrize the solver
+    NewtonParameters_s newton = {cubic_function, damped_incrementation, relative_gap};
+```
+
+then the results are :
+
+```
+SUCCESS!
+Initial vector :
+x[0] =              -1
+x[1] =            0.25
+x[2] =               2
+Solution vector :
+sol[0] =    -0.618033989
+sol[1] =               1
+sol[2] =      1.61803399
+```
+
+All three roots are found. The explanation is simple but beyond the scope of this tutorial.
+
+<!-- ## Run
 ******
 Lancement avec openmp
 ******
-export OMP_NUM_THREADS=4 #--> Nombre de threads
-export GOMP_CPU_AFFINITY="0-3" #--> Pinning des threads
+export OMP_NUM_THREADS=4 #-> Nombre de threads
+export GOMP_CPU_AFFINITY="0-3" #-> Pinning des threads -->
 
