@@ -52,7 +52,7 @@ The library comes with units tests that may run using `ctest` after the code has
 
     ctest -j 4
 
-## Examples of use
+## Examples of use
 
 ### Solve a simple equation
 
@@ -61,7 +61,7 @@ In this example the solver is used to solve the following equation :
 ![Cubic function](/doc/images/cubic_function.gif)
 
 First of all, the function should be coded.
-Let's create a header and a source file named `cubic.h` and `cubic.c` and put them in the `functions` directory in the `src` directory.
+Let's create a header and a source file named [`cubic.h`](src/functions/cubic.h) and [`cubic.c`](src/functions/cubic.c) and put them in the `functions` directory in the `src` directory.
 
 The code in `cubic.h` declares the function prototype :
 
@@ -71,7 +71,7 @@ void cubic_function(void *params, const p_array x, p_array fx, p_array dfx);
 
 The first parameter is a pointer to a structure that contains parameters of the function. It is useless here.
 The next three parameters are respectively the unknown x (input), the value of the function (output) and the value of the derivative of the function according to x. Those 3 parameters are `p_array`'s that is to say pointers
-to a structure describing the array :
+to a structure describing the array (see [`array.h`](src/array/array.h)) :
 
 ```C
 struct array
@@ -99,7 +99,7 @@ void cubic_function(__attribute__((unused)) void *params, const p_array x, p_arr
 
 The attribute `__attribute__((unused))` is here to declare to the compiler that this parameters is not used. Otherwise the compiler will complain.
 
-In order to compile those files, they have to be added to the `target_sources` command in the `CMakeLists.txt` file of the `src/functions` directory:
+In order to compile those files, they have to be added to the `target_sources` command in the [`CMakeLists.txt`](src/functions/CMakeLists.txt) file of the `src/functions` directory:
 
 ```CMake
 target_sources( ${LIBRARY_NAME} PRIVATE
@@ -109,6 +109,36 @@ target_sources( ${LIBRARY_NAME} PRIVATE
                 "cubic.c"
             )
 ```
+
+To solve this equation, an executable, named for exemple `solve_cubic` has to be produced.
+In order to achieve this another source file, named [`solve_cubic.c`](src/solve_cubic.c) is created inside the `src` directory.
+
+In this source file, a function `main` is defined. It takes no argument and return 0 (`EXIT_SUCCESS`) in case of success and 1 (`EXIT_FAILURE`) otherwise. 
+
+The first line of code in this function sets up the newton-raphson algorithm that will be used :
+
+```C
+int main()
+{
+    // First parametrize the solver
+    NewtonParameters_s newton = {cubic_function, classical_incrementation, relative_gap};
+    ...
+}
+```
+
+Here the first member is the function to solve. The second one is a function for incrementing the vector of unknowns during the solver run. There are 3 possibilities for this paramerter (see the [`incrementations_methods.h`](src/incrementation/incrementations_methods.h) header):
+
+- *classical_incrementation* : the vector of increment is computed according to :
+
+    ![Classical incrementation](/doc/images/classical_inc.gif)
+
+- *damped_incrementation* : the vector of increment is computed according to :
+
+    ![Damped incrementation](/doc/images/damped_inc.gif)
+
+- *ensure_same_sign_incrementation* : the formula is a bit too complicated to be exposed here, but this method computes the classical incrementation and maximize it in order to not change the sign of the unknown.
+
+The last member is a function that decides if the convergence is achieved or not. For the moment only one function is coded : *relative_gap*.
 
 ## Run
 ******
