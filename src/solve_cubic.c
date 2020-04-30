@@ -1,14 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "array.h"
 #include "cubic.h"
 #include "incrementations_methods.h"
 #include "stop_criterions.h"
 #include "newton.h"
 
-int main(__attribute__((unused)) const int argc, __attribute__((unused)) const char* argv[])
+int main()
 {
     // First parametrize the solver
-    NewtonParameters_s newton = {cubic_function, damped_incrementation, relative_gap};
+    NewtonParameters_s newton = {cubic_function, classical_incrementation, relative_gap};
 
     // Create the arrays of initial unknown and solution
     BUILD_ARRAY(x, 3)
