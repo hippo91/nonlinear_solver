@@ -11,3 +11,5 @@ __pycache__
 *.so
 *PYTHON_wrap.c
 vnr_internal_energy.py
+# Ignore doxygen built files
+doc/generated
