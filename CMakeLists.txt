@@ -9,6 +9,7 @@ if( " ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}" )
 endif()
 
 option( BUILD_SHARED_LIBS "Build all libraries as shared objects" ON )
+option( BUILD_PYTHON_VNR_MODULE "Build the python module that solves the evolution of internal energy in VNR scheme" OFF )
 
 set( CMAKE_C_STANDARD_REQUIRED ON )
 set( CMAKE_C_COMPILE_FEATURES c_std_99 )
@@ -30,7 +31,9 @@ add_subdirectory( src/criterions )
 add_subdirectory( src/newton )
 add_subdirectory( src/launch_vnr_resolution )
 add_subdirectory( src/test_utils )
-add_subdirectory( src/launch_vnr_resolution_c )
+if( ${BUILD_PYTHON_VNR_MODULE} )
+  add_subdirectory( src/launch_vnr_resolution_c )
+endif()
 
 target_link_libraries( test_solver_perfs PRIVATE 
   launch_vnr_resolution

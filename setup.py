@@ -48,6 +48,7 @@ class CMakeBuild(build_ext):
                 '-DCMAKE_BUILD_TYPE=%s' % cfg,
                 '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}'.format(extdir),
                 '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY={}'.format(self.build_temp),
+                '-DBUILD_PYTHON_VNR_MODULE=ON',
                 '-DBUILD_SHARED_LIBS=OFF',  # Avoid the need to install/remove multiple .so files
                 # Give the PYTHON_LIBRARY_NAME (*.cpython-37m-x86_64-linux-gnu.so) so that the .so
                 # obtained via swig can be renamed accordingly to the need of pip/python
