@@ -1,9 +1,32 @@
+/**
+ * @file array.h
+ * @author guillaume.peillex@gmail.com
+ * @brief Simple implementation of an array structure
+ * @version 1.0.0
+ * @date 2020-04-30
+ * 
+ * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
+ * 
+ */
 #ifndef ARRAY_H
 #define ARRAY_H
 #include <stdbool.h>
 
+/**
+ * @brief Maximum size of the string describing the array
+ * 
+ */
 #define MAX_LABEL_SIZE 128
+/**
+ * @brief Maximum size of the array
+ * 
+ */
 #define MAX_ARRAY_SIZE 1000000000
+/**
+ * @brief Any array with a size above 2 times this size will not be
+ *        printed entirely. Only the beginning and the end will be printed.
+ * 
+ */
 #define PRINT_ARRAY_CHUNK_SIZE 10
 
 /**
@@ -13,7 +36,7 @@
 #define BUILD_ARRAY(name, size) p_array name = build_array(size, #name);
 
 /**
- * @brief This MACRO clears the array in argument and frees the memory allocated.
+ * @brief Clears the array in argument and frees the memory allocated.
  *        This is the recommended way to ends the life of an array
  * 
  */
@@ -27,9 +50,9 @@
  */
 typedef struct array
 {
-    unsigned int size;
-    char label[128];
-    double *data;
+    unsigned int size;  /**< Number of cells in the array */
+    char label[128];  /**< A small string naming of describing the array */
+    double *data;  /**< The underlying array */
 } s_array, *p_array;
 
 /**
