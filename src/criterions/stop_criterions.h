@@ -1,6 +1,6 @@
 /**
  * @file stop_criterions.h
- * @author guillaume.peillex@gmail.com
+ * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
  * @brief This file holds functions that check convergence of the Newton algorithm
  * @version 1.0
  * @date 2020-04-30
@@ -16,9 +16,9 @@
  * @brief Check the convergence of the function
  * 		  The convergence is obtained if the value of the function is sufficiently close to zero.
  * 
- * @param delta_x_k : array of the Newton's incrementation values 
- * @param func : array of the function values
- * @param has_converged : array of boolean indicating the convergence of each item
+ * @param[in] delta_x_k : array of the Newton's incrementation values 
+ * @param[in] func : array of the function values
+ * @param[out] has_converged : array of boolean indicating the convergence of each item
  * @return true : if convergence of all items is achieved 
  * @return false : otherwise
  */

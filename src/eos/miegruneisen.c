@@ -137,17 +137,6 @@ void finalize(MieGruneisenParameters_s *params)
     free(params->deinth);
 }
 
-/**
- * @brief Compute the pressure and the derivative of the pressure with respect to the specific
- *        internal energy
- * 
- * @param params : parameters of the equation of state
- * @param nb_cells : size of the arrays
- * @param specific_volume : specific volume array
- * @param internal_energy : internal energy array
- * @param pressure : pressure array
- * @param gamma_per_vol : dp/de array
- */
 void compute_pressure_and_derivative(MieGruneisenParameters_s *params, const int nb_cells,
                                      __attribute__((unused)) const double *specific_volume,
                                      const double *internal_energy, double *pressure,
@@ -160,17 +149,6 @@ void compute_pressure_and_derivative(MieGruneisenParameters_s *params, const int
     }
 }
 
-/**
- * @brief Compute the pressure and the sound speed
- * 
- * @param params : parameters of the equation of state
- * @param nb_cells : size of the arrays
- * @param specific_volume : specific volume array
- * @param internal_energy : internal energy array
- * @param pressure : pressure array
- * @param c_son : sound speed array
- * @todo : factorizes the comutation of einth and phi to share with compute_pressure_and_derivative
- */
 void compute_pressure_and_sound_speed(MieGruneisenParameters_s *params, const int nb_cells,
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son)
