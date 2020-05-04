@@ -50,7 +50,6 @@ include( UseSWIG )
 list( APPEND CMAKE_SWIG_FLAGS "-module;${PYTHON_MODULE_NAME}" )
 set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_TARGET_INCLUDE_DIRECTORIES TRUE )
 
-set( UseSWIG_TARGET_NAME_PREFERENCE STANDARD )
 swig_add_library( ${PYTHON_MODULE_NAME}
     TYPE SHARED
     LANGUAGE Python
@@ -63,9 +62,9 @@ target_include_directories( ${PYTHON_MODULE_NAME}
         ${Python_INCLUDE_DIRS}
 )
 
+swig_link_libraries( ${PYTHON_MODULE_NAME} PRIVATE launch_vnr_resolution )
 target_link_libraries( ${PYTHON_MODULE_NAME}
     PRIVATE
-        launch_vnr_resolution
         array
         newton
         functions
