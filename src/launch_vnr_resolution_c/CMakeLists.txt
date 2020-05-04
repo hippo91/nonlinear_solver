@@ -1,4 +1,8 @@
 set( PYTHON_MODULE_NAME "vnr_internal_energy" CACHE STRING "Name of the python module to generate" )
+
+# In order the command swig_add_library creates a target named as the first argument of the command
+cmake_policy(SET CMP0078 NEW)
+
 # The library created/used by python should follow a specific pattern which will be set by setup.py
 # If not generated via setup.py doesn't take care
 set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the library that will be used by setup.py" )
