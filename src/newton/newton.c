@@ -9,19 +9,7 @@
 #define NEWTON
 #endif
 
-/**
- * @brief Use Newton-Raphson to solve a function
- * 
- * @param Newton : parameters of the Newton-Raphson algorithm
- * @param func_variables : parameters of the function to solve
- * @param x_ini : initial values of the unknown
- * @param x_sol : solution
- * @warning : the solution is modified in any cases, even in case of FAILURE!
- * 
- * @return EXIT_SUCCESS (0) in case of success
- *         EXIT_FAILURE (1) otherwise
- */
-int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini, p_array x_sol)
+int solveNewton(NewtonParameters_s *newton_parameters, void *func_parameters, p_array x_ini, p_array x_sol)
 {
     if (x_ini->size != x_sol->size) {
         fprintf(stderr, "Size mismatch between array x_ini (%s with size %u) and x_sol (%s with size %u)\n",
@@ -66,9 +54,9 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
     while (true)
     {
         // Compute F and dF
-        Newton->evaluate_the_function(func_variables, x_k, F_k, dF_k);
+        newton_parameters->evaluate_the_function(func_parameters, x_k, F_k, dF_k);
         // Compute delta_x
-        Newton->compute_increment_vector(x_k, F_k, dF_k, delta_x_k);
+        newton_parameters->compute_increment_vector(x_k, F_k, dF_k, delta_x_k);
         // Apply increments
         for (unsigned int i = 0; i < pb_size; ++i)
         {
@@ -78,7 +66,7 @@ int solveNewton(NewtonParameters_s *Newton, void *func_variables, p_array x_ini,
             }
         }
         // Check the convergence
-        if (Newton->check_convergence(delta_x_k, F_k, has_converged))
+        if (newton_parameters->check_convergence(delta_x_k, F_k, has_converged))
         {
             solver_status = SUCCESS;
             break;
