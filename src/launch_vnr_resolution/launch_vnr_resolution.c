@@ -71,11 +71,11 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         s_array thread_pressure = {chunk_size, "Thread pressure", pressure->data + offset};
         s_array thread_solution = {chunk_size, "Thread solution", solution->data + offset};
 
-        VnrVariables_s VnrVars = {&thread_old_spec_vol,
-                                  &thread_new_spec_vol,
-                                  &thread_internal_energy,
-                                  &thread_pressure,
-                                  &MieGruneisenParams};
+        VnrParameters_s VnrVars = {&thread_old_spec_vol,
+                                   &thread_new_spec_vol,
+                                   &thread_internal_energy,
+                                   &thread_pressure,
+                                   &MieGruneisenParams};
         NewtonParameters_s TheNewton = {internal_energy_evolution_VNR,
                                         classical_incrementation, relative_gap};
         ret_code = solveNewton(&TheNewton, &VnrVars, &thread_internal_energy, &thread_solution);

@@ -21,22 +21,22 @@
  *        governing the evolution of internal energy in the VNR scheme
  * 
  */
-typedef struct VnrVariables
+typedef struct VnrParameters
 {
     const p_array specific_volume_old; /**< Previous specific volume */
     const p_array specific_volume_new;  /**< Current specific volume */
     const p_array internal_energy_old;  /**< Previous internal energy */
     const p_array pressure;  /**< Previous pressure */
     MieGruneisenParameters_s *miegruneisen;  /**< Parameters of the underlying eos (here MieGruneisen) */
-} VnrVariables_s;
+} VnrParameters_s;
 
 /**
  * @brief Evaluate the fonction governing the evolution of internal energy in the VNR scheme
  * 
- * @param[in] variables : parameters of the function
+ * @param[in] parameters : parameters of the function
  * @param[in] newton_var : unknown of the function (here it is internal energy)
  * @param[out] func : values of the function
  * @param[out] dfunc : values of the derivative of the function with respect to internal energy
  */
-void internal_energy_evolution_VNR(void *variables, const p_array newton_var,
+void internal_energy_evolution_VNR(void *parameters, const p_array newton_var,
                                    p_array func, p_array dfunc);

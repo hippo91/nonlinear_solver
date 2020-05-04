@@ -14,7 +14,7 @@ void internal_energy_evolution_VNR(void *variables, const p_array newton_var, p_
     assert(newton_var->size == func->size);
     assert(newton_var->size == dfunc->size);
 
-    VnrVariables_s *vars = (VnrVariables_s *)variables;
+    VnrParameters_s *vars = (VnrParameters_s *)variables;
     assert(is_valid_array(vars->specific_volume_old));
     assert(is_valid_array(vars->specific_volume_new));
     assert(is_valid_array(vars->internal_energy_old));
