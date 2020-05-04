@@ -14,7 +14,7 @@ option( BUILD_PYTHON_VNR_MODULE "Build the python module that solves the evoluti
 set( CMAKE_C_STANDARD_REQUIRED ON )
 set( CMAKE_C_COMPILE_FEATURES c_std_99 )
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
-set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra -fopenmp" )
+set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra" )
 set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -pg" )
 
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" CACHE STRING "Directory where the libraries should be put" )

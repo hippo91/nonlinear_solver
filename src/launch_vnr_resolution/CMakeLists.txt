@@ -1,3 +1,6 @@
+find_package( OpenMP REQUIRED )
+
+
 set( LIBRARY_NAME "launch_vnr_resolution" )
 add_library( ${LIBRARY_NAME} )
 target_sources( ${LIBRARY_NAME} PRIVATE
@@ -9,6 +12,7 @@ target_link_libraries( ${LIBRARY_NAME}
 PUBLIC
   array
 PRIVATE
+  OpenMP::OpenMP_C
   newton
   functions
   incrementation
