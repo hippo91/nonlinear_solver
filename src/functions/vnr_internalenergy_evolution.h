@@ -33,6 +33,10 @@ typedef struct VnrParameters
 /**
  * @brief Evaluate the fonction governing the evolution of internal energy in the VNR scheme
  * 
+ * The equation is : 
+ 
+ * \f$ e_i^{n+1} + \frac{P^n + P^{n+1}}{2} * (\frac{1}{\rho^{n+1}} - \frac{1}{\rho^n}) - e_i^n = 0\f$
+ * 
  * @param[in] parameters : parameters of the function
  * @param[in] newton_var : unknown of the function (here it is internal energy)
  * @param[out] func : values of the function
