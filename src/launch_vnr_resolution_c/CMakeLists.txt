@@ -46,11 +46,7 @@ endif()
 include( UseSWIG )
 # Override the module name found in the swig source (.i) file
 # https://gitlab.kitware.com/cmake/cmake/issues/18374
-if( CMAKE_VERSION VERSION_LESS "3.18" ) 
-    set( CMAKE_SWIG_FLAGS -module ${PYTHON_MODULE_NAME} )
-else()
-    set_property( SOURCE launch_vnr_resolution.i PROPERTY SWIG_MODULE_NAME ${PYTHON_MODULE_NAME} )
-endif()
+set( CMAKE_SWIG_FLAGS -module ${PYTHON_MODULE_NAME} )
 
 set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_TARGET_INCLUDE_DIRECTORIES TRUE )
 
