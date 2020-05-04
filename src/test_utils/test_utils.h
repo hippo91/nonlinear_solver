@@ -1,16 +1,30 @@
+/**
+ * @file test_utils.h
+ * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
+ * @brief Differents utility functions for unit testing
+ * @version 0.1
+ * @date 2020-05-04
+ * 
+ * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
+ * 
+ */
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include "array.h"
 
+/**
+ * @brief Defines the precision under which two floating point values are considered equal
+ * 
+ */
 #define EPSILON 1e-15
 
 /**
  * @brief Return true if the value if equal to the reference
  * 		  up to a relative precision
  * 
- * @param value : value to be checked
- * @param reference : the reference value
+ * @param[in] value : value to be checked
+ * @param[in] reference : the reference value
  * @return true : if value is equal to reference up to a relative precision
  * @return false : otherwise
  */
@@ -22,10 +36,10 @@ static bool almost_equal(const double value, const double reference)
 /**
  * @brief Print to the standard error a formatted error message
  * 
- * @param array_name : name of the array 
- * @param index : index of the array from which the value will be printed
- * @param array : array 
- * @param expected : expected value that should be found a the arr[index] place
+ * @param[in] array_name : name of the array 
+ * @param[in] index : index of the array from which the value will be printed
+ * @param[in] array : array 
+ * @param[in] expected : expected value that should be found a the arr[index] place
  */
 static void print_array_index_error(const char *array_name, const size_t index, const double *const array, const double expected)
 {
@@ -37,14 +51,13 @@ static void print_array_index_error(const char *array_name, const size_t index, 
  * @brief Check if an array is filled with a unique uniform value.
  * 		  Two values are said to be equal if their relative difference is below 1.e-15.
  * 
- * @param array : array to check
- * @param size : size of the array
- * @param value : value expected to be at every index of the array
- * @param unvalid_index : an array, which size is the same as the array to check, and will hold the indices
- * 						  where the value found in the array is different from the one expected
+ * @param[in] array : array to check
+ * @param[in] size : size of the array
+ * @param[in] value : value expected to be at every index of the array
+ * @param[out] unvalid_index : an array, which size is the same as the array to check, and will hold the indices
+ * 						       where the value found in the array is different from the one expected
  * @return true : if all the indices of the array owns the same value
  * @return false : otherwise
- * @todo : use array object instead of tuple size, name, array 
  */
 static bool is_uniform_array_value(const double *const array, const size_t size, const double value, int *unvalid_index)
 {
@@ -63,10 +76,10 @@ static bool is_uniform_array_value(const double *const array, const size_t size,
 /**
  * @brief Compares if two arrays are equals and print an error message if not
  * 
- * @param arr_a : first array
- * @param arr_b : second array
- * @param size : size of both array
- * @param arr_a_name : name of first array
+ * @param[in] arr_a : first array
+ * @param[in] arr_b : second array
+ * @param[in] size : size of both array
+ * @param[in] arr_a_name : name of first array
  * @return true : if arrays are equals
  * @return false : otherwise
  */
@@ -85,6 +98,14 @@ bool assert_equal_arrays(const double *const arr_a, const double *const arr_b, c
     return equality;
 }
 
+/**
+ * @brief Return True if two arrays are equal up to precision
+ * 
+ * @param[in] arr_a : first array
+ * @param[in] arr_b : second array
+ * @return true : if arrays are equals
+ * @return false : otherwise
+ */
 bool assert_equal(const p_array arr_a, const p_array arr_b)
 {
     if (arr_a->size != arr_b->size) return false;
@@ -95,10 +116,10 @@ bool assert_equal(const p_array arr_a, const p_array arr_b)
 /**
  * @brief Compares if two arrays of bool are equals and print an error message if not
  * 
- * @param arr_a : first array
- * @param arr_b : second array
- * @param size : size of both array
- * @param arr_a_name : name of first array
+ * @param[in] arr_a : first array
+ * @param[in] arr_b : second array
+ * @param[in] size : size of both array
+ * @param[in] arr_a_name : name of first array
  * @return true : if arrays are equals
  * @return false : otherwise
  */
@@ -122,10 +143,10 @@ bool assert_equal_bool_arrays(const bool *const arr_a, const bool *const arr_b, 
  * @brief Check if an array is filled with a unique uniform value and prints an error message
  * 		  if not.
  * 
- * @param arr : array to check
- * @param size : size of the array
- * @param arr_name : name of the array
- * @param expected : value expected to fill the array
+ * @param[in] arr : array to check
+ * @param[in] size : size of the array
+ * @param[in] arr_name : name of the array
+ * @param[in] expected : value expected to fill the array
  * @return true : if the array is uniformely filled with the expected value
  * @return false : otherwise
  */
@@ -157,8 +178,8 @@ bool check_uniform_array_value(const double *const arr, const size_t size,
  * @brief Check if an array is filled with a unique uniform value and prints an error message
  * 		  if not.
  * 
- * @param arr : array to check
- * @param expected : value expected to fill the array
+ * @param[in] arr : array to check
+ * @param[in] expected : value expected to fill the array
  * @return true : if the array is uniformely filled with the expected value
  * @return false : otherwise
  */

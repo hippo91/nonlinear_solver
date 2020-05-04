@@ -1,3 +1,13 @@
+/**
+ * @file solve_cubic.c
+ * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
+ * @brief A simple example of how to use this library to solve a cubic function
+ * @version 0.1
+ * @date 2020-05-04
+ * 
+ * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
+ * 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "array.h"

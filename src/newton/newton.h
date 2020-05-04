@@ -1,3 +1,13 @@
+/**
+ * @file newton.h
+ * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
+ * @brief Newton-Raphson algorithm for 1D function
+ * @version 0.1
+ * @date 2020-05-04
+ * 
+ * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
+ * 
+ */
 #include <stdbool.h>
 #include <stdlib.h>
 #include "array.h"
@@ -18,10 +28,10 @@ typedef struct NewtonParameters
 /**
  * @brief Launch the Newton-Raphson algorithm
  * 
- * @param newton_parameters : parameters of the Newton-Raphson algorithm
- * @param func_parameters : parameters of the function to solve
- * @param x_ini : initial values of the unknown
- * @param x_sol : solution
+ * @param[in] newton_parameters : parameters of the Newton-Raphson algorithm
+ * @param[in] func_parameters : parameters of the function to solve
+ * @param[in] x_ini : initial values of the unknown
+ * @param[out] x_sol : solution
  * @warning : the solution is modified in any cases, even in case of FAILURE!
  * 
  * @return EXIT_SUCCESS (0) in case of success
