@@ -1,3 +1,13 @@
+/**
+ * @file incrementations_methods.h
+ * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
+ * @brief Contains different incrementation functions to be used in the Newton-Raphson solver
+ * @version 0.1
+ * @date 2020-05-04
+ * 
+ * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
+ * 
+ */
 #include <stdlib.h>
 #include "array.h"
 
