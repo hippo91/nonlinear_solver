@@ -1,7 +1,7 @@
 /**
  * @file miegruneisen.h
  * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
- * @brief Holds everything related ot MieGruneisen equation of state
+ * @brief Holds everything related to MieGruneisen equation of state
  * @version 0.1
  * @date 2020-05-04
  * 

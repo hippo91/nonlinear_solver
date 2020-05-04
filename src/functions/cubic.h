@@ -1,3 +1,13 @@
+/**
+ * @file cubic.h
+ * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
+ * @brief A simple cubic function example 
+ * @version 0.1
+ * @date 2020-05-04
+ * 
+ * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
+ * 
+ */
 #include "array.h"
 
 /**
