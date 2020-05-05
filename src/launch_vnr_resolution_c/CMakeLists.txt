@@ -8,9 +8,9 @@ set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the l
 find_package( SWIG REQUIRED )
 
 # Need Python
-find_package( Python COMPONENTS Development Interpreter )
+find_package( Python3 COMPONENTS Development Interpreter )
 
-if ( NOT PythonLibs_FOUND AND NOT Python_FOUND )
+if ( NOT Python3_FOUND )
     message( "Python is needed to build the python module but cannot be found. "
              "Skipping the build of python module!" )
     return()
@@ -18,7 +18,7 @@ endif()
 
 # Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
 # This comes to hand if we also need to use the NumPy C API
-execute_process( COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.get_include())" 
+execute_process( COMMAND "${Python3_EXECUTABLE}" -c "import numpy; print(numpy.get_include())" 
                  RESULT_VARIABLE NUMPY_FOUND
                  OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
                  ERROR_VARIABLE NUMPY_ERROR
@@ -26,11 +26,9 @@ execute_process( COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.ge
                  ERROR_STRIP_TRAILING_WHITESPACE
                 )
 if( NOT ${NUMPY_FOUND} EQUAL 0 )
-    message( "Numpy headers cannot be found. " )
-    message( "The command that should find Numpy headers exited with error : ")
-    message( "${NUMPY_ERROR}" )
-    message( "However the python module can (and will) be built " )
-    message( "but you would need to install numpy in order to use it!" )
+    message( WARNING "The command that should find Numpy headers exited with error : ")
+    message( WARNING "${NUMPY_ERROR}" )
+    message( FATAL_ERROR "Numpy headers cannot be found. " )
 else()
     message( STATUS "Found Numpy: ${NUMPY_INCLUDE_DIR}" )
     # In fact we don't care about NUMPY_INCLUDE_DIR variable.
@@ -63,7 +61,7 @@ swig_add_library( ${PYTHON_MODULE_NAME}
 
 target_include_directories( ${PYTHON_MODULE_NAME}
     PRIVATE
-        ${Python_INCLUDE_DIRS}
+        ${Python3_INCLUDE_DIRS}
 )
 
 target_link_libraries( ${PYTHON_MODULE_NAME}
