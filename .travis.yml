@@ -63,10 +63,10 @@ jobs:
           - gcc
         langage: python
         python:
-          - "3.7-dev"
+          - "3.7"
         before_install:
           # Just for python module build
-          - sudo apt-get install -y swig3.0 python3-dev
+          - sudo apt-get install -y swig3.0
           - pip install --upgrade pip
           - pip install numpy
         before_script:
