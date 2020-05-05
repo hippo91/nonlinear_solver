@@ -63,7 +63,7 @@ swig_add_library( ${PYTHON_MODULE_NAME}
 
 if( CMAKE_VERSION VERSION_LESS 3.13 )
     message( STATUS "The property SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES is set to TRUE" )
-    set_property(TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES TRUE)
+    set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES TRUE )
 endif()
 
 target_include_directories( ${PYTHON_MODULE_NAME}
@@ -71,9 +71,9 @@ target_include_directories( ${PYTHON_MODULE_NAME}
         ${Python_INCLUDE_DIRS}
 )
 
-swig_link_libraries( ${PYTHON_MODULE_NAME} PRIVATE launch_vnr_resolution )
 target_link_libraries( ${PYTHON_MODULE_NAME}
     PRIVATE
+        launch_vnr_resolution
         array
         newton
         functions
