@@ -8,13 +8,7 @@ set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the l
 find_package( SWIG REQUIRED )
 
 # Need Python
-find_package( Python3 COMPONENTS Development Interpreter )
-
-if ( NOT Python3_FOUND )
-    message( "Python is needed to build the python module but cannot be found. "
-             "Skipping the build of python module!" )
-    return()
-endif()
+find_package( Python3 COMPONENTS Development Interpreter REQUIRED )
 
 # Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
 # This comes to hand if we also need to use the NumPy C API
