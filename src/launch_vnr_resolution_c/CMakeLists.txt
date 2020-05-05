@@ -5,16 +5,10 @@ set( PYTHON_MODULE_NAME "vnr_internal_energy" CACHE STRING "Name of the python m
 set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the library that will be used by setup.py" )
 
 # Need SWIG
-find_package( SWIG )
+find_package( SWIG REQUIRED )
 
 # Need Python
 find_package( Python COMPONENTS Development Interpreter )
-
-if ( NOT SWIG_FOUND )
-    message( "SWIG is needed to build the python module but cannot be found. " 
-             "Skipping the build of python module!" )
-    return()
-endif()
 
 if ( NOT PythonLibs_FOUND AND NOT Python_FOUND )
     message( "Python is needed to build the python module but cannot be found. "
