@@ -61,6 +61,9 @@ jobs:
       - name: "gcc release static with py module"
         compiler:
           - gcc
+        langage: python
+        python:
+          - "3.7"
         before_install:
           # Just for python module build
           - sudo apt-get install -y swig3.0
