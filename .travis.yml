@@ -7,14 +7,17 @@ compiler:
 before_install:
   # Just for clang
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
-before_script:
-  # create a build folder for the out-of-source build
-  - mkdir build
-  # switch to build directory
-  - cd build
-  # run cmake; here we assume that the project's
-  # top-level CMakeLists.txt is located at '..'
-  - cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_PYTHON_VNR_MODULE=OFF .. 
+jobs:
+  include:
+      name: "release static no py module"
+      before_script:
+        # create a build folder for the out-of-source build
+        - mkdir build
+        # switch to build directory
+        - cd build
+        # run cmake; here we assume that the project's
+        # top-level CMakeLists.txt is located at '..'
+        - cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_PYTHON_VNR_MODULE=OFF .. 
 script: 
   - make 
   - ctest -VV
