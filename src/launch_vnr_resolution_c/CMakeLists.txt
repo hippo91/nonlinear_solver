@@ -44,6 +44,9 @@ include( UseSWIG )
 list( APPEND CMAKE_SWIG_FLAGS "-module;${PYTHON_MODULE_NAME}" )
 set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_TARGET_INCLUDE_DIRECTORIES TRUE )
 
+if( CMAKE_VERSION VERSION_LESS 3.13 )
+    set( UseSWIG_TARGET_NAME_PREFERENCE STANDARD )
+endif()
 swig_add_library( ${PYTHON_MODULE_NAME}
     TYPE SHARED
     LANGUAGE Python
