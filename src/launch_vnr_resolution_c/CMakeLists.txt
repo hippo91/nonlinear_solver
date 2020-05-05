@@ -80,6 +80,9 @@ target_link_libraries( ${PYTHON_MODULE_NAME}
 if( CMAKE_VERSION VERSION_LESS 3.13 )
     message( STATUS "The property SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES is set to TRUE" )
     set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES TRUE )
+    get_property( LAUNCH_VNR_RESOLUTION_INCLUDE_DIR TARGET launch_vnr_resolution PROPERTY INCLUDE_DIRECTORIES )
+    message( STATUS "The property SWIG_INCLUDE_DIRECTORIES is set to ${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
+    set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_INCLUDE_DIRECTORIES "${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
 endif()
 
 # This command is usefull only when cmake is called via setup.py.
