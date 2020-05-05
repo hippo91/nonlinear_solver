@@ -1,4 +1,6 @@
 language: c
+python:
+  - "3.7"
 git:
   depth: false
 script: 
@@ -62,8 +64,8 @@ jobs:
         before_install:
           # Just for python module build
           - sudo apt-get install -y swig3.0
-          - sudo pip3 install --upgrade pip
-          - sudo pip3 install numpy
+          - sudo pip install --upgrade pip
+          - sudo pip install numpy
         before_script:
           # create a build folder for the out-of-source build
           - mkdir build
