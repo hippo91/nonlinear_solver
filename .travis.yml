@@ -14,4 +14,4 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_PYTHON_VNR_MODULE=OFF .. 
 script: 
   - make 
-  - ctest
+  - ctest -VV
