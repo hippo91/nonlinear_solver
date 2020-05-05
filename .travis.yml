@@ -63,7 +63,7 @@ jobs:
           - gcc
         langage: python
         python:
-          - "3.7"
+          - "3.7-dev"
         before_install:
           # Just for python module build
           - sudo apt-get install -y swig3.0 python3-dev
