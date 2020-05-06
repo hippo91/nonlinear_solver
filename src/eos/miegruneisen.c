@@ -46,7 +46,7 @@ static inline double compute_denom(const double s1, const double s2, const doubl
     return 1. / (1. - (s1 + s2 * epsv + s3 * epsv * epsv) * epsv);
 }
 
-int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const double * const specific_volume)
+int init(MieGruneisenEOS_s *params, const unsigned int nb_cells, const double * const specific_volume)
 {
     if (params->phi == NULL)
     {
@@ -128,7 +128,7 @@ int init(MieGruneisenParameters_s *params, const unsigned int nb_cells, const do
     return EXIT_SUCCESS;
 }
 
-void finalize(MieGruneisenParameters_s *params)
+void finalize(MieGruneisenEOS_s *params)
 {
     free(params->gamma_per_vol);
     free(params->phi);
@@ -137,7 +137,7 @@ void finalize(MieGruneisenParameters_s *params)
     free(params->deinth);
 }
 
-void compute_pressure_and_derivative(MieGruneisenParameters_s *params, const int nb_cells,
+void compute_pressure_and_derivative(MieGruneisenEOS_s *params, const int nb_cells,
                                      __attribute__((unused)) const double *specific_volume,
                                      const double *internal_energy, double *pressure,
                                      double *gamma_per_vol)
@@ -149,7 +149,7 @@ void compute_pressure_and_derivative(MieGruneisenParameters_s *params, const int
     }
 }
 
-void compute_pressure_and_sound_speed(MieGruneisenParameters_s *params, const int nb_cells,
+void compute_pressure_and_sound_speed(MieGruneisenEOS_s *params, const int nb_cells,
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son)
 {

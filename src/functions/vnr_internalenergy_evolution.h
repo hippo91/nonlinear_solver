@@ -27,7 +27,7 @@ typedef struct VnrParameters
     const p_array specific_volume_new;  /**< Current specific volume */
     const p_array internal_energy_old;  /**< Previous internal energy */
     const p_array pressure;  /**< Previous pressure */
-    MieGruneisenParameters_s *miegruneisen;  /**< Parameters of the underlying eos (here MieGruneisen) */
+    MieGruneisenEOS_s *miegruneisen;  /**< Parameters of the underlying eos (here MieGruneisen) */
 } VnrParameters_s;
 
 /**

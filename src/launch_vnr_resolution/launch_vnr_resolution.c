@@ -50,14 +50,14 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         // EOS definition
         const double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
             grunzero = 2.02, b = 0.47, ezero = 0.;
-        MieGruneisenParameters_s MieGruneisenParams = {
+        MieGruneisenEOS_s mie_gruneisen_eos = {
             czero, S1, S2, S3, rhozero, grunzero, b, ezero,
             NULL, NULL, NULL, NULL, NULL, 
             compute_pressure_and_derivative, compute_pressure_and_sound_speed,
             init, finalize};
 
         // Compute all terms that are parameters of the eos (i.e all that depends on specific_volume)
-        int ret_code = MieGruneisenParams.init(&MieGruneisenParams, chunk_size, new_specific_volume->data + offset);
+        int ret_code = mie_gruneisen_eos.init(&mie_gruneisen_eos, chunk_size, new_specific_volume->data + offset);
         if (ret_code == EXIT_FAILURE) {
             fprintf(stderr, "An error occured during MieGruneisen initialization!\n");
             fprintf(stderr, "Thread id : %d(/%d)\n", tid, n_threads);
@@ -75,7 +75,7 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
                                    &thread_new_spec_vol,
                                    &thread_internal_energy,
                                    &thread_pressure,
-                                   &MieGruneisenParams};
+                                   &mie_gruneisen_eos};
         NewtonParameters_s TheNewton = {internal_energy_evolution_VNR,
                                         classical_incrementation, relative_gap};
         ret_code = solveNewton(&TheNewton, &VnrVars, &thread_internal_energy, &thread_solution);
@@ -89,7 +89,7 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         VnrVars.miegruneisen->get_pressure_and_sound_speed(VnrVars.miegruneisen, chunk_size, new_specific_volume->data + offset,
                                                            solution->data + offset, new_p->data + offset, new_vson->data + offset);
 
-        MieGruneisenParams.finalize(&MieGruneisenParams);
+        mie_gruneisen_eos.finalize(&mie_gruneisen_eos);
     }
 
 }
