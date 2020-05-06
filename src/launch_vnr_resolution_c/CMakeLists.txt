@@ -65,7 +65,9 @@ if( CMAKE_VERSION VERSION_LESS 3.13 )
     # CMake versions prior to 3.13 seem to have difficulties to enrich SWIG_INCLUDE_DIRECTORIES
     # with the include_directories transitively declared via target_link_libraries
     get_property( LAUNCH_VNR_RESOLUTION_INCLUDE_DIR TARGET launch_vnr_resolution PROPERTY INCLUDE_DIRECTORIES )
-    set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_INCLUDE_DIRECTORIES "${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
+    get_property( EOS_INCLUDE_DIR TARGET eos PROPERTY INCLUDE_DIRECTORIES )
+    set( MANUAL_INCLUDE_DIR "${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR};${EOS_INCLUDE_DIR}")
+    set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_INCLUDE_DIRECTORIES "${MANUAL_INCLUDE_DIR}" )
 endif()
 
 # This command is usefull only when cmake is called via setup.py.
