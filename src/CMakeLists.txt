@@ -46,7 +46,6 @@ target_link_libraries( test_solver_perfs PRIVATE
 
 add_executable( test_solver test_solver.c )
 target_link_libraries( test_solver PRIVATE
-  array
   launch_vnr_resolution
   test_utils
   )
