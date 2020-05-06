@@ -1,3 +1,5 @@
+include( PythonUtilities.cmake )
+
 set( PYTHON_MODULE_NAME "vnr_internal_energy" CACHE STRING "Name of the python module to generate" )
 
 # The library created/used by python should follow a specific pattern which will be set by setup.py
@@ -6,27 +8,6 @@ set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the l
 
 # Need SWIG
 find_package( SWIG REQUIRED )
-
-# Try to find Python3 Interpreter and Development with the find_package command.
-# In case of failure to find Development target, use the interpreter to locate python3
-# include directory. This situation occure currently on Travis Xenial VM. It uses CMake 3.12.4.
-function( search_python3_include_dir )
-    message( STATUS "Python3 development artifacts cannot be found!" )
-    message( STATUS "Asking the interpreter..." )
-    # Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
-    # This comes to hand if we also need to use the NumPy C API
-    execute_process( COMMAND "${Python3_EXECUTABLE}" -c "from sysconfig import get_paths;print(get_paths()['include'])" 
-                        RESULT_VARIABLE PYTHON3_INCLUDE_DIRS_FOUND
-                        OUTPUT_VARIABLE Python3_INCLUDE_DIRS
-                        ERROR_VARIABLE PYTHON3_INCLUDE_DIRS_ERROR
-                        OUTPUT_STRIP_TRAILING_WHITESPACE
-                        ERROR_STRIP_TRAILING_WHITESPACE
-                    )
-    if ( NOT ${PYTHON3_INCLUDE_DIRS_FOUND} EQUAL 0 )
-        message( FATAL_ERROR "Manual search of the python3 include directory has failed!" )
-    endif()
-    set( Python3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} PARENT_SCOPE )
-endfunction() 
 
 # Need Python
 find_package( Python3 COMPONENTS Interpreter Development )
@@ -39,22 +20,9 @@ if( NOT Python3_Development_FOUND )
     message( STATUS "Found Python3 Include Directory : ${Python3_INCLUDE_DIRS}" )
 endif()
 
-# Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
-# This comes to hand if we also need to use the NumPy C API
-execute_process( COMMAND "${Python3_EXECUTABLE}" -c "import numpy; print(numpy.get_include())" 
-                 RESULT_VARIABLE NUMPY_FOUND
-                 OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
-                 ERROR_VARIABLE NUMPY_ERROR
-                 OUTPUT_STRIP_TRAILING_WHITESPACE
-                 ERROR_STRIP_TRAILING_WHITESPACE
-                )
-if( NOT ${NUMPY_FOUND} EQUAL 0 )
-    message( WARNING "The command that should find Numpy headers exited with error : ")
-    message( WARNING "${NUMPY_ERROR}" )
-    message( FATAL_ERROR "Numpy headers cannot be found. " )
-else()
-    message( STATUS "Found Numpy: ${NUMPY_INCLUDE_DIR}" )
-endif()
+# Need Numpy
+search_numpy_include_dir()
+message( STATUS "Found Numpy: ${NUMPY_INCLUDE_DIR}" )
 
 include( UseSWIG )
 # Override the module name found in the swig source (.i) file
@@ -64,6 +32,8 @@ set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_TARGET_INCLUDE_DIRECTO
 
 if( CMAKE_VERSION VERSION_LESS 3.13 )
     set( UseSWIG_TARGET_NAME_PREFERENCE STANDARD )
+    # Otherwise the swig_add_library will create a target which name is not the one
+    # passed to the command but a legacy one
 endif()
 
 swig_add_library( ${PYTHON_MODULE_NAME}
@@ -92,8 +62,9 @@ target_link_libraries( ${PYTHON_MODULE_NAME}
 )
 
 if( CMAKE_VERSION VERSION_LESS 3.13 )
+    # CMake versions prior to 3.13 seem to have difficulties to enrich SWIG_INCLUDE_DIRECTORIES
+    # with the include_directories transitively declared via target_link_libraries
     get_property( LAUNCH_VNR_RESOLUTION_INCLUDE_DIR TARGET launch_vnr_resolution PROPERTY INCLUDE_DIRECTORIES )
-    message( STATUS "The property SWIG_INCLUDE_DIRECTORIES is set to ${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
     set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_INCLUDE_DIRECTORIES "${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
 endif()
 
