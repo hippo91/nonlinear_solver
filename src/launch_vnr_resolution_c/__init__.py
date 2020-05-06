@@ -1,1 +1,1 @@
-from .vnr_internal_energy import launch_vnr_resolution
+from .vnr_internal_energy import launch_vnr_resolution, MieGruneisenParams_s
