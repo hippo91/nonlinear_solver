@@ -4,7 +4,6 @@
 #include <time.h>
 
 #include "array.h"
-#include "miegruneisen_params.h"
 #include "launch_vnr_resolution.h"
 #include "test_utils.h"
 
@@ -44,10 +43,9 @@ int main()
     }
     //
     start = clock();
-    MieGruneisenParams_s const copper_mat = {3940., 1.489, 0., 0., 8930., 2.02, 0.47, 0.};
     for (int cycle = 0; cycle < nbr_of_cycles; ++cycle)
     {
-        launch_vnr_resolution(&copper_mat, old_specific_volume, new_specific_volume, pressure, internal_energy,
+        launch_vnr_resolution(old_specific_volume, new_specific_volume, pressure, internal_energy,
                               solution, new_pressure, new_cson);
         if (cycle % 1000 == 0)
         {

@@ -11,11 +11,11 @@ target_include_directories( ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR} )
 target_link_libraries( ${LIBRARY_NAME}
 PUBLIC
   array
-  eos
 PRIVATE
   OpenMP::OpenMP_C
   newton
   functions
   incrementation
   criterions
+  eos
   )
