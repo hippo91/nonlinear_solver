@@ -6,9 +6,10 @@ A Newton-Raphson solver allows to find the solution of an equation of type :
 ![General equation to solve](/doc/images/fxzero.gif)
 
 While the present solver may be used to solve any kind of one dimensional equation,
-it has been developped in order to give a fast computation process of internal energy evolution in the Von Neumann - Richtmyer (VNR) scheme. This scheme is used to solve shock propagation problems as in [https://github.com/hippo91/XVOF].
+it has been developped in order to give a fast computation process of internal energy evolution in the Von Neumann - Richtmyer (VNR) scheme.
+This computation process is available through a *c* library or through a *python* module. Both of them use *OpenMP* to accelerate the computation.
+The python module is used for example in the XVOF code [https://github.com/hippo91/XVOF].
 
-<!-- The code is parallelized thanks to **OpenMP**. -->
 
 ## Requirements
 
@@ -16,8 +17,8 @@ In order to build the code, the following tools are required :
 
 - *cmake*, version 3.12 or higher; 
 - *gcc* or *clang* or any other compiler compatible with *cmake* and compliant with the standard 99 of the `C` language;
-- *openmp*
-- and eventually *python* (version doesn't matter but 3.7.7 has been tested)
+- optionnalty *openmp*
+- and *python* (version doesn't matter but 3.7.7 has been tested)
 
 ## Download
 
@@ -51,6 +52,35 @@ If the library has to be compiled under debug mode, with static libraries :
 The library comes with units tests that may run using `ctest` after the code has been compiled :
 
     ctest -j 4
+
+To build the *python* module :
+
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_PYTHON_VNR_MODULE=ON /path/to/the/nonlinear_solver
+
+Or even simpler :
+
+    pip install . 
+
+## Code structure
+
+All the source files are stored inside the [src](/src) directory.
+
+The following packages are linked to the Newton-Raphson algorithm :
+
+- [array](/src/array): establishes an array structure and defines some functions to work on;
+- [criterions](/src/criterions): holds functions that check if the algorithm has converged;
+- [functions](/src/functions): stores the functions that may be solved by the Newton-Raphson algorithm;
+- [incrementation](/src/incrementation): stores the functions that compute the Newton-Raphson increment;
+- [newton](/src/newton): the Newton-Raphson kernel;
+
+The package [test_utils](/src/test_utils) groups functions that are usefull especially when unit testing the solver.
+
+The remaining packages are dedicated to solve the equation governing the evolution of internal energy in the VNR scheme and to build the corresponding python module :
+
+- [eos](/src/eos): holds the equations of state (i.e function that compute pressure and sound speed according to the density and internal energy)
+- [launch_vnr_resolution](/src/eos): orchestrates the resolution of the `vnr_internal_energy` function;
+- [launch_vnr_resolution_c](/src/launch_vnr_resolution_c): package that will produce the *python* module, analoguous of the preceeding package.
+
 
 ## Examples of use
 
