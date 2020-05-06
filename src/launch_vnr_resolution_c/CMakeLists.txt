@@ -25,7 +25,7 @@ function( search_python3_include_dir )
     if ( NOT ${PYTHON3_INCLUDE_DIRS_FOUND} EQUAL 0 )
         message( FATAL_ERROR "Manual search of the python3 include directory has failed!" )
     endif()
-    set( Python3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} SCOPE_PARENT )
+    set( Python3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} PARENT_SCOPE )
 endfunction() 
 
 # Need Python
