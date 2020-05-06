@@ -11,23 +11,17 @@
  * 
  */
 #include <stdlib.h>
+#include "miegruneisen_params.h"
 
 typedef struct MieGruneisenEOS MieGruneisenEOS_s;
 
 /**
- * @brief Holds the MieGruneisen equation of state parameters
+ * @brief Defines a MieGruneisen equation of state
  * 
  */
 struct MieGruneisenEOS
 {
-    const double c_zero;  /**< Initial sound speed */
-    const double s1;
-    const double s2;
-    const double s3;
-    const double rho_zero;  /**< Initial density */
-    const double gamma_zero;  /**< Initial Gruneisen coefficient */
-    const double coeff_b;
-    const double e_zero;  /**< Initial internal energy */
+    MieGruneisenParams_s const *params;  /**< The equation of state parameters */
     double *phi;  /**< Array of pressures along the Hugoniot */
     double *dphi;  /**< Derivative of the pressures along the Hugoniot */
     double *einth;  /**< Internal energy along the Hugoniot */
@@ -55,7 +49,7 @@ struct MieGruneisenEOS
  * @return int EXIT_SUCCESS (0) : in case of success
  *             EXIT_FAILURE (1) : otherwise
  */
-int init(MieGruneisenEOS_s *params, const unsigned int nb_cells, const double * const specific_volume);
+int init(MieGruneisenEOS_s *eos, const unsigned int nb_cells, const double * const specific_volume);
 
 
 /**
@@ -65,7 +59,7 @@ int init(MieGruneisenEOS_s *params, const unsigned int nb_cells, const double * 
  * @return int EXIT_SUCCESS (0) : in case of success
  *             EXIT_FAILURE (1) : otherwise
  */
-void finalize(MieGruneisenEOS_s *params);
+void finalize(MieGruneisenEOS_s *eos);
 
 /**
  * @brief Compute the pressure and the derivative of the pressure with respect to the specific
@@ -80,7 +74,7 @@ void finalize(MieGruneisenEOS_s *params);
  * @note : the specific volume is unused here but remains in order to keep the signature
  *         of the function compatible with more general eos
  */
-void compute_pressure_and_derivative(MieGruneisenEOS_s *params, const int nb_cells,
+void compute_pressure_and_derivative(MieGruneisenEOS_s *eos, const int nb_cells,
                                      const double *specific_volume,
                                      const double *internal_energy, double *pressure,
                                      double *gamma_per_vol);
@@ -95,7 +89,7 @@ void compute_pressure_and_derivative(MieGruneisenEOS_s *params, const int nb_cel
  * @param[out] pressure : pressure array
  * @param[out] c_son : sound speed array
  */
-void compute_pressure_and_sound_speed(MieGruneisenEOS_s *params, const int nb_cells,
+void compute_pressure_and_sound_speed(MieGruneisenEOS_s *eos, const int nb_cells,
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son);
 

@@ -9,6 +9,7 @@
 #include "stop_criterions.h"
 #include "vnr_internalenergy_evolution.h"
 #include "miegruneisen.h"
+#include "miegruneisen_params.h"
 
 void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_volume,
                            p_array pressure, p_array internal_energy,
@@ -45,11 +46,9 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         if (tid == n_threads - 1) chunk_size += remain_chunk_size;
 
         // EOS definition
-        const double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
-            grunzero = 2.02, b = 0.47, ezero = 0.;
+        MieGruneisenParams_s const mie_gruneisen_params = {3940., 1.489, 0., 0., 8930.0, 2.02, 0.47, 0.};
         MieGruneisenEOS_s mie_gruneisen_eos = {
-            czero, S1, S2, S3, rhozero, grunzero, b, ezero,
-            NULL, NULL, NULL, NULL, NULL, 
+            &mie_gruneisen_params, NULL, NULL, NULL, NULL, NULL, 
             compute_pressure_and_derivative, compute_pressure_and_sound_speed,
             init, finalize};
 

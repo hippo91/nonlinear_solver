@@ -1,6 +1,7 @@
 #include <stdbool.h>
 
 #include "miegruneisen.h"
+#include "miegruneisen_params.h"
 #include "test_utils.h"
 
 #define PB_SIZE 2
@@ -13,11 +14,9 @@
  */
 int main()
 {
-    double czero = 3940.0, S1 = 1.489, S2 = 0., S3 = 0., rhozero = 8930.0,
-           grunzero = 2.02, b = 0.47, ezero = 0.;
-    MieGruneisenEOS_s copper_mat = {
-        czero, S1, S2, S3, rhozero, grunzero, b, ezero,
-        NULL, NULL, NULL, NULL, NULL,
+    MieGruneisenParams_s copper_mat = {3940., 1.489, 0., 0., 8930., 2.02, 0.47, 0.};
+    MieGruneisenEOS_s copper_eos = {
+        &copper_mat, NULL, NULL, NULL, NULL, NULL,
         compute_pressure_and_derivative, compute_pressure_and_sound_speed,
         init, finalize};
 
@@ -33,9 +32,9 @@ int main()
     double expected_gamma[] = {17930.499999999996, 18165.5};
     double expected_cson[] = {3837.312029974254, 4663.450646599814};
 
-    copper_mat.init(&copper_mat, PB_SIZE, specific_volume);
+    copper_eos.init(&copper_eos, PB_SIZE, specific_volume);
 
-    compute_pressure_and_derivative(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, gamma_per_vol);
+    compute_pressure_and_derivative(&copper_eos, PB_SIZE, specific_volume, internal_energy, pressure, gamma_per_vol);
 
     if (!assert_equal_arrays(pressure, expected_pressure, PB_SIZE, "pressure"))
         success = false;
@@ -43,7 +42,7 @@ int main()
                              "gamma_per_vol"))
         success = false;
 
-    compute_pressure_and_sound_speed(&copper_mat, PB_SIZE, specific_volume, internal_energy, pressure, cson);
+    compute_pressure_and_sound_speed(&copper_eos, PB_SIZE, specific_volume, internal_energy, pressure, cson);
 
     if (!assert_equal_arrays(pressure, expected_pressure, PB_SIZE, "pressure"))
         success = false;
@@ -53,7 +52,7 @@ int main()
     if (!assert_equal_arrays(cson, expected_cson, PB_SIZE, "cson"))
         success = false;
 
-    copper_mat.finalize(&copper_mat);
+    copper_eos.finalize(&copper_eos);
 
     if (!success)
         return (EXIT_FAILURE);

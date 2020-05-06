@@ -46,125 +46,125 @@ static inline double compute_denom(const double s1, const double s2, const doubl
     return 1. / (1. - (s1 + s2 * epsv + s3 * epsv * epsv) * epsv);
 }
 
-int init(MieGruneisenEOS_s *params, const unsigned int nb_cells, const double * const specific_volume)
+int init(MieGruneisenEOS_s *eos, const unsigned int nb_cells, const double * const specific_volume)
 {
-    if (params->phi == NULL)
+    if (eos->phi == NULL)
     {
-        params->phi = (double *)calloc(nb_cells, sizeof(double));
-        if (params->phi == NULL)
+        eos->phi = (double *)calloc(nb_cells, sizeof(double));
+        if (eos->phi == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->phi array (size requested : %u)!\n", nb_cells);
+            fprintf(stderr, "Error during allocation of eos->phi array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
-    if (params->dphi == NULL)
+    if (eos->dphi == NULL)
     {
-        params->dphi = (double *)calloc(nb_cells, sizeof(double));
-        if (params->dphi == NULL)
+        eos->dphi = (double *)calloc(nb_cells, sizeof(double));
+        if (eos->dphi == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->dphi array (size requested : %u)!\n", nb_cells);
+            fprintf(stderr, "Error during allocation of eos->dphi array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
-    if (params->einth == NULL)
+    if (eos->einth == NULL)
     {
-        params->einth = (double *)calloc(nb_cells, sizeof(double));
-        if (params->einth == NULL)
+        eos->einth = (double *)calloc(nb_cells, sizeof(double));
+        if (eos->einth == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->einth array (size requested : %u)!\n", nb_cells);
+            fprintf(stderr, "Error during allocation of eos->einth array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
-    if (params->deinth == NULL)
+    if (eos->deinth == NULL)
     {
-        params->deinth = (double *)calloc(nb_cells, sizeof(double));
-        if (params->deinth == NULL)
+        eos->deinth = (double *)calloc(nb_cells, sizeof(double));
+        if (eos->deinth == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->deinth array (size requested : %u)!\n", nb_cells);
+            fprintf(stderr, "Error during allocation of eos->deinth array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
-    if (params->gamma_per_vol == NULL)
+    if (eos->gamma_per_vol == NULL)
     {
-        params->gamma_per_vol = (double *)calloc(nb_cells, sizeof(double));
-        if (params->gamma_per_vol == NULL)
+        eos->gamma_per_vol = (double *)calloc(nb_cells, sizeof(double));
+        if (eos->gamma_per_vol == NULL)
         {
-            fprintf(stderr, "Error during allocation of params->gamma_per_vol array (size requested : %u)!\n", nb_cells);
+            fprintf(stderr, "Error during allocation of eos->gamma_per_vol array (size requested : %u)!\n", nb_cells);
             return EXIT_FAILURE;
         }
     }
 
-    const double s1 = params->s1;
-    const double s2 = params->s2;
-    const double s3 = params->s3;
-    const double rho_zero = params->rho_zero;
-    const double gamma_zero = params->gamma_zero;
-    const double coeff_b = params->coeff_b;
-    const double e_zero = params->e_zero;
-    const double c_zero_2 = params->c_zero * params->c_zero;
+    const double s1 = eos->params->s1;
+    const double s2 = eos->params->s2;
+    const double s3 = eos->params->s3;
+    const double rho_zero = eos->params->rho_zero;
+    const double gamma_zero = eos->params->gamma_zero;
+    const double coeff_b = eos->params->coeff_b;
+    const double e_zero = eos->params->e_zero;
+    const double c_zero_2 = eos->params->c_zero * eos->params->c_zero;
     const double rho_czero2 = rho_zero * c_zero_2;
     const double inv_rhozero_x2 = 1. / (2.* rho_zero); 
     for (unsigned int i = 0; i < nb_cells; ++i)
     {
         const double epsv = compute_epsv(rho_zero, specific_volume[i]);
-        params->gamma_per_vol[i] = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
+        eos->gamma_per_vol[i] = compute_dp_de(gamma_zero, coeff_b, epsv, specific_volume[i]);
         if (epsv > 0)
         {
             const double denom = compute_denom(s1, s2, s3, epsv);
             const double phi = rho_czero2 * epsv * denom * denom;
-            params->phi[i] = phi;
-            params->einth[i] = e_zero + phi * epsv * inv_rhozero_x2;
+            eos->phi[i] = phi;
+            eos->einth[i] = e_zero + phi * epsv * inv_rhozero_x2;
             const double redond_a = (s1 + 2. * s2 * epsv + 3. * s3 * epsv * epsv);
-            params->dphi[i] = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
-            params->deinth[i] = phi * (-1. - epsv * redond_a * denom);
+            eos->dphi[i] = phi * rho_zero * (-1. / epsv - 2. * redond_a * denom);
+            eos->deinth[i] = phi * (-1. - epsv * redond_a * denom);
         }
         else
         {
-            params->phi[i] = rho_czero2 * epsv / (1. - epsv);
-            params->einth[i] = e_zero;
-            params->dphi[i] = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
+            eos->phi[i] = rho_czero2 * epsv / (1. - epsv);
+            eos->einth[i] = e_zero;
+            eos->dphi[i] = -c_zero_2 / (specific_volume[i] * specific_volume[i]);
         }
     }
     return EXIT_SUCCESS;
 }
 
-void finalize(MieGruneisenEOS_s *params)
+void finalize(MieGruneisenEOS_s *eos)
 {
-    free(params->gamma_per_vol);
-    free(params->phi);
-    free(params->dphi);
-    free(params->einth);
-    free(params->deinth);
+    free(eos->gamma_per_vol);
+    free(eos->phi);
+    free(eos->dphi);
+    free(eos->einth);
+    free(eos->deinth);
 }
 
-void compute_pressure_and_derivative(MieGruneisenEOS_s *params, const int nb_cells,
+void compute_pressure_and_derivative(MieGruneisenEOS_s *eos, const int nb_cells,
                                      __attribute__((unused)) const double *specific_volume,
                                      const double *internal_energy, double *pressure,
                                      double *gamma_per_vol)
 {
     for (int i = 0; i < nb_cells; ++i)
     {
-        gamma_per_vol[i] = params->gamma_per_vol[i];
-        pressure[i] = params->phi[i] + params->gamma_per_vol[i] * (internal_energy[i] - params->einth[i]);
+        gamma_per_vol[i] = eos->gamma_per_vol[i];
+        pressure[i] = eos->phi[i] + eos->gamma_per_vol[i] * (internal_energy[i] - eos->einth[i]);
     }
 }
 
-void compute_pressure_and_sound_speed(MieGruneisenEOS_s *params, const int nb_cells,
+void compute_pressure_and_sound_speed(MieGruneisenEOS_s *eos, const int nb_cells,
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son)
 {
-    const double dgam = params->rho_zero * (params->gamma_zero - params->coeff_b);
+    const double dgam = eos->params->rho_zero * (eos->params->gamma_zero - eos->params->coeff_b);
     for (int i = 0; i < nb_cells; ++i)
     {
-        pressure[i] = params->phi[i] + params->gamma_per_vol[i] * (internal_energy[i] - params->einth[i]);
-        double dpdv = params->dphi[i] + (dgam - params->gamma_per_vol[i]) * (internal_energy[i] - params->einth[i]) / specific_volume[i] - params->gamma_per_vol[i] * params->deinth[i];
-        double vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * params->gamma_per_vol[i] - dpdv);
+        pressure[i] = eos->phi[i] + eos->gamma_per_vol[i] * (internal_energy[i] - eos->einth[i]);
+        double dpdv = eos->dphi[i] + (dgam - eos->gamma_per_vol[i]) * (internal_energy[i] - eos->einth[i]) / specific_volume[i] - eos->gamma_per_vol[i] * eos->deinth[i];
+        double vson_2 = specific_volume[i] * specific_volume[i] * (pressure[i] * eos->gamma_per_vol[i] - dpdv);
         if (vson_2 < 0)
         {
             printf("Carré de la vitesse du son < 0\n");
             printf("specific_volume[%d] = %15.9g\n", i, specific_volume[i]);
             printf("pressure[%d] = %15.9g\n", i, pressure[i]);
-            printf("dpsurde[%d] = %15.9g\n", i, params->gamma_per_vol[i]);
+            printf("dpsurde[%d] = %15.9g\n", i, eos->gamma_per_vol[i]);
             printf("dpdv[%d] = %15.9g\n", i, dpdv);
             raise(SIGABRT);
         }
