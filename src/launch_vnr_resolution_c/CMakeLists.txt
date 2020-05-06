@@ -64,11 +64,6 @@ set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_TARGET_INCLUDE_DIRECTO
 
 if( CMAKE_VERSION VERSION_LESS 3.13 )
     set( UseSWIG_TARGET_NAME_PREFERENCE STANDARD )
-    # request file.i file to use library include directories.
-    # This way the swig_link_libraries will allow the .i file to include the headers of the linked lib
-    # See https://gitlab.kitware.com/cmake/cmake/issues/18003
-    message( STATUS "The property USE_LIBRARY_INCLUDE_DIRECTORIES is set to TRUE" )
-    set_property( SOURCE launch_vnr_resolution.i PROPERTY USE_LIBRARY_INCLUDE_DIRECTORIES TRUE )
 endif()
 
 swig_add_library( ${PYTHON_MODULE_NAME}
@@ -97,8 +92,6 @@ target_link_libraries( ${PYTHON_MODULE_NAME}
 )
 
 if( CMAKE_VERSION VERSION_LESS 3.13 )
-    message( STATUS "The property SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES is set to TRUE" )
-    set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_USE_LIBRARY_INCLUDE_DIRECTORIES TRUE )
     get_property( LAUNCH_VNR_RESOLUTION_INCLUDE_DIR TARGET launch_vnr_resolution PROPERTY INCLUDE_DIRECTORIES )
     message( STATUS "The property SWIG_INCLUDE_DIRECTORIES is set to ${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
     set_property( TARGET ${PYTHON_MODULE_NAME} PROPERTY SWIG_INCLUDE_DIRECTORIES "${LAUNCH_VNR_RESOLUTION_INCLUDE_DIR}" )
