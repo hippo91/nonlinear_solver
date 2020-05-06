@@ -54,9 +54,6 @@ if( NOT ${NUMPY_FOUND} EQUAL 0 )
     message( FATAL_ERROR "Numpy headers cannot be found. " )
 else()
     message( STATUS "Found Numpy: ${NUMPY_INCLUDE_DIR}" )
-    # In fact we don't care about NUMPY_INCLUDE_DIR variable.
-    # The only dependency to numpy is the numpy.i file which is
-    # bundlded in the project.
 endif()
 
 include( UseSWIG )
@@ -85,6 +82,7 @@ swig_add_library( ${PYTHON_MODULE_NAME}
 target_include_directories( ${PYTHON_MODULE_NAME}
     PRIVATE
         ${Python3_INCLUDE_DIRS}
+        ${NUMPY_INCLUDE_DIR}
 )
 
 target_link_libraries( ${PYTHON_MODULE_NAME}
