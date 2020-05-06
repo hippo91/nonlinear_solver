@@ -1,3 +1,5 @@
+#ifndef MIEGRUNEISEN_H
+#define MIEGRUNEISEN_H
 /**
  * @file miegruneisen.h
  * @author Guillaume PEILLEX (guillaume.peillex@gmail.com)
@@ -96,3 +98,5 @@ void compute_pressure_and_derivative(MieGruneisenEOS_s *params, const int nb_cel
 void compute_pressure_and_sound_speed(MieGruneisenEOS_s *params, const int nb_cells,
                                       const double *specific_volume,
                                       const double *internal_energy, double *pressure, double *c_son);
+
+#endif
