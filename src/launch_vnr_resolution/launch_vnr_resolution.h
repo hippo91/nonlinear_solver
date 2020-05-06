@@ -10,6 +10,7 @@
  */
 #include <stdlib.h>
 #include "array.h"
+#include "miegruneisen_params.h"
 
 /**
  * @brief Use the Newton-Raphson algorithm to solve the equation governing the evolution of the 
@@ -23,6 +24,7 @@
  * 
  * \f$P^{n+1} = h(\rho^{n+1}, e_i^{n+1})\f$
  * 
+ * @param[in] eos_params : parameters of the equation of state
  * @param[in] old_density : current density \f$\rho^n\f$
  * @param[in] new_density : next time step density \f$\rho^{n+1}\f$
  * @param[in] pressure : current pressure \f$P^n\f$
@@ -31,5 +33,5 @@
  * @param[out] new_p : pressure at next time step \f$P^{n+1}\f$
  * @param[out] new_vson : sound speed at next time step \f$C_s^{n+1}\f$
  */
-void launch_vnr_resolution(p_array old_density, p_array new_density, p_array pressure, p_array internal_energy,
+void launch_vnr_resolution(MieGruneisenParams_s const *eos_params, p_array old_density, p_array new_density, p_array pressure, p_array internal_energy,
                            p_array solution, p_array new_p, p_array new_vson);

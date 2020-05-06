@@ -11,7 +11,8 @@
 #include "miegruneisen.h"
 #include "miegruneisen_params.h"
 
-void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_volume,
+void launch_vnr_resolution(MieGruneisenParams_s const * eos_params,
+                           p_array old_specific_volume, p_array new_specific_volume,
                            p_array pressure, p_array internal_energy,
                            p_array solution, p_array new_p,
                            p_array new_vson)
@@ -46,9 +47,8 @@ void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_vol
         if (tid == n_threads - 1) chunk_size += remain_chunk_size;
 
         // EOS definition
-        MieGruneisenParams_s const mie_gruneisen_params = {3940., 1.489, 0., 0., 8930.0, 2.02, 0.47, 0.};
         MieGruneisenEOS_s mie_gruneisen_eos = {
-            &mie_gruneisen_params, NULL, NULL, NULL, NULL, NULL, 
+            eos_params, NULL, NULL, NULL, NULL, NULL, 
             compute_pressure_and_derivative, compute_pressure_and_sound_speed,
             init, finalize};
 
