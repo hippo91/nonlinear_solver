@@ -8,10 +8,7 @@
 #include "newton.h"
 #include "stop_criterions.h"
 #include "vnr_internalenergy_evolution.h"
-#ifndef MIEGRUNEISEN
 #include "miegruneisen.h"
-#define MIEGRUNEISEN
-#endif
 
 void launch_vnr_resolution(p_array old_specific_volume, p_array new_specific_volume,
                            p_array pressure, p_array internal_energy,
