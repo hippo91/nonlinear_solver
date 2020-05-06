@@ -7,8 +7,37 @@ set( PYTHON_LIBRARY_NAME "_${PYTHON_MODULE_NAME}.so" CACHE STRING "Name of the l
 # Need SWIG
 find_package( SWIG REQUIRED )
 
+# Try to find Python3 Interpreter and Development with the find_package command.
+# In case of failure to find Development target, use the interpreter to locate python3
+# include directory. This situation occure currently on Travis Xenial VM. It uses CMake 3.12.4.
+function( search_python3_include_dir )
+    message( STATUS "Python3 development artifacts cannot be found!" )
+    message( STATUS "Asking the interpreter..." )
+    # Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
+    # This comes to hand if we also need to use the NumPy C API
+    execute_process( COMMAND "${Python3_EXECUTABLE}" -c "from sysconfig import get_paths;print(get_paths()['include'])" 
+                        RESULT_VARIABLE PYTHON3_INCLUDE_DIRS_FOUND
+                        OUTPUT_VARIABLE Python3_INCLUDE_DIRS
+                        ERROR_VARIABLE PYTHON3_INCLUDE_DIRS_ERROR
+                        OUTPUT_STRIP_TRAILING_WHITESPACE
+                        ERROR_STRIP_TRAILING_WHITESPACE
+                    )
+    if ( NOT ${PYTHON3_INCLUDE_DIRS_FOUND} EQUAL 0 )
+        message( FATAL_ERROR "Manual search of the python3 include directory has failed!" )
+    endif()
+    set( Python3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} SCOPE_PARENT )
+endfunction() 
+
 # Need Python
-find_package( Python3 COMPONENTS Interpreter Development REQUIRED )
+find_package( Python3 COMPONENTS Interpreter Development )
+if( NOT Python3_Interpreter_FOUND )
+    # Stop the process if the interpreter is not found
+    message( FATAL_ERROR "Python3 interpreter cannot be found!" ) 
+endif()
+if( NOT Python3_Development_FOUND )
+    search_python3_include_dir()
+    message( STATUS "Found Python3 Include Directory : ${Python3_INCLUDE_DIRS}" )
+endif()
 
 # Taken from https://martinopilia.com/posts/2018/09/15/building-python-extension.html
 # This comes to hand if we also need to use the NumPy C API
