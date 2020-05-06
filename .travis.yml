@@ -77,3 +77,22 @@ jobs:
           # run cmake; here we assume that the project's
           # top-level CMakeLists.txt is located at '..'
           - cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_PYTHON_VNR_MODULE=ON .. 
+      - name: "clang release static with py module"
+        compiler:
+          - clang
+        langage: python
+        python:
+          - "3.7"
+        before_install:
+          # Just for python module build
+          - sudo apt-get install -y swig3.0
+          - pip install --upgrade pip
+          - pip install numpy
+        before_script:
+          # create a build folder for the out-of-source build
+          - mkdir build
+          # switch to build directory
+          - cd build
+          # run cmake; here we assume that the project's
+          # top-level CMakeLists.txt is located at '..'
+          - cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_PYTHON_VNR_MODULE=ON .. 
