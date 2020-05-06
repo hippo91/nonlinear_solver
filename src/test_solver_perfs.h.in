@@ -1,0 +1,4 @@
+// The time limit will be machine dependent.
+// Configure it thanks to cmake configure_file command
+// The value should be in second
+#cmakedefine TIME_LIMIT @TIME_LIMIT@

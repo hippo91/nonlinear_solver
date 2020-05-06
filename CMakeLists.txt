@@ -19,8 +19,13 @@ set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -pg" )
 
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" CACHE STRING "Directory where the libraries should be put" )
 
+set( TIME_LIMIT "57.2" )
+configure_file( ./src/test_solver_perfs.h.in ./src/test_solver_perfs.h @ONLY )
+
 enable_testing()
+
 add_executable( test_solver_perfs src/test_solver_perfs.c )
+target_include_directories( test_solver_perfs PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/src" )
 add_executable( test_solver src/test_solver.c )
 
 add_subdirectory( src/array )

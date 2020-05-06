@@ -1,3 +1,4 @@
+#include "test_solver_perfs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -72,13 +73,11 @@ int main()
         success = false;
     if (!check_uniform_value(new_cson, 4503.84710590959))
         success = false;
-    // At the time this test has been created, it tooks around 3 minutes to run.
-    // Adds a possible variation of 10%
-    const double time_limit = 52. * 1.1;
-    if (cpu_time_used > time_limit)
+    
+    if (cpu_time_used > TIME_LIMIT)
     {
         success = false;
-        printf("CPU time used (%6.4g seconds) is above the limit (%6.4g seconds)!\n", cpu_time_used, time_limit);
+        printf("CPU time used (%6.4g seconds) is above the limit (%6.4g seconds)!\n", cpu_time_used, TIME_LIMIT);
     }
 
     DELETE_ARRAY(old_density);
