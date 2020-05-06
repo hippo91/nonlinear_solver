@@ -193,10 +193,10 @@ Then the solver is called, its status checked and printings are made :
     return status;
 ```
 
-The compilation of this file is included in the build process by adding the following lines at the end of the [`CMakeLists.txt`](CMakeLists.txt) file :
+The compilation of this file is included in the build process by adding the following lines at the end of the [`CMakeLists.txt`](src/CMakeLists.txt) file :
 
 ```CMake
-add_executable( solve_cubic src/solve_cubic.c )
+add_executable( solve_cubic solve_cubic.c )
 target_link_libraries( solve_cubic 
   PRIVATE 
     array
