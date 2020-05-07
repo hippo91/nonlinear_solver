@@ -16,14 +16,14 @@
  * 
  */
 typedef struct MieGruneisenParams {
-    const double c_zero;  /**< Initial sound speed */
-    const double s1;
-    const double s2;
-    const double s3;
-    const double rho_zero;  /**< Initial density */
-    const double gamma_zero;  /**< Initial Gruneisen coefficient */
-    const double coeff_b;
-    const double e_zero;  /**< Initial internal energy */
+    double c_zero;  /**< Initial sound speed */
+    double s1;
+    double s2;
+    double s3;
+    double rho_zero;  /**< Initial density */
+    double gamma_zero;  /**< Initial Gruneisen coefficient */
+    double coeff_b;
+    double e_zero;  /**< Initial internal energy */
 } MieGruneisenParams_s;
 
 #endif
