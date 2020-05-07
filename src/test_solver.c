@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "array.h"
+#include "miegruneisen_params.h"
 #include "launch_vnr_resolution.h"
 #include "test_utils.h"
 
@@ -38,7 +39,8 @@ int main()
         new_specific_volume->data[i] = 1. / new_density->data[i];
     }
 
-    launch_vnr_resolution(old_specific_volume, new_specific_volume, pressure, internal_energy,
+    MieGruneisenParams_s const copper_mat = {3940., 1.489, 0., 0., 8930., 2.02, 0.47, 0.};
+    launch_vnr_resolution(&copper_mat, old_specific_volume, new_specific_volume, pressure, internal_energy,
                           solution, new_pressure, new_cson);
 
     bool success = true;
