@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
  * 
  */
+#ifndef CUBIC_H
+#define CUBIC_H
+
 #include "array.h"
 
 /**
@@ -18,3 +21,5 @@
  * @param[out] dfx : array of values of df/dx
  */
 void cubic_function(void *params, const p_array x, p_array fx, p_array dfx);
+
+#endif

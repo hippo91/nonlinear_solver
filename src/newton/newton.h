@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
  * 
  */
+#ifndef NEWTON_H
+#define NEWTON_H
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include "array.h"
@@ -38,3 +41,5 @@ typedef struct NewtonParameters
  *         EXIT_FAILURE (1) otherwise
  */
 int solveNewton(NewtonParameters_s *newton_parameters, void *func_parameters, p_array x_ini, p_array x_sol);
+
+#endif

@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
  * 
  */
+#ifndef INCREMENTATIONS_METHODS_H
+#define INCREMENTATIONS_METHODS_H
+
 #include <stdlib.h>
 #include "array.h"
 
@@ -48,3 +51,5 @@ void ensure_same_sign_incrementation(const p_array x_k, const p_array func, cons
  * 
  */
 typedef void (*incrementation_fct_ptr)(const p_array, const p_array, const p_array, p_array);
+
+#endif

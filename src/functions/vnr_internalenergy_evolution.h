@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
  * 
  */
+#ifndef VNR_INTERNALENERGY_EVOLUTION_H
+#define VNR_INTERNALENERGY_EVOLUTION_H
+
 #include <math.h>
 #include <stdlib.h>
 #include "array.h"
@@ -44,3 +47,5 @@ typedef struct VnrParameters
  */
 void internal_energy_evolution_VNR(void *parameters, const p_array newton_var,
                                    p_array func, p_array dfunc);
+
+#endif

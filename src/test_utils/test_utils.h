@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2020 Guillaume Peillex. Subject to GNU GPL V2.
  * 
  */
+#ifndef TEST_UTILS_H
+#define TEST_UTILS_H
+
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -186,3 +189,5 @@ bool check_uniform_array_value(const double *const arr, const size_t size,
 bool check_uniform_value(const p_array arr, const double expected) {
     return check_uniform_array_value(arr->data, arr->size, arr->label, expected);
 }
+
+#endif
