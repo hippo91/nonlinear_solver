@@ -5,7 +5,7 @@
 #
 # FURNISHES : CPUINFO_SUM variable is made available in the parent scope
 function( identify_cpu )
-  execute_process( COMMAND bash "-c" "cat /proc/cpuinfo|grep -v 'cpu MHz'|md5sum|gawk '{print $1}'" 
+  execute_process( COMMAND bash "-c" "cat /proc/cpuinfo|grep 'model name'|md5sum|gawk '{print $1}'" 
                    RESULT_VARIABLE MD5SUM_OK
                    OUTPUT_VARIABLE CPUINFO_SUM
                    ERROR_VARIABLE MD5SUM_ERROR
@@ -26,7 +26,7 @@ identify_cpu()
 if( NOT DEFINED CPUINFO_SUM )
   message( FATAL_ERROR "Unable to identify the CPU!" )
 endif()
-if( ${CPUINFO_SUM} STREQUAL "f9e79d6af8d27678f0bebc2ff1ee4066" )
+if( ${CPUINFO_SUM} STREQUAL "63726dae2165021e3eed6f2a377ce56c" )
   message( STATUS "The processor seems to be the one of G560 laptop" )
   set( TIME_LIMIT "57.2" )
   message( STATUS "Setting time limit of the test_solver_perfs to ${TIME_LIMIT}")

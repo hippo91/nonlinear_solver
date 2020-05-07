@@ -4,6 +4,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "array.h"
+#include "miegruneisen_params.h"
 #include "launch_vnr_resolution.h"
 %}
 
@@ -18,11 +19,12 @@ import_array();
                                       (int nie_size, double* new_internal_energy), (int np_size, double* new_pressure),
                                       (int nv_size, double* new_soundspeed)}
 
+%include "miegruneisen_params.h"
 %include "launch_vnr_resolution.h"
 %rename (launch_vnr_resolution) wrap_launch_vnr_resolution;
 
 %inline %{
-  void wrap_launch_vnr_resolution(int od_size, double* old_specific_volume, int nd_size, double* new_specific_volume,
+  void wrap_launch_vnr_resolution(MieGruneisenParams_s const * eos_params, int od_size, double* old_specific_volume, int nd_size, double* new_specific_volume,
                                   int p_size, double* pressure, int ie_size, double* internal_energy,
                                   int nie_size, double* new_internal_energy, int np_size, double* new_pressure,
                                   int nv_size, double* new_soundspeed) {
@@ -39,7 +41,7 @@ import_array();
     s_array arr_new_internal_energy = {nie_size, "NewInternalEnergy", new_internal_energy};
     s_array arr_new_pressure = {np_size, "NewPressure", new_pressure};
     s_array arr_new_soundspeed = {nv_size, "NewSoundSpeed", new_soundspeed};
-    launch_vnr_resolution(&arr_old_specific_volume, &arr_new_specific_volume, &arr_pressure, &arr_internal_energy,
+    launch_vnr_resolution(eos_params, &arr_old_specific_volume, &arr_new_specific_volume, &arr_pressure, &arr_internal_energy,
                           &arr_new_internal_energy, &arr_new_pressure, &arr_new_soundspeed);
   }
 %}
